@@ -353,7 +353,6 @@ function delete_topic($topics_id, $forum_id = '', $do_sync = true)
 		sync('forum', $forum_id);
 	}
 	db_stat_update('posttopic');
-	$db->sql_freeresult($result);
 	return;
 }
 

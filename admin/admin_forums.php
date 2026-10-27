@@ -248,7 +248,9 @@ if ( !(function_exists('move_tree')) )
 		}
 
 		// build the tree
-		$tree = array();
+		// build_tree() appends to these arrays and reads count($tree['data']).
+		// Keep the same empty-tree shape as read_tree() to avoid a PHP 8 TypeError.
+		$tree = array('data' => array(), 'sub' => array('Root' => array()));
 		$new_topic_data = array();
 		$tracking_topics = array();
 		$tracking_forums = array();
@@ -830,6 +832,7 @@ if( !empty($mode) )
 			sql_cache('clear', 'forum_data');
 			sql_cache('clear', 'f_access');
 			admin_check_cat();
+			$tree = array();
 			get_user_tree($userdata);
 			move_tree('Root', 0, 0);
 			sql_cache('clear', 'moderators_list');
@@ -910,7 +913,7 @@ if( !empty($mode) )
 				$forum_id = intval($HTTP_POST_VARS[POST_FORUM_URL]);
 
 				// search in tree if something is attached to
-				if (isset($tree['sub'][POST_FORUM_URL . $forum_id]))
+				if (!empty($tree['sub'][POST_FORUM_URL . $forum_id]))
 				{
 					message_die(GENERAL_MESSAGE, $lang['Forum_link_with_attachment_deny']);
 				}
@@ -1096,6 +1099,7 @@ if( !empty($mode) )
 			}
 			sql_cache('clear', 'cat_list');
 			admin_check_cat();
+			$tree = array();
 			get_user_tree($userdata);
 			move_tree('Root', 0, 0);
 			sql_cache('clear', 'moderators_list');
@@ -1374,6 +1378,7 @@ if( !empty($mode) )
 				message_die(GENERAL_ERROR, "Couldn't obtain moderator list", "", __LINE__, __FILE__, $sql);
 			}
 
+			$result2 = false;
 			if ($row = $db->sql_fetchrow($result))
 			{
 				$user_ids = '';
@@ -1412,7 +1417,10 @@ if( !empty($mode) )
 				$db->sql_freeresult($result);
 
 			}
-			$db->sql_freeresult($result2);
+			if ($result2)
+			{
+				$db->sql_freeresult($result2);
+			}
 
 			$sql = "DELETE FROM " . FORUMS_TABLE . "
 				WHERE forum_id = $from_id";
@@ -1757,7 +1765,7 @@ if ( !(function_exists('display_admin_index')) )
 				}
 				else
 				{
-					$sub = (isset($tree['sub'][POST_FORUM_URL . $forum_id]));
+					$sub = !empty($tree['sub'][POST_FORUM_URL . $forum_id]);
 					$forum_link_img = '<img src="../' . (($sub) ? $images['category'] : $images['forum']) . '" border="0" />';
 					if ($tree['data'][$athis]['forum_status'] == FORUM_LOCKED)
 					{

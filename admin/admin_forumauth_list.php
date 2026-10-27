@@ -374,7 +374,7 @@ if ( !(function_exists('display_admin_index')) )
 				}
 				else
 				{
-					$sub  = (isset($tree['sub'][POST_FORUM_URL . $forum_id]));
+					$sub  = !empty($tree['sub'][POST_FORUM_URL . $forum_id]);
 					$forum_link_img = '<img src="../' . (($sub) ? $images['category'] : $images['forum']) . '" border="0" />';
 					if ($tree['data'][$athis]['forum_status'] == FORUM_LOCKED)
 					{
