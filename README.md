@@ -26,6 +26,8 @@ Kontrola Systemu na demo Plague Studio: PHP 8.5.12, MySQL 8.4.11-11 oraz wersja 
 
 ![Kontrola Systemu phpBB by Przemo 1.13.0 na PHP 8.5.12 i MySQL 8.4.11-11](docs/images/checkfiles-demo-php85.png)
 
+Na zrzucie widoczny jest brak `install.php`; pochodzi on sprzed poprawki CheckFiles, która wyklucza instalator z kontroli, ponieważ należy usunąć go po instalacji.
+
 ## Instalacja
 
 1. Przygotuj serwer WWW z PHP 8.5.x i rozszerzeniem `mysqli`, a także dostępną bazą MySQL lub kompatybilną MariaDB.
