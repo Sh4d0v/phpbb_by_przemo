@@ -33,7 +33,7 @@ Szczegółową procedurę opisuje [Wiki: Instalacja](https://github.com/Sh4d0v/p
 
 ## Najnowsze poprawki 1.13.0
 
-Najnowszy zestaw poprawek jest opublikowany w commicie [`db0c28a`](https://github.com/Sh4d0v/phpbb_by_przemo/commit/db0c28a). Obejmuje m.in. poprawki odporności Panelu Administracyjnego na brakujące dane i błędy typów, bezpieczniejsze importowanie stylów i pobieranie zdalnych plików, ochronę CSRF wybranych narzędzi, bezpieczniejszą deserializację oraz aktualizację sum kontrolnych. Zobacz [Patch 1.13.0 w Wiki](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Patch-1.13.0) i [raport audytu](SECURITY_AND_COMPATIBILITY_AUDIT.md), który opisuje również ryzyka pozostałe w starej architekturze.
+W wydaniu 1.13.0 wprowadzono wiele poprawek i naprawiono wiele błędów, m.in. w Panelu Administracyjnym, instalatorze, obsłudze PHP 8.5, imporcie stylów, ochronie formularzy i aktualizacji bazy. Pełna [historia wszystkich commitów](https://github.com/Sh4d0v/phpbb_by_przemo/commits/main/) zawiera szczegółową listę zmian. Zobacz także [Patch 1.13.0 w Wiki](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Patch-1.13.0) oraz [raport audytu](SECURITY_AND_COMPATIBILITY_AUDIT.md), który opisuje również pozostałe ryzyka.
 
 ## Aktualizacja i migracja
 
