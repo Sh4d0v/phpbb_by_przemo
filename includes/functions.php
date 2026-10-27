@@ -2057,6 +2057,13 @@ function custom_fields($check = '', $view = false, $forum_id = '')
 			$result = $db->sql_query($sql);
 			if (!$result)
 			{
+				$sql_error = $db->sql_error();
+				if (isset($sql_error['code']) && (int) $sql_error['code'] == 1146)
+				{
+					$row = array('total' => 0);
+					sql_cache('write', $cache_name, $row);
+					return false;
+				}
 				message_die(GENERAL_ERROR, 'Could not query custom field information', '', __LINE__, __FILE__, $sql);
 			}
 			$row = $db->sql_fetchrow($result);
@@ -2104,12 +2111,23 @@ function custom_fields($check = '', $view = false, $forum_id = '')
 			$result = $db->sql_query($sql);
 			if (!$result)
 			{
-				message_die(GENERAL_ERROR, 'Could not query custom field information', '', __LINE__, __FILE__, $sql);
+				$sql_error = $db->sql_error();
+				if (isset($sql_error['code']) && (int) $sql_error['code'] == 1146)
+				{
+					$row_f = array();
+				}
+				else
+				{
+					message_die(GENERAL_ERROR, 'Could not query custom field information', '', __LINE__, __FILE__, $sql);
+				}
 			}
-			$row_f = $db->sql_fetchrowset($result);
-			if (!is_array($row_f))
+			else
 			{
-				$row_f = array();
+				$row_f = $db->sql_fetchrowset($result);
+				if (!is_array($row_f))
+				{
+					$row_f = array();
+				}
 			}
 			sql_cache('write', $cache_name, $row_f);
 		}
