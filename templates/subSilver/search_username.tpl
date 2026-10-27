@@ -3,9 +3,37 @@
 <!--
 function refresh_username(selected_username)
 {
-	opener.document.forms['post'].username.value = selected_username;
-	opener.focus();
-	window.close();
+	if (!window.opener || window.opener.closed)
+	{
+		return;
+	}
+
+	var opener_document = window.opener.document;
+	var username_field = null;
+	var post_form = opener_document.forms['post'];
+	if (post_form && post_form.elements['username'] && post_form.elements['username'].type == 'text')
+	{
+		username_field = post_form.elements['username'];
+	}
+	else
+	{
+		for (var i = 0; i < opener_document.forms.length && !username_field; i++)
+		{
+			var candidate = opener_document.forms[i].elements['username'];
+			if (candidate && candidate.type == 'text' && !candidate.disabled)
+			{
+				username_field = candidate;
+			}
+		}
+	}
+
+	if (username_field)
+	{
+		username_field.value = selected_username;
+		username_field.focus();
+		window.opener.focus();
+		window.close();
+	}
 }
 //-->
 </script>
