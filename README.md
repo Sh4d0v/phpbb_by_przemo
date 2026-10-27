@@ -4,7 +4,7 @@ Polska modyfikacja forum **phpBB 2**, znana jako *phpBB by Przemo*. Projekt rozs
 
 Projekt 1.13.0 wspiera **Plague Studio** ([plagues.pl](https://plagues.pl)).
 
-> **Uwaga:** to archiwalne oprogramowanie. Wymagania podane w oryginalnych materiałach (PHP 4+ i MySQL 3.2+) pochodzą z czasów jego powstania i nie są rekomendacją dla współczesnego serwera. Projekt używa przestarzałych interfejsów PHP i nie był tu zweryfikowany pod kątem bezpieczeństwa ani zgodności ze współczesnymi wersjami PHP/MySQL. Nie wystawiaj niezabezpieczonej, nieaktualizowanej instalacji do publicznego Internetu.
+> **Uwaga:** to archiwalne oprogramowanie. Oryginalne wymagania (PHP 4+ i MySQL 3.2+) są wyłącznie historyczne. Wydanie 1.13.0 otrzymało poprawki zgodności i bezpieczeństwa; składnię 289 plików PHP sprawdzono lokalnie na PHP 8.2.28. Nie oznacza to potwierdzonego działania na PHP 8.4/8.5 ani na współczesnym MySQL — nie wykonano pełnych testów funkcjonalnych z bazą. Przed wdrożeniem przeczytaj [audyt bezpieczeństwa i zgodności](SECURITY_AND_COMPATIBILITY_AUDIT.md). Nie wystawiaj publicznie niezabezpieczonej instalacji.
 
 ## Co zawiera
 
@@ -25,6 +25,10 @@ Projekt 1.13.0 wspiera **Plague Studio** ([plagues.pl](https://plagues.pl)).
 
 Szczegóły i zastrzeżenia znajdują się w [Wiki: Instalacja](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Instalacja) oraz w oryginalnym [archiwum instrukcji instalacji](https://web.archive.org/web/20260408150902/http://www.przemo.org/phpBB2/index.php?page=install).
 
+## Najnowsze poprawki 1.13.0
+
+Najnowszy zestaw poprawek jest opublikowany w commicie [`db0c28a`](https://github.com/Sh4d0v/phpbb_by_przemo/commit/db0c28a). Obejmuje m.in. poprawki odporności Panelu Administracyjnego na brakujące dane i błędy typów, bezpieczniejsze importowanie stylów i pobieranie zdalnych plików, ochronę CSRF wybranych narzędzi, bezpieczniejszą deserializację oraz aktualizację sum kontrolnych. Zobacz [Patch 1.13.0 w Wiki](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Patch-1.13.0) i [raport audytu](SECURITY_AND_COMPATIBILITY_AUDIT.md), który opisuje również ryzyka pozostałe w starej architekturze.
+
 ## Aktualizacja i migracja
 
 Przed każdą operacją wykonaj kopię plików i bazy danych. Archiwalne instrukcje opisują użycie `scripts/update.php` do aktualizacji bazy, a następnie wgranie plików odpowiedniej wersji z zachowaniem istniejącego `config.php`. Szczegóły zależą od wersji źródłowej — przeczytaj [Wiki: Aktualizacja i migracja](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Aktualizacja-i-migracja) przed rozpoczęciem.
@@ -33,6 +37,7 @@ Przed każdą operacją wykonaj kopię plików i bazy danych. Archiwalne instruk
 
 - [Wiki projektu](https://github.com/Sh4d0v/phpbb_by_przemo/wiki)
 - [Informacje dołączone do pakietu](docs/readme.html)
+- [Audyt bezpieczeństwa i zgodności](SECURITY_AND_COMPATIBILITY_AUDIT.md)
 - [Autorzy](docs/AUTHORS)
 - [Licencja GNU GPL v2](docs/COPYING)
 - [Instalacja w Wayback Machine](https://web.archive.org/web/20260408150902/http://www.przemo.org/phpBB2/index.php?page=install)

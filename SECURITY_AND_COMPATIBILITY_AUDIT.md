@@ -1,6 +1,6 @@
-# Audyt bezpieczeństwa i zgodności — lokalny patch 1.13.0
+# Audyt bezpieczeństwa i zgodności — phpBB by Przemo 1.13.0
 
-> Ten dokument opisuje roboczy audyt historycznego kodu phpBB 2 zmodyfikowanego przez Przema. To nie jest certyfikat bezpieczeństwa ani dowód, że aplikacja jest gotowa do publicznego wdrożenia. Patch pozostaje lokalny i nie został opublikowany.
+> Ten dokument opisuje statyczny audyt historycznego kodu phpBB 2 zmodyfikowanego przez Przema. Najnowszy zestaw poprawek 1.13.0 opublikowano w commicie [`db0c28a`](https://github.com/Sh4d0v/phpbb_by_przemo/commit/db0c28a). To nie jest certyfikat bezpieczeństwa ani dowód, że aplikacja jest gotowa do publicznego wdrożenia.
 
 ## Jak działa aplikacja
 
@@ -20,6 +20,11 @@
 - Nowe hasła używają `password_hash()`. Logowanie nadal rozpoznaje stare hashe phpass i MD5; po poprawnym logowaniu hashe są przenoszone do aktualnego algorytmu. Schemat i aktualizator 1.13.0 poszerzają pola hasła do 255 znaków.
 - Nazwy zapisanych awatarów są losowane przez `random_bytes()`, a prawa pliku nie są już ustawiane na `0777`.
 - Reguły Apache blokują bezpośredni dostęp do `config.php`, plików SQL i źródeł `.inc.php`, a katalog uploadów blokuje uruchamianie PHP/PHTML/PHAR.
+- Ostatni przegląd utwardził obsługę wielu ekranów ACP, zastąpił `eval()` w podstawianiu pól e-maili i zmienił wybrane `unserialize()` na wariant z `allowed_classes=false`.
+- Import stylów odrzuca ścieżki archiwum wychodzące poza katalog szablonu, dowiązania symboliczne i archiwa przekraczające limity rozmiaru/liczby plików. Nazwa stylu w konfiguracji jest sprawdzana względem rzeczywistego katalogu `templates/`.
+- Wspólny pobieracz awatarów, zdjęć profilu i feedu aktualizacji ogranicza pobieranie do publicznych adresów IPv4, HTTP na porcie 80, odpowiedzi 200, limitu danych i czasu. Obrazy przechodzą kontrolę formatu, a zapisywane uploady używają losowych nazw i praw bez globalnego zapisu.
+- Narzędzia `check_files.php` i `dbloader/` mają ochronę CSRF dla obsługiwanych operacji zmieniających stan; importer bazy sprawdza też dostęp, prefiks tabel i ścieżkę pliku SQL.
+- Odświeżono cały manifest `check_data.php`; wszystkie 450 sum kontrolnych i rozmiarów odpowiadają obecnym plikom repozytorium.
 
 ## Istotne ryzyka pozostałe do usunięcia
 
@@ -31,13 +36,13 @@ Warstwa dostępu do bazy przyjmuje zwykłe teksty SQL, a w setkach miejsc aplika
 
 Wiele historycznych ekranów renderuje wartości z bazy, ustawień forum, komunikatów błędów lub importów bez jednolitego kodowania kontekstowego. Zmiana wszystkich widoków wymaga przeglądu kontekstu HTML, atrybutów, URL i JavaScript; nie została wykonana w tym patchu.
 
-### Wysokie — obsługa zdalnych avatarów i plików
+### Do dalszej weryfikacji — załączniki i inne operacje plikowe
 
-Kod obsługi avatarów pobiera wskazany zdalny URL przez własne gniazdo HTTP. Wymaga przeglądu pod kątem SSRF (adresy prywatne/loopback, DNS rebinding, przekierowania, limit czasu/rozmiaru, błędne nagłówki). Zmieniono nazwę i prawa zapisywanego pliku, ale nie przebudowano pobierania. Załączniki i inne uploady też wymagają niezależnego sprawdzenia typu rzeczywistej zawartości, ścieżek, limitów i bezpiecznego serwowania.
+Pobieranie zdalnych avatarów, zdjęć profilu i feedu stylów ograniczono do publicznych adresów IPv4 oraz HTTP na porcie 80; DNS jest rozwiązywany przed połączeniem, a rozmiar odpowiedzi, nagłówki i czas pobierania są ograniczone. Ogranicza to opisane wcześniej ryzyko SSRF, ale nie zastępuje testów na serwerze ani przeglądu wszystkich wyjść sieciowych. Załączniki i inne uploady nadal wymagają niezależnej weryfikacji typów, ścieżek, limitów i bezpiecznego serwowania.
 
 ### Wysokie — sesje i cookies forum
 
-Forum nadal używa własnego mechanizmu sesji i cookies sprzed współczesnych praktyk, w tym identyfikatorów opartych na `md5(uniqid(...))` i cookies, do których kilka ścieżek ustawia hashe MD5. Nie wprowadzono globalnej rotacji sesji, `HttpOnly`/`SameSite` dla wszystkich cookies, pełnego CSRF-tokenu dla wszystkich mutujących formularzy ani nowego formatu tokenów.
+Forum nadal używa własnego mechanizmu sesji i cookies sprzed współczesnych praktyk, w tym identyfikatorów opartych na `md5(uniqid(...))` i cookies, do których kilka ścieżek ustawia hashe MD5. Ochrona CSRF została dodana do instalatora i wybranych narzędzi, ale nie obejmuje wszystkich formularzy zmieniających dane. Nie wprowadzono globalnej rotacji sesji, `HttpOnly`/`SameSite` dla wszystkich cookies ani nowego formatu tokenów.
 
 ### Wysokie — przejściowe uruchomienie `install.php`
 
@@ -56,12 +61,14 @@ Zgodność składniowa z nowszym PHP nie oznacza bezpiecznej aplikacji. W katalo
 - Repozytorium bazowe zawierało 288 plików PHP; po dodaniu warstwy zgodności patch obejmuje 289 plików PHP.
 - Pierwszy przebieg `php -l` na dostępnej lokalnej wersji PHP 8.2.28 wskazał składnię indeksowania usuniętą w PHP 8 w kilku plikach oraz zduplikowany parametr. Zmieniono te miejsca.
 - Drugi przebieg wskazał dwa dalsze indeksowania w `admin/admin_users.php` i `admin/admin_custom_fields.php`, które również poprawiono.
-- Sprawdzono `git diff --check`; uwagi o końcach linii CRLF wynikają z `core.autocrlf`, nie z błędów składni.
-- Nie podłączono bazy danych i nie uruchomiono instalacji, aktualizacji, logowania, uploadów ani pełnego forum w przeglądarce. Nie wykonano testów obciążeniowych, integracyjnych ani testu MySQL 8.4/9.x.
+- Po najnowszym zestawie poprawek wszystkie 289 śledzonych plików PHP przeszły `php -l` na dostępnej lokalnej wersji PHP 8.2.28.
+- Zweryfikowano 450 wpisów sum kontrolnych i rozmiarów w `check_data.php`; nie stwierdzono rozbieżności. `git diff --check` nie wykazał błędów formatowania.
+- Wykonano statyczne wyszukiwanie ryzykownych konstrukcji w repozytorium. Pozostałe `eval()` należą do historycznego kompilatora szablonów/BBCode i warunków modułów statystyk; ich wejścia są lokalnym kodem/konfiguracją, ale instalowanie niezaufanych stylów lub modułów pozostaje ryzykowne.
+- Nie podłączono bazy danych i nie uruchomiono instalacji, aktualizacji, logowania, uploadów ani pełnego forum w przeglądarce. Nie wykonano testów integracyjnych, penetracyjnych ani testu PHP 8.4/8.5 lub współczesnego MySQL.
 
 ## Zalecana kolejność dalszych prac
 
 1. Sprawdzić migrację 1.12.9 → 1.13.0 na kopii bazy, w tym odtworzenie z backupu i logowanie istniejącymi hasłami.
 2. Utworzyć testowe środowisko PHP 8.5 + MySQL 8.4 LTS i przejść instalację, aktualizację, logowanie, rejestrację, publikowanie, załączniki i panel administracyjny.
-3. Naprawić i przetestować przepływy SQL oraz XSS od wejścia do widoku; następnie przejrzeć SSRF/uploady, sesje, cookies i CSRF.
+3. Naprawić i przetestować przepływy SQL oraz XSS od wejścia do widoku; następnie przejrzeć pozostałe wyjścia sieciowe i uploady, sesje, cookies oraz globalne CSRF.
 4. Dopiero po audycie zależności i konfiguracji serwera rozważyć migrację na produkcję. Nie wdrażać archiwalnego forum bez aktualnej kopii danych oraz planu wycofania.
