@@ -21,15 +21,15 @@ Polska modyfikacja forum **phpBB 2**, znana jako *phpBB by Przemo*. Projekt rozs
 5. Jeśli instalator nie może zapisać `config.php`, pobierz wygenerowany plik i umieść go ręcznie w katalogu głównym forum.
 6. Po zakończeniu instalacji usuń lub zablokuj dostęp do instalatora i sprawdź uprawnienia plików oraz katalogów.
 
-Szczegóły i zastrzeżenia znajdują się w [Wiki: Instalacja](wiki/Instalacja.md) oraz w oryginalnym [archiwum instrukcji instalacji](https://web.archive.org/web/20260408150902/http://www.przemo.org/phpBB2/index.php?page=install).
+Szczegóły i zastrzeżenia znajdują się w [Wiki: Instalacja](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Instalacja) oraz w oryginalnym [archiwum instrukcji instalacji](https://web.archive.org/web/20260408150902/http://www.przemo.org/phpBB2/index.php?page=install).
 
 ## Aktualizacja i migracja
 
-Przed każdą operacją wykonaj kopię plików i bazy danych. Archiwalne instrukcje opisują użycie `scripts/update.php` do aktualizacji bazy, a następnie wgranie plików odpowiedniej wersji z zachowaniem istniejącego `config.php`. Szczegóły zależą od wersji źródłowej — przeczytaj [Wiki: Aktualizacja i migracja](wiki/Aktualizacja-i-migracja.md) przed rozpoczęciem.
+Przed każdą operacją wykonaj kopię plików i bazy danych. Archiwalne instrukcje opisują użycie `scripts/update.php` do aktualizacji bazy, a następnie wgranie plików odpowiedniej wersji z zachowaniem istniejącego `config.php`. Szczegóły zależą od wersji źródłowej — przeczytaj [Wiki: Aktualizacja i migracja](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Aktualizacja-i-migracja) przed rozpoczęciem.
 
 ## Dokumentacja
 
-- [Wiki projektu](wiki/)
+- [Wiki projektu](https://github.com/Sh4d0v/phpbb_by_przemo/wiki)
 - [Informacje dołączone do pakietu](docs/readme.html)
 - [Autorzy](docs/AUTHORS)
 - [Licencja GNU GPL v2](docs/COPYING)
