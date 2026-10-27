@@ -28,8 +28,14 @@ if ( !defined('IN_PHPBB') )
 }
 
 // Debug Level
-define('DEBUG', 1); // Debugging on
-//define('DEBUG', 0); // Debugging off
+if (!defined('DEBUG'))
+{
+	define('DEBUG', true);
+}
+if (!defined('DEBUG_EXTRA'))
+{
+	define('DEBUG_EXTRA', false);
+}
 
 // User Levels <- Do not change the values of USER or ADMIN
 define('DELETED', -1);

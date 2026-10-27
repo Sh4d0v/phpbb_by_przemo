@@ -881,7 +881,12 @@ class Template {
 			}
 			else
 			{
-				die('Template->make_filename(): Error - template file not found: ' . $filename);
+				$error = 'Template->make_filename(): Error - template file not found: ' . $filename;
+				if (defined('DEBUG_EXTRA') && DEBUG_EXTRA)
+				{
+					$error .= ' [template=' . $this->tpl . '; root=' . $this->root . '; path=' . $this->files[$handle] . ']';
+				}
+				die($error);
 			}
 		}
 		// checking if we should recompile cache
