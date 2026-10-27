@@ -192,12 +192,6 @@ var img_addr = '{IMG_ADDR}';
 					<td valign="top" align="left" width="177">
 						<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse">
 							<tr>
-								<!-- BEGIN aim -->
-								<td>&nbsp;</td>
-								<td width="59" height="19" valign="top">
-									<div style="position:relative">{postrow.AIM_IMG}<div style="position:absolute;left:3px;top:-1px">{postrow.AIM_STATUS_IMG}</div></div>
-								</td>
-								<!-- END aim -->
 								<!-- BEGIN icq -->
 								<td>&nbsp;</td><td width="59" height="19" valign="top">
 									<div style="position:relative">{postrow.ICQ_IMG}<div style="position:absolute;left:3px;top:-1px">{postrow.ICQ_STATUS_IMG}</div></div>

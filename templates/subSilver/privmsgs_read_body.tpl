@@ -61,10 +61,7 @@
                <td valign="middle" width=177>
                   <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber1" height="19">
                      <tr>
-                        {CGG_OFF1}
-                        <td>&nbsp;</td><td width="59" height="19"><div style="position:relative">{AIM_IMG}<div style="position:absolute;left:3px;top:-1px">{AIM_STATUS_IMG}</div></div></td>
-                        {CGG_OFF2}
-                        {CICQ_OFF1}
+{CICQ_OFF1}
                         <td>&nbsp;</td><td width="59" height="19"><div style="position:relative">{ICQ_IMG}<div style="position:absolute;left:3px;top:-1px">{ICQ_STATUS_IMG}</div></div></td>
                         {CICQ_OFF2}
                      </tr>

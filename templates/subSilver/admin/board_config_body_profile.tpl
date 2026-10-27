@@ -38,10 +38,7 @@
 					<td class="row1">{L_VALIDATION}<br><span class="gensmall">{L_CVALIDATEE}</span></td>
 					<td class="row2" width="50%"><input type="radio" name="validate" value="1" {CVALIDATE_YES}> {L_YES} <input type="radio" name="validate" value="0" {CVALIDATE_NO}>{L_NO}</td>
 				</tr>
-				<tr>
-					<td class="row1">{L_REQUIRE_AIM}<br><span class="gensmall">{L_REQUIRE_AIM_E}</span></td>
-					<td class="row2" width="50%"><input type="radio" name="require_aim" value="1" {REQUIRE_AIM_YES}> {L_YES} <input type="radio" name="require_aim" value="0" {REQUIRE_AIM_NO}>{L_NO}</td>
-				</tr>
+
 				<tr>
 					<td class="row1">{L_REQUIRE_WEBSITE}<br><span class="gensmall">{L_REQUIRE_WEBSITE_E}</span></td>
 					<td class="row2" width="50%"><input type="radio" name="require_website" value="1" {REQUIRE_WEBSITE_YES}> {L_YES} <input type="radio" name="require_website" value="0" {REQUIRE_WEBSITE_NO}>{L_NO}</td>

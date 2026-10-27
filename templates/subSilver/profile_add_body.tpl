@@ -117,12 +117,6 @@
 	  <td class="row2"><input type="text" name="icq" class="post" onFocus="Active(this)" onBlur="NotActive(this)" style="width: 200px"  size="10" maxlength="15" value="{ICQ}"></td>
 	</tr>
 	<!-- END icq -->
-	<!-- BEGIN aim -->
-	<tr>
-	  <td class="row1"><span class="gen">{L_AIM}:</span></td>
-	  <td class="row2"><input type="text" class="post" onFocus="Active(this)" onBlur="NotActive(this)" style="width: 200px" name="aim" size="20" maxlength="255" value="{AIM}"></td>
-	</tr>
-	<!-- END aim -->
 	<!-- BEGIN msn -->
 	<tr>
 	  <td class="row1"><span class="gen">{L_MESSENGER}:</span></td>
@@ -181,15 +175,6 @@
 		<input type="radio" name="viewemail" value="0" {VIEW_EMAIL_NO}><span class="gen">{L_NO}</span></td>
 	</tr>
 	<!-- END email -->
-	<!-- BEGIN aim -->
-	<tr> 
-	  <td class="row1"><span class="gen">{L_PUBLIC_VIEW_AIM}:</span></td>
-	  <td class="row2"> 
-		<input type="radio" name="viewaim" value="1" {VIEW_AIM_YES}>
-		<span class="gen">{L_YES}</span>&nbsp;&nbsp; 
-		<input type="radio" name="viewaim" value="0" {VIEW_AIM_NO}><span class="gen">{L_NO}</span></td>
-	</tr>
-	<!-- END aim -->
 	<tr> 
 	  <td class="row1"><span class="gen">{L_HIDE_USER}:</span></td>
 	  <td class="row2"> 
@@ -249,16 +234,6 @@
 		<input type="radio" name="allowpm" value="0" {ALLOWPM_NO}>
 		<span class="gen">{L_NO}</span></td>
 	</tr>
-	<!-- BEGIN switch_gg -->
-	<tr> 
-	  <td class="row1"><span class="gen">{L_NOTIFY_GG}:</span><br><span class="gensmall">{L_NOTIFY_GG_E}</span></td>
-	  <td class="row2"> 
-		<input type="radio" name="user_notify_gg" value="1" {NOTIFY_GG_YES}>
-		<span class="gen">{L_YES}</span>&nbsp;&nbsp; 
-		<input type="radio" name="user_notify_gg" value="0" {NOTIFY_GG_NO}>
-		<span class="gen">{L_NO}</span></td>
-	</tr>
-	<!-- END switch_gg -->
 	<!-- BEGIN switch_ip_login_check -->
 	<tr> 
 	  <td class="row1"><span class="gen">{L_LOG_IN_CHECK}:</span><br><span class="gensmall">{L_LOG_IN_CHECK_E}</span></td>

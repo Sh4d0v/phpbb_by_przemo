@@ -94,7 +94,6 @@ $lang['View_newest_post'] = 'View newest post';
 $lang['Page_of'] = 'Page <b>%d</b> of <b>%d</b>'; // Replaces with: Page 1 of 2 for example
 
 $lang['ICQ'] = 'ICQ Number';
-$lang['AIM'] = 'Number Gadu-Gadu';
 $lang['MSNM'] = 'MSN Messenger';
 $lang['YIM'] = 'Yahoo Messenger';
 
@@ -786,12 +785,6 @@ $lang['write_link_text'] = 'Enter the text to be displayed for the link';
 $lang['write_address'] = 'Enter the full URL for the link';
 $lang['img_address'] = 'Enter the address to your image';
 $lang['stream_address'] = 'Enter file address';
-$lang['GG'] = 'Number Gadu-Gadu :: %s';
-$lang['STAT_GG'] = 'User Gadu-gadu status';
-$lang['GG_wait'] = 'Message waiting for receive.<br />Will be deliveret when user swich on Gadu-gadu<br /> or user is on <b>"invisible"</b> status or <b>"only for friends"</b>';
-$lang['GG_full'] = 'User mailbox its full! Cannot send message.';
-$lang['GG_send'] = 'Message delivery to user';
-$lang['GG_not_send'] = 'Message not delivert, try another one or refresh page';
 $lang['Last_visit'] = 'Last active';
 $lang['Never'] = 'Never';
 $lang['Sort_Last_visit'] = 'Date last active';
@@ -867,7 +860,6 @@ $lang['post_expire_q'] = 'Expire';
 $lang['Password_not_complex'] = 'The specifyed password, does not confirm this sites complexity rules, you should verify that: the password ';
 $lang['Ignore_mini'] = 'Ignore';
 $lang['pm_mini'] = 'PM';
-$lang['aim_mini'] = 'GG';
 $lang['quote_mini'] = 'Quote';
 $lang['edit_mini'] = 'Edit';
 $lang['mini_reply'] = 'REPLY';
@@ -899,11 +891,6 @@ $lang['Gender'] = 'Gender';
 $lang['Male'] = 'Male'; 
 $lang['Female'] = 'Female'; 
 $lang['No_gender_specify'] = 'I dont know :)';
-$lang['not_gg_account'] = 'Not number or password for GG gate. Contact with administrator';
-$lang['not_gg_addresat'] = 'Recipient is empty';
-$lang['wrong_gg_addresat'] = 'Bad format recipient number';
-$lang['not_gg_msg'] = 'Message is empty';
-$lang['gg_too_long'] = 'Message too long, max chars is: 1800';
 $lang['topic_expire_mod'] = 'Expire after: ';
 $lang['Forum_link_visited'] = 'This link has been visited %d times';
 $lang['Redirect'] = 'Redirect';
@@ -953,15 +940,9 @@ $lang['more_topicicons'] = 'You can choose more icons. If you click here it open
 $lang['online_minutes'] = 'Minutes online: <b>%s</b>';
 $lang['online_hours'] = 'Hours online: <b>%s</b>';
 $lang['Viewing_topic'] = 'View topic';
-$lang['gg_header_info_pm'] = 'Otrzyma³es nowa prywatna wiadomosc od: %s';
-$lang['gg_notify_topic'] = 'In your topic: "%s" user: %s post reply';
-$lang['l_notify_gg_privmsg'] = 'Link to your private message inbox: %s';
-$lang['l_notify_gg_topic'] = 'To view topic click: %s';
 $lang['generate_queries'] = 'SQL queries';
 $lang['unread_post'] = 'Unread post';
 $lang['refresh'] = 'Refresh';
-$lang['new_board_topic'] = 'On the forum %s user %s post new topic: %s';
-$lang['new_board_post'] = 'On the forum %s user %s post reply in topic: %s';
 $lang['Search_post_time'] = 'Show posts last:</span><br /><span class="gensmall">It shows posted posts before choosing time. You can set shows method Topics and Posts';
 $lang['user_not_allowpm'] = 'You can not send private message to this user because he has disabled private messaging';
 $lang['open_all_new_window'] = 'Open all links in new windows';
@@ -1078,6 +1059,11 @@ $lang['Not_admin'] = 'You have no Admin authorisation';
 $lang['Posting_disabled'] = 'Posting is disabled.';
 $lang['Registering_disabled'] = 'Registering is disabled.';
 $lang['Pruning_unread_posts'] = 'Your account exceed maximum amount of unread posts: <b>%s</b> Information about unread posts was removed, without posts writen through last: <b>%s</b> days.<br />Removed unread posts: <b>%s</b><br />You may read posts or mar all as read.<br />You can use search to find posts writen through last choosed time.';
+
+
+$lang['Tell_friend_recipient_missing'] = 'Enter the recipient name and e-mail address.';
+$lang['Tell_friend_message_missing'] = 'Enter a message to send.';
+
 //
 // That's all Folks!
 // -------------------------------------------------

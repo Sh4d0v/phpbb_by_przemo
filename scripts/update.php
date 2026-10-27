@@ -313,7 +313,6 @@ else
 			'user_icq' => array('Type' => 'varchar(15)', 'Default' => "''"),
 			'user_website' => array('Type' => 'varchar(255)', 'Default' => "''"),
 			'user_from' => array('Type' => 'varchar(64)', 'Default' => "''"),
-			'user_aim' => array('Type' => 'varchar(255)', 'Default' => "''"),
 			'user_yim' => array('Type' => 'varchar(255)', 'Default' => "''"),
 			'user_msnm' => array('Type' => 'varchar(255)', 'Default' => "''"),
 			'user_occ' => array('Type' => 'varchar(100)', 'Default' => "''"),

@@ -237,26 +237,6 @@ else
 	$icq_img = '&nbsp;';
 	$icq = '&nbsp;';
 }
-
-if ( !empty($profiledata['user_aim']) )
-{
-	if ( $profiledata['user_viewaim'] )
-	{
-		$aim_status_img = '<a href="gg:' . $profiledata['user_aim'] . '"><img src="http://status.gadu-gadu.pl/users/status.asp?id=' . $profiledata['user_aim'] . '&amp;styl=1" alt="" border="0" width="16" height="16" /></a>';
-		$aim_img = '<a href="' . append_sid("gg.$phpEx?mode=gadu&amp;u=$user_id") . '"><img src="' . $images['icon_aim'] . '" alt="' . $lang['AIM'] . '" title="' . $lang['AIM'] . ': ' . $profiledata['user_aim'] . '" border="0" /></a>';
-	}
-	else
-	{
-		$aim_status_img = '';
-		$aim_img = '<a href="' . append_sid("gg.$phpEx?mode=gadu&amp;u=$user_id") . '"><img src="' . $images['icon_aim'] . '" alt="" border="0" /></a>';
-	}
-}
-else
-{
-	$aim_status_img = '';
-	$aim_img = '';
-	$aim = '';
-}
 $msn_img = ( $profiledata['user_msnm'] ) ? $profiledata['user_msnm'] : '&nbsp;';
 $msn = $msn_img;
 
@@ -693,8 +673,6 @@ $template->assign_vars(array(
 	'ICQ_STATUS_IMG' => ($board_config['cicq']) ? $icq_status_img : '',
 	'ICQ_IMG' => ($board_config['cicq']) ? $icq_img : '',
 	'ICQ' => ($board_config['cicq']) ? $icq : '',
-	'AIM_IMG' => ($board_config['cgg']) ? $aim_img : '',
-	'AIM_STATUS_IMG' => ($board_config['cgg']) ? $aim_status_img : '',
 	'MSN_IMG' => $msn_img,
 	'MSN' => ($board_config['cmsn']) ? $msn : '',
 	'YIM_IMG' => ($board_config['cyahoo']) ? $yim_img : '',
@@ -740,7 +718,6 @@ $template->assign_vars(array(
 	'L_PM' => $lang['Private_Message'],
 	'L_ICQ_NUMBER' => $lang['ICQ'],
 	'L_YAHOO' => $lang['YIM'],
-	'L_AIM' => $lang['AIM'],
 	'L_MESSENGER' => $lang['MSNM'],
 	'L_WEBSITE' => $lang['Website'],
 	'L_LOCATION' => $lang['Location'],
@@ -792,10 +769,6 @@ if ( $board_config['cmsn'] && $profiledata['user_msnm'] )
 if ( $board_config['cyahoo'] && $profiledata['user_yim'] )
 {
 	$template->assign_block_vars('yahoo', array());
-}
-if ( $board_config['cgg'] && $profiledata['user_aim'] )
-{
-	$template->assign_block_vars('aim', array());
 }
 if ( $board_config['cicq'] && $profiledata['user_icq'] )
 {

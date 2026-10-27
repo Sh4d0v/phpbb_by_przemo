@@ -189,12 +189,6 @@
 					<td class="row1" valign="middle"><span class="gen">{YIM_IMG}</span></td>
 				</tr>
 				<!-- END yahoo -->
-				<!-- BEGIN aim -->
-				<tr>
-					<td valign="middle" nowrap="nowrap" align="right"><span class="gen">{L_AIM}:</span></td>
-					<td class="row1"><table cellspacing="0" cellpadding="0" border="0"><tr><td nowrap="nowrap"><div style="position:relative;height:18px"><div style="position:absolute">{AIM_IMG}</div><div style="position:absolute;left:3px;top:-1px">{AIM_STATUS_IMG}</div></div></td></tr></table></td>
-				</tr>
-				<!-- END aim -->
 				<!-- BEGIN icq -->
 				<tr> 
 					<td valign="middle" nowrap="nowrap" align="right"><span class="gen">{L_ICQ_NUMBER}:</span></td>

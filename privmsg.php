@@ -268,7 +268,7 @@ else if ( $mode == 'read' )
 	}
 
 	// Major query obtains the message ...
-	$sql = "SELECT u.username AS username_1, u.user_id AS user_id_1, u2.username AS username_2, u2.user_id AS user_id_2, u.user_level AS user_level1, u.user_jr AS user_jr1, u2.user_level AS user_level2, u2.user_jr AS user_jr2, u.user_sig_bbcode_uid, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_viewaim, u.user_yim, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_sig_image, u.user_allowsig, u.user_avatar, pm.*, pmt.privmsgs_bbcode_uid, pmt.privmsgs_text
+	$sql = "SELECT u.username AS username_1, u.user_id AS user_id_1, u2.username AS username_2, u2.user_id AS user_id_2, u.user_level AS user_level1, u.user_jr AS user_jr1, u2.user_level AS user_level2, u2.user_jr AS user_jr2, u.user_sig_bbcode_uid, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_yim, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_sig_image, u.user_allowsig, u.user_avatar, pm.*, pmt.privmsgs_bbcode_uid, pmt.privmsgs_text
 		FROM (" . PRIVMSGS_TABLE . " pm, " . PRIVMSGS_TEXT_TABLE . " pmt, " . USERS_TABLE . " u, " . USERS_TABLE . " u2)
 		WHERE pm.privmsgs_id = $privmsgs_id
 			AND pmt.privmsgs_text_id = pm.privmsgs_id 
@@ -594,27 +594,6 @@ else if ( $mode == 'read' )
 		$icq = '';
 	}
 
-	if ( !empty($privmsg['user_aim']) && !$service )
-	{
-		$gg_url = append_sid("gg.$phpEx?mode=gadu&amp;" . POST_USERS_URL . '=' . $user_id_from);
-		if ( $privmsg['user_viewaim'] )
-		{
-			$gg_url = append_sid("gg.$phpEx?mode=gadu&amp;" . POST_USERS_URL . '=' . $user_id_from);
-			$aim_status_img = '<a href="' . $gg_url . '"><img alt="' .$postrow[$i]['user_aim'] . '" src="http://status.gadu-gadu.pl/users/status.asp?id=' . $privmsg['user_aim'] . '&amp;styl=1" width="16" height="16" border="0" alt="" /></a>';
-			$aim_img = '<a href="' . $gg_url . '"><img src="' . $images['icon_aim'] . '" alt="' . $lang['AIM'] . '" title="' . $lang['AIM'] . '" border="0" /></a>';
-		}
-		else
-		{
-			$aim_status_img = '';
-			$aim_img = '<a href="' . $gg_url . '"><img src="' . $images['icon_aim'] . '" alt="" border="0" /></a>';
-		}
-	}
-	else
-	{
-		$aim_status_img = '';
-		$aim_img = '';
-	}
-
 	$temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id_from");
 	$msn_img = ($privmsg['user_msnm'] && !$service) ? '<a href="' . $temp_url . '"><img src="' . $images['icon_msnm'] . '" alt="' . $lang['MSNM'] . '" title="' . $lang['MSNM'] . '" border="0" /></a>' : '';
 	$msn = ($privmsg['user_msnm'] && !$service) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
@@ -732,8 +711,6 @@ else if ( $mode == 'read' )
 		'ICQ_STATUS_IMG' => $icq_status_img,
 		'ICQ_IMG' => $icq_img,
 		'ICQ' => $icq,
-		'AIM_IMG' => $aim_img,
-		'AIM_STATUS_IMG' => $aim_status_img,
 		'MSN_IMG' => $msn_img,
 		'MSN' => $msn,
 		'YIM_IMG' => $yim_img,
@@ -1268,7 +1245,7 @@ else if ( $submit || $refresh || $mode != '' )
 		$to_username = phpbb_clean_username(get_vars('username', '', 'POST'));
 		if(!empty($to_username))
 		{
-			$sql = "SELECT user_id, user_level, user_notify_pm, user_email, user_lang, user_active, user_aim, user_notify_gg
+			$sql = "SELECT user_id, user_level, user_notify_pm, user_email, user_lang, user_active
 				FROM " . USERS_TABLE . "
 				WHERE username = '" . str_replace("\'", "''", $to_username) . "'
 					AND user_id <> " . ANONYMOUS;
@@ -1437,7 +1414,7 @@ else if ( $submit || $refresh || $mode != '' )
 
 		if ( $mode != 'edit' )
 		{
-			$gg_send = false;
+
 
 			// Add to the users new pm counter
 			$sql = "UPDATE " . USERS_TABLE . "
@@ -1454,19 +1431,8 @@ else if ( $submit || $refresh || $mode != '' )
 			$server_protocol = phpbb_get_server_protocol();
 			$server_port = phpbb_get_server_port() . '/';
 
-			if ( $to_userdata['user_notify_gg'] && !empty($to_userdata['user_aim']) && !empty($board_config['numer_gg']) && !empty($board_config['haslo_gg']))
-			{
-				$tresc = "\"" . $board_config['sitename'] . "\"\r\n" . sprintf($lang['gg_header_info_pm'], $userdata['username']) . "\r\n\r\n";
-				$tresc2 = sprintf($lang['l_notify_gg_privmsg'], $server_protocol . $server_name . $server_port . $script_name . '?folder=inbox');
-				$tresc = $tresc.$tresc2;
 
-				require_once('includes/functions_gg_notice.'.$phpEx);
-
-				wiadomosc_gg( intval(trim($to_userdata['user_aim'])), $tresc, intval(trim($board_config['numer_gg'])), $board_config['haslo_gg']);
-				$gg_send = true;
-			}
-
-			if ( $to_userdata['user_notify_pm'] && !empty($to_userdata['user_email']) && $to_userdata['user_active'] && !$gg_send )
+			if ( $to_userdata['user_notify_pm'] && !empty($to_userdata['user_email']) && $to_userdata['user_active'] )
 			{
 				include($phpbb_root_path . 'includes/emailer.'.$phpEx);
 				$emailer = new emailer($board_config['smtp_delivery']);

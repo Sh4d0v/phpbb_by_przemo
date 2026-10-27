@@ -19,7 +19,7 @@ var updateInterval = {REFRESH_SB};
 	</tr>
 	<tr>
 		<td class="row2" style="text-align: center;">
-			<span id="message12">{L_GG_MES}:</span>
+			<span id="message12">{L_SHOUTBOX_MESSAGE}:</span>
 			<input type="text" class="post" id="messageBox" value="" maxlength="{MAXLENGHT}" size="60" onkeydown="handleKey(event);">
 			<input type="button" class="post" id="wyslij" value="{L_SEND}" onclick="sendMessage();" style="margin-right:2px;">
 			<!-- BEGIN smilies_emotki -->

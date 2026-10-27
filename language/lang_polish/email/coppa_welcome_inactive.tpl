@@ -20,7 +20,6 @@ Has³o: Podane przy rejestracji
 Email: {EMAIL_ADDRESS}
 
 Numer ICQ: {ICQ}
-Adres AIM: {AIM}
 MSN Messenger: {MSN}
 Yahoo Messenger: {YIM}
 Strona WWW: {WEB_SITE}

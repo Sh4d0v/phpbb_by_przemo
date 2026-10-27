@@ -152,11 +152,6 @@ if ( $board_config['cllogin'] )
 	$template->assign_block_vars('llogin', array());
 	$colspan++;
 }
-if ( $board_config['cgg'] )
-{
-	$template->assign_block_vars('aim', array());
-	$colspan++;
-}
 
 $template->assign_vars(array(
 	'L_SELECT_SORT_METHOD' => $lang['Select_sort_method'],
@@ -165,7 +160,6 @@ $template->assign_vars(array(
 	'L_FROM' => $l_from,
 	'L_SORT' => $lang['Sort'],
 	'L_SUBMIT' => $lang['Sort'],
-	'L_AIM' => $lang['AIM'],
 	'L_YIM' => $lang['YIM'],
 	'L_MSNM' => $lang['MSNM'],
 	'L_ICQ' => $lang['ICQ'], 
@@ -271,7 +265,7 @@ else
 
 $order_by = (isset($HTTP_GET_VARS['letter']) && !isset($HTTP_GET_VARS['mode']) && !isset($HTTP_POST_VARS['mode']) ) ? "u.username $sort_order LIMIT $start, " . $user_topics_per_page : $order_by;
 
-$sql = "SELECT u.username, u.user_id, u.user_level, u.user_allow_viewonline, u.user_jr, u.user_viewemail, u.user_posts, u.user_lastvisit, u.user_session_time, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_viewaim, u.user_yim, u.user_msnm, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_gender, u.user_custom_color, u.can_custom_color, u.special_rank, u.user_visit, u.user_spend_time $sql_cf
+$sql = "SELECT u.username, u.user_id, u.user_level, u.user_allow_viewonline, u.user_jr, u.user_viewemail, u.user_posts, u.user_lastvisit, u.user_session_time, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_yim, u.user_msnm, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_gender, u.user_custom_color, u.can_custom_color, u.special_rank, u.user_visit, u.user_spend_time $sql_cf
 	 FROM " . USERS_TABLE . " u
 	WHERE u.user_id <> " . ANONYMOUS . "$hide_user $letter_sql
 	GROUP BY u.user_id
@@ -381,16 +375,6 @@ if ( $row = $db->sql_fetchrow($result) )
 			$icq_img = '';
 			$icq = '';
 		}
-
-		if ( !empty($row['user_aim']) && $row['user_viewaim'] )
- 		{
-			$gg_url = append_sid("gg.$phpEx?mode=gadu&amp;" . POST_USERS_URL . '=' . $user_id);
-			$aim_status_img = '<a href="' . $gg_url . '"><img alt="" src="http://status.gadu-gadu.pl/users/status.asp?id=' . $row['user_aim'] . '&amp;styl=1" width="16" height="16" border="0" /></a>';
-		}
-		else
-		{
-			$aim_status_img = '';
-		}
 		$temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id");
 		$msn_img = ( $row['user_msnm'] ) ? '<a href="' . $temp_url . '"><img src="' . $images['icon_msnm'] . '" alt="" border="0" /></a>' : '';
 		$msn = ( $row['user_msnm'] ) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
@@ -477,7 +461,6 @@ if ( $row = $db->sql_fetchrow($result) )
 			'ICQ_STATUS_IMG' => $icq_status_img,
 			'ICQ_IMG' => $icq_img,
 			'ICQ' => $icq,
-			'AIM_STATUS_IMG' => ($board_config['cgg']) ? $aim_status_img : '',
 			'MSN_IMG' => $msn_img,
 			'MSN' => $msn,
 			'YIM_IMG' => $yim_img,
@@ -488,10 +471,6 @@ if ( $row = $db->sql_fetchrow($result) )
 		if ( $board_config['cllogin'] )
 		{
 			$template->assign_block_vars('memberrow.llogin_row', array());
-		}
-		if ( $board_config['cgg'] )
-		{
-			$template->assign_block_vars('memberrow.aim_row', array());
 		}
 
 		$i++;

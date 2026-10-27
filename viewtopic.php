@@ -780,7 +780,6 @@ $sgv .= ($board_config['cfrom']) ? ', u.user_from' : '';
 $sgv .= ($board_config['clevell'] || $board_config['cleveld'] || $board_config['cjoin']) ? ', u.user_regdate' : '';
 $sgv .= ($board_config['gender']) ? ', u.user_gender' : '';
 $sgv .= ($board_config['cicq']) ? ', u.user_icq' : '';
-$sgv .= ($board_config['cgg']) ? ', u.user_aim, u.user_viewaim' : '';
 $sgv .= ($board_config['cmsn']) ? ', u.user_msnm' : '';
 $sgv .= ($board_config['cyahoo']) ? ', u.user_yim' : '';
 $sgv .= (!$forum_topic_data['forum_no_helped'] && $board_config['helped']) ? ', u.special_rank, u.user_allow_helped' : '';
@@ -1729,8 +1728,6 @@ for($i = 0; $i < $total_posts; $i++)
 
 		$poster = '';
 		$poster_username = '';
-		$aim_img = '';
-		$aim_status_img = '';
 		$delpost_img = '';
 		$delpost = '';
 		$email_img = '';
@@ -2013,25 +2010,6 @@ for($i = 0; $i < $total_posts; $i++)
 						$icq_img = '';
 						$icq = '';
 					}
-					if ( !empty($postrow[$i]['user_aim']) && $board_config['cgg'] )
-					{
-						$gg_url = append_sid("gg.$phpEx?mode=gadu&amp;" . POST_USERS_URL . "=$poster_id");
-						if ( $postrow[$i]['user_viewaim'] )
-						{
-							$aim_status_img = '<a href="gg:' .$postrow[$i]['user_aim'] . '"><img src="http://status.gadu-gadu.pl/users/status.asp?id=' . $postrow[$i]['user_aim'] . '&amp;styl=1" alt="" title="' .$postrow[$i]['user_aim'] . '" border="0" width="16" height="16" /></a>';
-							$aim_img = '<a href="' . $gg_url . '"><img src="' . $images['icon_aim'] . '" alt="" title="' . $lang['AIM'] . ': ' . $postrow[$i]['user_aim'] . '" border="0" /></a>';
-						}
-						else
-						{
-							$aim_status_img = '';
-							$aim_img = '<a href="' . $gg_url . '"><img src="' . $images['icon_aim'] . '" alt="" border="0" /></a>';
-						}
-					}
-					else
-					{
-						$aim_status_img = '';
-						$aim_img = '';
-					}
 					$temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$poster_id");
 					$msn_img = (!empty($postrow[$i]['user_msnm']) && $board_config['cmsn']) ? '<a href="' . $temp_url . '"><img src="' . $images['icon_msnm'] . '" alt="" title="' . $lang['MSNM'] . '" border="0" /></a> ' : '';
 					$msn = (!empty($postrow[$i]['user_msnm'])) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
@@ -2071,23 +2049,6 @@ for($i = 0; $i < $total_posts; $i++)
 						$icq_img = '';
 						$icq = '';
 					}
-					if ( !empty($postrow[$i]['user_aim']) && $board_config['cgg'] )
-					{
-						$gg_url = append_sid("gg.$phpEx?mode=gadu&amp;" . POST_USERS_URL . "=$poster_id");
-						if ( $postrow[$i]['user_viewaim'] )
-						{
-							$aim_img = '<a href="' . $gg_url . '" class="gen" title="' . $lang['AIM'] . ': ' . $postrow[$i]['user_aim'] . '">[<b>' . $lang['aim_mini'] . '</b>]</a>';
-						}
-						else
-						{
-							$aim_img = '<a href="' . $gg_url . '" class="gen">[<b>' . $lang['aim_mini'] . '</b>]</a>';
-						}
-					}
-					else
-					{
-						$aim_status_img = '';
-						$aim_img = '';
-					}
 					$temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$poster_id");
 					$msn_img = (!empty($postrow[$i]['user_msnm']) && $board_config['cmsn']) ? '<a href="' . $temp_url . '" class="gen" " title="' . $lang['MSNM'] . '">[<b>MSNM</b>]</a> ' : '';
 					$msn = (!empty($postrow[$i]['user_msnm'])) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
@@ -2108,7 +2069,6 @@ for($i = 0; $i < $total_posts; $i++)
 				$icq_status_img = '';
 				$icq_img = '';
 				$icq = '';
-				$aim_img = '';
 				$msn_img = '';
 				$msn = '';
 				$yim_img = '';
@@ -2157,8 +2117,6 @@ for($i = 0; $i < $total_posts; $i++)
 			$icq_status_img = '';
 			$icq_img = '';
 			$icq = '';
-			$aim_img = '';
-			$aim_status_img = '';
 			$msn_img = '';
 			$msn = '';
 			$yim_img = '';
@@ -2563,8 +2521,6 @@ for($i = 0; $i < $total_posts; $i++)
 		'ICQ_STATUS_IMG' => ($board_config['cicq']) ? $icq_status_img : '',
 		'ICQ_IMG' => ($board_config['cicq']) ? $icq_img : '',
 		'ICQ' => ($board_config['cicq']) ? $icq : '',
-		'AIM_IMG' => ($board_config['cgg']) ? $aim_img : '',
-		'AIM_STATUS_IMG' => ($board_config['cgg']) ? $aim_status_img : '',
 		'MSN_IMG' => $msn_img,
 		'MSN' => $msn,
 		'YIM_IMG' => $yim_img,
@@ -2900,10 +2856,6 @@ for($i = 0; $i < $total_posts; $i++)
 	}
 	// End Level Mod
 
-	if ( !empty($postrow[$i]['user_aim']) && $board_config['cgg'] && $poster_id != ANONYMOUS && $board_config['cgg'] && $show_post )
-	{
-		$template->assign_block_vars('postrow.aim', array());
-	}
 	if ( !empty($postrow[$i]['user_icq']) && $board_config['cicq'] && $poster_id != ANONYMOUS && $board_config['cicq'] && $show_post  )
 	{
 		$template->assign_block_vars('postrow.icq', array());

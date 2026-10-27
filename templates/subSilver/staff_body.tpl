@@ -12,9 +12,6 @@
         <th class="thTop">{L_JOINED}</th>
         <th class="thTop">{L_EMAIL}</th>
         <th class="thTop">PM</th>
-        <!-- BEGIN aim -->
-	<th class="thTop">GG</th>
-	<!-- END aim -->
         <th class="thCornerR">WWW</th>
   </tr>
 <!-- BEGIN staff -->
@@ -25,13 +22,7 @@
         <td valign="top" class="row2" align="right" nowrap="nowrap"><span class="gensmall">{staff.JOINED}<br>[{staff.PERIOD}]</span></td>
         <td align="center" class="row1">{staff.MAIL}{CICQ_OFF1}<div style="position:relative">{staff.ICQ}<div style="position:absolute;left:3px;top:-1px">{staff.ICQ_STATUS}</div></div></td>
 		<td align="center" class="row2">{staff.PM}</td>
-		<!-- BEGIN aim_row -->
-		<td align="center" class="row1">
-			<div style="display:inline;position:absolute;margin-left:3px;margin-top:-1px;">{staff.AIM_STATUS_IMG}</div>
-			<div style="display:inline;">{staff.AIM}</div>
-		</td>
-		<!-- END aim_row -->
-        <td align="center" class="row2">{staff.WWW}</td>
+		<td align="center" class="row2">{staff.WWW}</td>
   </tr>
 <!-- END staff -->
 </table>

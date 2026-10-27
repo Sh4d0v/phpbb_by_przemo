@@ -62,10 +62,7 @@
 					<td class="row1">{L_CLEVELL}<br><span class="gensmall">{L_LLEVELL}</span></td>
 					<td class="row2" width="50%"><input type="radio" name="clevell" value="1" {CLEVELL_YES}> {L_YES} <input type="radio" name="clevell" value="0" {CLEVELL_NO}>{L_NO}</td>
 				</tr>
-				<tr>
-					<td class="row1">{L_CGG}<br><span class="gensmall">{L_LGG}</span></td>
-					<td class="row2" width="50%"><input type="radio" name="cgg" value="1" {CGG_YES}> {L_YES} <input type="radio" name="cgg" value="0" {CGG_NO}>{L_NO}</td>
-				</tr>
+
 				<tr>
 					<td class="row1">{L_CLEVELD}<br><span class="gensmall">{L_LLEVELD}</span></td>
 					<td class="row2" width="50%"><input type="radio" name="cleveld" value="1" {CLEVELD_YES}> {L_YES} <input type="radio" name="cleveld" value="0" {CLEVELD_NO}>{L_NO}</td>

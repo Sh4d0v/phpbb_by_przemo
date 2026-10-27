@@ -7,7 +7,7 @@ $md5_sum['admin/admin_advert.'.$phpEx] = '0fce589d6cbd64f364c1c2b8c215bb6f';
 $md5_sum['admin/admin_advert_person.'.$phpEx] = '9de084c12289e932064bfda45d2957f2';
 $md5_sum['admin/admin_attach_cp.'.$phpEx] = '7cd375acab3350383ad8e613e3c58ac9';
 $md5_sum['admin/admin_attachments.'.$phpEx] = '2a0809142485b8e3c42bfd6e038b8581';
-$md5_sum['admin/admin_board.'.$phpEx] = '75bae71979d4ecb104ee9fc92355b9b9';
+$md5_sum['admin/admin_board.'.$phpEx] = '5d1da07328d29cfddac806a6c4e2fbf8';
 $md5_sum['admin/admin_board_setup.'.$phpEx] = '63afbc2ad3abb29a50a7cda6f34d5980';
 $md5_sum['admin/admin_custom_fields.'.$phpEx] = 'cc856e04efa5b684db68fefc45beb3e1';
 $md5_sum['admin/admin_db_utilities.'.$phpEx] = '7bd8bbe698242af5b9359ad39f1c32f5';
@@ -41,14 +41,14 @@ $md5_sum['admin/admin_sql.'.$phpEx] = 'a28ed7e12e98890be63d21cdcd66444d';
 $md5_sum['admin/admin_statistics.'.$phpEx] = '299b41e1179d2c4a828689af45168fef';
 $md5_sum['admin/admin_styles.'.$phpEx] = '16d8127d47f768e8f1c696a7e27a1dd0';
 $md5_sum['admin/admin_ug_auth.'.$phpEx] = '5bd5540f0b3bacf482c13d98e0dd5fb2';
-$md5_sum['admin/admin_uninstall.'.$phpEx] = 'd78eaa04b78187fb155b2bc753b5c953';
+$md5_sum['admin/admin_uninstall.'.$phpEx] = '14aad719ef0aba408421cddb952d06fd';
 $md5_sum['admin/admin_user_bantron.'.$phpEx] = 'f0a45c17c8e1d4371f611c161584cdb3';
-$md5_sum['admin/admin_users.'.$phpEx] = '0fc0a2b685a53d32e681cf6c7ebd418f';
+$md5_sum['admin/admin_users.'.$phpEx] = 'b6f7505a705a2b1d3f80b45702dc9654';
 $md5_sum['admin/admin_users_list.'.$phpEx] = 'e18be2f76d8e8a0ca562f04a204ecf63';
 $md5_sum['admin/admin_voting.'.$phpEx] = 'dc081b1d2fa7d58d578619127208bb78';
 $md5_sum['admin/admin_words.'.$phpEx] = '2a74c0a7ebc15f773b236448f13a426d';
-$md5_sum['admin/board_setup_defaults.'.$phpEx] = 'e394649ab9d1e7ea0e744cd3a1465821';
-$md5_sum['admin/index.'.$phpEx] = 'ca9a69e00594b86940d03e0cead5249b';
+$md5_sum['admin/board_setup_defaults.'.$phpEx] = '1c7cefa1a0c6a694c53c867d638fc262';
+$md5_sum['admin/index.'.$phpEx] = '2a6c8134858df1d2feea8431bdca0a7f';
 $md5_sum['admin/main_admin.'.$phpEx] = 'ec3450f00743273d299943e23af7f3ed';
 $md5_sum['admin/page_footer_admin.'.$phpEx] = '504dab3959f67db8ccd9f4343dd65831';
 $md5_sum['admin/page_header_admin.'.$phpEx] = '644ea2f75effce081fb9af57fba732bb';
@@ -86,8 +86,8 @@ $md5_sum['attach_mod/attachment_mod.'.$phpEx] = '3b33d766a39cb20e58d58c7f0d4abe0
 $md5_sum['attach_mod/displaying.'.$phpEx] = 'f278f323123450ddc01c90fc462fa76e';
 $md5_sum['attach_mod/pm_attachments.'.$phpEx] = '18f8557ef35fb0c37a5202200be624f2';
 $md5_sum['attach_mod/posting_attachments.'.$phpEx] = '5ae4ad50a252ddad87ced1f77ff1037f';
-$md5_sum['db/schemas/mysql_schema.sql'] = '4acb59feee501a54e03569d55d402a90';
-$md5_sum['db/schemas/mysql_basic.sql'] = '483ba53a8c281940ad3f73d26a2e87cf';
+$md5_sum['db/schemas/mysql_schema.sql'] = '35ba20e1d2a5a208c7081a0ccd4cf571';
+$md5_sum['db/schemas/mysql_basic.sql'] = 'e7e6b9ff30db38a198aef8e9c12b573d';
 $md5_sum['db/mysql.'.$phpEx] = 'ae0735c47adc5472245322628cc3f3ea';
 $md5_sum['db/mysql4.'.$phpEx] = 'bba16ae16652c96656eda7103e99a79f';
 $md5_sum['db/mysqli.'.$phpEx] = '14949084314875c36a50b92679312928';
@@ -107,17 +107,15 @@ $md5_sum['includes/emailer.'.$phpEx] = '07b8bc736bf163c0d0359702f884d9ed';
 $md5_sum['includes/functions.'.$phpEx] = '68253359dc6cdcda95b2731f033291f8';
 $md5_sum['includes/functions_add.'.$phpEx] = '2878d8d286370852bba0eea64f704104';
 $md5_sum['includes/functions_admin.'.$phpEx] = '86d32638e3b402c9c876e738db047102';
-$md5_sum['includes/functions_gg.'.$phpEx] = '9d15febea11216b3f526495e5d64afb4';
-$md5_sum['includes/functions_gg_notice.'.$phpEx] = 'ff8fa20ce2fb59cc005bceb655ffcc9f';
 $md5_sum['includes/functions_hierarchy.'.$phpEx] = '02e2c71c5970132ae75c2836fef97b99';
 $md5_sum['includes/functions_log.'.$phpEx] = '2865b3d33b4b4fc77d57d8b8be3aff74';
 $md5_sum['includes/functions_module.'.$phpEx] = '5ba3f676d5ea736343197929d8c9d945';
-$md5_sum['includes/functions_post.'.$phpEx] = 'c70064b6069cb0c4ab4308df49fc9d9a';
+$md5_sum['includes/functions_post.'.$phpEx] = '1c884f4420fbb814f9d6bdc47f61e686';
 $md5_sum['includes/functions_remove.'.$phpEx] = '480acbb9de86bad94b4cfe5256a4c666';
 $md5_sum['includes/functions_search.'.$phpEx] = 'c744e074336b1828f2fb522cfab6a9cc';
 $md5_sum['includes/functions_selects.'.$phpEx] = '8fe7bca7478e7aab775417dc1fc0cdac';
 $md5_sum['includes/functions_stats.'.$phpEx] = 'cd9ddbb4ff011c4f6216892e91781b16';
-$md5_sum['includes/functions_validate.'.$phpEx] = 'd0aeb43b560ebddf3388c2d8e8a2eaab';
+$md5_sum['includes/functions_validate.'.$phpEx] = '15f8ef9df981b08b8b51dc83bb6da305';
 $md5_sum['includes/legacy_compat.'.$phpEx] = '5cbae8a1d0a649bd75f83a9fd6b72ded';
 $md5_sum['includes/page_header.'.$phpEx] = '3542f25c7b9abf97096993b151a3e7ab';
 $md5_sum['includes/page_tail.'.$phpEx] = 'ac77d011d066dfd1f1f669a02c0375a8';
@@ -130,16 +128,16 @@ $md5_sum['includes/template.'.$phpEx] = 'ca8edbeb52817a4e73bae2373e64add9';
 $md5_sum['includes/template_old.'.$phpEx] = 'f6ab0f2e9552178b159ffddf7ec1c9ea';
 $md5_sum['includes/topic_review.'.$phpEx] = 'f2722b7731b92bd87723610790169ad5';
 $md5_sum['includes/usercp_activate.'.$phpEx] = '54fcf938a53a6aa7095e86d0c522998b';
-$md5_sum['includes/usercp_avatar.'.$phpEx] = '1ae09b0ae714dd5a5f0b9b51da2b2fbc';
+$md5_sum['includes/usercp_avatar.'.$phpEx] = 'c7daf02b4043b41eb4563a324eb571bb';
 $md5_sum['includes/usercp_email.'.$phpEx] = '3c437adf9fb2ff36f2c54daa09813f5c';
-$md5_sum['includes/usercp_register.'.$phpEx] = 'd255a8d56f5b0efc021bcce3c262856c';
+$md5_sum['includes/usercp_register.'.$phpEx] = 'bcd2af39bafd191b17824e46435ce2e9';
 $md5_sum['includes/usercp_sendpasswd.'.$phpEx] = 'aa8fa11e649911a8a3aff574ad9d95ed';
 $md5_sum['includes/usercp_signature.'.$phpEx] = '319a5c2042a2294fbdd2f79db34d8058';
-$md5_sum['includes/usercp_viewprofile.'.$phpEx] = 'ce298d4b28896b47516d42666f58036d';
+$md5_sum['includes/usercp_viewprofile.'.$phpEx] = '3dcb5e115368f3798150ee0f10b53761';
 $md5_sum['language/lang_english/lang_admin.'.$phpEx] = '7f4f20c9cad36923fa458cc9deebfcd3';
 $md5_sum['language/lang_english/lang_admin_advert.'.$phpEx] = '8c7940d93c96c9e14d3b22d156711450';
 $md5_sum['language/lang_english/lang_admin_attach.'.$phpEx] = 'f12a217364ae6e1b60c207ff01335bc0';
-$md5_sum['language/lang_english/lang_admin_board.'.$phpEx] = 'f62c17fa11013ea9d1166a2e49ff852c';
+$md5_sum['language/lang_english/lang_admin_board.'.$phpEx] = '3a0318c56da84358e3e55bc2799ed1ba';
 $md5_sum['language/lang_english/lang_admin_priv_msgs.'.$phpEx] = 'fa320d1aee227d69f5a66619d9ea549b';
 $md5_sum['language/lang_english/lang_admin_voting.'.$phpEx] = '7e22e940cda5e17a69bb1dfbf28cf20b';
 $md5_sum['language/lang_english/lang_bbcode.'.$phpEx] = 'fde995faf7d4b13f1223bac8ec660500';
@@ -149,13 +147,13 @@ $md5_sum['language/lang_english/lang_customize.'.$phpEx] = '7c5bf1f5de8dbdda6aba
 $md5_sum['language/lang_english/lang_faq_editor.'.$phpEx] = '125adf82e62c38b8dc9ccc09e6406eb6';
 $md5_sum['language/lang_english/lang_install.'.$phpEx] = 'e6a5d1a33c77b03f4cdbae133a0ee674';
 $md5_sum['language/lang_english/lang_jr_admin.'.$phpEx] = '1c4fd93338f21bd7bd7abdbe8878f507';
-$md5_sum['language/lang_english/lang_main.'.$phpEx] = '2719388fcd753f0e1310e4659d0230a4';
+$md5_sum['language/lang_english/lang_main.'.$phpEx] = '10cdc38d70cad6a4e9607a5ddd261cce';
 $md5_sum['language/lang_english/lang_main_attach.'.$phpEx] = '960943a05e04758088db75ff3fe6cee9';
 $md5_sum['language/lang_english/lang_mass_email.'.$phpEx] = '76573e5298002f5abf9b47d1dd62ed5c';
 $md5_sum['language/lang_english/lang_modcp.'.$phpEx] = 'c9c48915e363c49540e6c182320278a4';
 $md5_sum['language/lang_english/lang_pcount_resync.'.$phpEx] = '3d36539cb21224383b881d51fda59943';
 $md5_sum['language/lang_english/lang_post_history.'.$phpEx] = '0759b562527b32e6bfab27d8b3b96d90';
-$md5_sum['language/lang_english/lang_profile.'.$phpEx] = '2269640fb44c7262f513b3d17df4dd16';
+$md5_sum['language/lang_english/lang_profile.'.$phpEx] = 'a540744a1978d523d7d3ff2ba666e9fc';
 $md5_sum['language/lang_english/lang_prune_users.'.$phpEx] = 'cb0551fa2ada442b13676e96844966aa';
 $md5_sum['language/lang_english/lang_seeker.'.$phpEx] = 'b65b2efd8cce64bf92a3810e7ca5e14d';
 $md5_sum['language/lang_english/lang_statistics.'.$phpEx] = '3ac8d56e23ad2504c067d8038f5492f3';
@@ -164,7 +162,7 @@ $md5_sum['language/lang_english/lang_xs.'.$phpEx] = 'd7a387bad57221629adfe2a6cc5
 $md5_sum['language/lang_polish/lang_admin.'.$phpEx] = '88ef35749ee2a7c4b488140e15e645a9';
 $md5_sum['language/lang_polish/lang_admin_advert.'.$phpEx] = 'e24bd6692de5f51d2ab0b6c1b1758b00';
 $md5_sum['language/lang_polish/lang_admin_attach.'.$phpEx] = '721d61debb7d0715aeba622f089235ae';
-$md5_sum['language/lang_polish/lang_admin_board.'.$phpEx] = 'ba54f9242a11839972e9728e4632c20c';
+$md5_sum['language/lang_polish/lang_admin_board.'.$phpEx] = '0c312509184d68464fb13c031da08e55';
 $md5_sum['language/lang_polish/lang_admin_priv_msgs.'.$phpEx] = 'c8db9499d0931efd9a57cf6b69ac1655';
 $md5_sum['language/lang_polish/lang_admin_voting.'.$phpEx] = '6df769d366df48cce9584a1e668d7d9a';
 $md5_sum['language/lang_polish/lang_bbcode.'.$phpEx] = 'da7e2ed2d80d1adfded4626327a6b430';
@@ -174,13 +172,13 @@ $md5_sum['language/lang_polish/lang_customize.'.$phpEx] = '480d8482f84f7d87c6c86
 $md5_sum['language/lang_polish/lang_faq_editor.'.$phpEx] = '16018029135d742526b81690a6a38bfd';
 $md5_sum['language/lang_polish/lang_install.'.$phpEx] = '4e0732f0e0edd97ac0fc145151405b6c';
 $md5_sum['language/lang_polish/lang_jr_admin.'.$phpEx] = 'a2187eb1330ba7550dd6766bb3de6c1e';
-$md5_sum['language/lang_polish/lang_main.'.$phpEx] = '1088ec4949920f093b1a1ca7b54b6d85';
+$md5_sum['language/lang_polish/lang_main.'.$phpEx] = '1458ec51b9804fce8ebd5f839f7058c2';
 $md5_sum['language/lang_polish/lang_main_attach.'.$phpEx] = 'b265c6aa7f8ac5d926bb65662a0685d9';
 $md5_sum['language/lang_polish/lang_mass_email.'.$phpEx] = 'fa35b22bc8087bda0aecb22e7fb500ee';
 $md5_sum['language/lang_polish/lang_modcp.'.$phpEx] = 'b0a01da748b326288cd18bdb0d3e91cc';
 $md5_sum['language/lang_polish/lang_pcount_resync.'.$phpEx] = 'e08f12e944ec35a99ac0e9fe26d2150b';
 $md5_sum['language/lang_polish/lang_post_history.'.$phpEx] = '3de806e04647b590453d7078c2d49b52';
-$md5_sum['language/lang_polish/lang_profile.'.$phpEx] = 'cb3e96133e56b0bc831ecc6d3c3f06ef';
+$md5_sum['language/lang_polish/lang_profile.'.$phpEx] = 'd67fd48c64f5757045f6ab9742a859af';
 $md5_sum['language/lang_polish/lang_prune_users.'.$phpEx] = '2f494c3fbe61e11cb3600044edfe14fa';
 $md5_sum['language/lang_polish/lang_seeker.'.$phpEx] = 'bbfb40289b523bd8c064bbf8da774024';
 $md5_sum['language/lang_polish/lang_statistics.'.$phpEx] = '4e8a12125189dbfc09834f0370d943a4';
@@ -194,37 +192,36 @@ $md5_sum['download.'.$phpEx] = 'e675ae9bbb4986d8f3ab67cb1722326b';
 $md5_sum['extension.inc'] = '64b583474fd6024adfea179f87af24fe';
 $md5_sum['faq.'.$phpEx] = '78daf14e56206dfc008286263d1eabca';
 $md5_sum['fetchposts.'.$phpEx] = '50619fdec1b9ee5712c180b5188b91f1';
-$md5_sum['gg.'.$phpEx] = 'ca07b2d0fe70d223236640c07ad90d16';
 $md5_sum['groupcp.'.$phpEx] = '4d5aef253b0d8e66e16df193a9d88e3e';
 $md5_sum['groupcp_mail.'.$phpEx] = '5d0ad1b214882aeac369a262968126be';
 $md5_sum['ignore.'.$phpEx] = '3cf4d595f42af80a9b0a69aea1ab3a64';
 $md5_sum['ignore_topics.'.$phpEx] = '37b60286d8046ec0af9f823aebcd7678';
 $md5_sum['index.'.$phpEx] = '26cb6932170656bfc031cd5472d9de58';
 $md5_sum['login.'.$phpEx] = 'b55aa5d92fb1f88ca04caab719db96be';
-$md5_sum['memberlist.'.$phpEx] = 'abd9bc47370335f44f2053f0c108a434';
+$md5_sum['memberlist.'.$phpEx] = '4d31451e9d58c63960301525841b01d2';
 $md5_sum['modcp.'.$phpEx] = '86c9b2c59b5e250c0d034def45a30d9c';
 $md5_sum['post_history.'.$phpEx] = '3a3c759e6068d2cf1b87551154a85622';
 $md5_sum['posting.'.$phpEx] = '8b605e8bb0145413da65f836c528bceb';
 $md5_sum['printview.'.$phpEx] = '00a0774fbcea7d9b3e954235788752b1';
-$md5_sum['privmsg.'.$phpEx] = 'f62a38ea4f2a179594db678e252f247d';
+$md5_sum['privmsg.'.$phpEx] = 'cb5f022b33ca5fc499bd621a94a5ceba';
 $md5_sum['profile.'.$phpEx] = 'ca6771c0bbaa2d4ee9ece7d6cbe77843';
 $md5_sum['profilephoto_mod.'.$phpEx] = 'e386a1d6d49c6a68023bad05bcc13411';
 $md5_sum['quick_reply.'.$phpEx] = 'ffb9893a09cf4a5f66f169c2171c0e0e';
 $md5_sum['report.'.$phpEx] = '4112ff8a94e78080c29c28f25b8ba8b8';
 $md5_sum['resync_forum_stats.'.$phpEx] = 'd338ab54f9273ea06eeb49f4f07d5489';
 $md5_sum['search.'.$phpEx] = '84a9fd9d3b89bbf5f9277d4359f43f0d';
-$md5_sum['seeker.'.$phpEx] = 'ec696ab38e2eb52eca32090cd13de525';
-$md5_sum['shoutbox.'.$phpEx] = 'c6a378e8f9d5ad0d83280e7b4fa5edbd';
+$md5_sum['seeker.'.$phpEx] = '169f0b99db7999412fac92357a5d0b83';
+$md5_sum['shoutbox.'.$phpEx] = '823e82169e91c8d76bebfdac084504af';
 $md5_sum['shoutbox_view.'.$phpEx] = 'ca338a57a76cb9b3181d2bf958e4a0d4';
-$md5_sum['staff.'.$phpEx] = '0f75ccca5add5de973933ac27ef1d69b';
+$md5_sum['staff.'.$phpEx] = '8cd35bd9c2295fd07c1e31867ce4ad63';
 $md5_sum['statistics.'.$phpEx] = '12c66627575bb2852cb5f3d028244a91';
-$md5_sum['tellafriend.'.$phpEx] = 'be710280c8fe7182386bfa1856e7885b';
+$md5_sum['tellafriend.'.$phpEx] = '025587bd20c0076634e91c2410da6004';
 $md5_sum['topic_spy.'.$phpEx] = '1f662f4ca3545fec5e568df8ce317375';
-$md5_sum['topic_view_users.'.$phpEx] = '8ca3548b290e9c9920d14cdb5bdad4bd';
+$md5_sum['topic_view_users.'.$phpEx] = 'd03777cb729b9a45e0fdcefe876ca6b2';
 $md5_sum['uacp.'.$phpEx] = '69f74d05fb15f7ec7fc4824c7806b974';
 $md5_sum['viewforum.'.$phpEx] = '46526a1b165428713faae9705f1439d7';
 $md5_sum['viewonline.'.$phpEx] = '09746962de72c1ccdf0b5f575cb75725';
-$md5_sum['viewtopic.'.$phpEx] = 'd9d47d9580f7506f03154fec5622c218';
+$md5_sum['viewtopic.'.$phpEx] = '23222b5ab7a8a93f491d48d921662f55';
 $md5_sum['warnings.'.$phpEx] = '9665235e23d61e5c1b32302d216fcb53';
 
 // install.php is intentionally excluded because it should be removed after installation.
@@ -234,7 +231,7 @@ $sizes['admin/admin_advert.'.$phpEx] = '11099';
 $sizes['admin/admin_advert_person.'.$phpEx] = '4856';
 $sizes['admin/admin_attach_cp.'.$phpEx] = '22024';
 $sizes['admin/admin_attachments.'.$phpEx] = '38921';
-$sizes['admin/admin_board.'.$phpEx] = '50318';
+$sizes['admin/admin_board.'.$phpEx] = '49091';
 $sizes['admin/admin_board_setup.'.$phpEx] = '5144';
 $sizes['admin/admin_custom_fields.'.$phpEx] = '14635';
 $sizes['admin/admin_db_utilities.'.$phpEx] = '10571';
@@ -268,14 +265,14 @@ $sizes['admin/admin_sql.'.$phpEx] = '1913';
 $sizes['admin/admin_statistics.'.$phpEx] = '22482';
 $sizes['admin/admin_styles.'.$phpEx] = '25545';
 $sizes['admin/admin_ug_auth.'.$phpEx] = '31915';
-$sizes['admin/admin_uninstall.'.$phpEx] = '11977';
+$sizes['admin/admin_uninstall.'.$phpEx] = '11829';
 $sizes['admin/admin_user_bantron.'.$phpEx] = '21480';
-$sizes['admin/admin_users.'.$phpEx] = '58356';
+$sizes['admin/admin_users.'.$phpEx] = '57151';
 $sizes['admin/admin_users_list.'.$phpEx] = '12100';
 $sizes['admin/admin_voting.'.$phpEx] = '8062';
 $sizes['admin/admin_words.'.$phpEx] = '5735';
-$sizes['admin/board_setup_defaults.'.$phpEx] = '14868';
-$sizes['admin/index.'.$phpEx] = '19693';
+$sizes['admin/board_setup_defaults.'.$phpEx] = '14541';
+$sizes['admin/index.'.$phpEx] = '19920';
 $sizes['admin/main_admin.'.$phpEx] = '1086';
 $sizes['admin/page_footer_admin.'.$phpEx] = '1287';
 $sizes['admin/page_header_admin.'.$phpEx] = '4833';
@@ -313,8 +310,8 @@ $sizes['attach_mod/attachment_mod.'.$phpEx] = '1728';
 $sizes['attach_mod/displaying.'.$phpEx] = '22608';
 $sizes['attach_mod/pm_attachments.'.$phpEx] = '6247';
 $sizes['attach_mod/posting_attachments.'.$phpEx] = '39702';
-$sizes['db/schemas/mysql_schema.sql'] = '28232';
-$sizes['db/schemas/mysql_basic.sql'] = '52760';
+$sizes['db/schemas/mysql_schema.sql'] = '28127';
+$sizes['db/schemas/mysql_basic.sql'] = '52143';
 $sizes['db/mysql.'.$phpEx] = '5466';
 $sizes['db/mysql4.'.$phpEx] = '5814';
 $sizes['db/mysqli.'.$phpEx] = '5530';
@@ -334,17 +331,15 @@ $sizes['includes/emailer.'.$phpEx] = '9572';
 $sizes['includes/functions.'.$phpEx] = '73201';
 $sizes['includes/functions_add.'.$phpEx] = '24945';
 $sizes['includes/functions_admin.'.$phpEx] = '13163';
-$sizes['includes/functions_gg.'.$phpEx] = '6168';
-$sizes['includes/functions_gg_notice.'.$phpEx] = '2949';
 $sizes['includes/functions_hierarchy.'.$phpEx] = '15572';
 $sizes['includes/functions_log.'.$phpEx] = '1783';
 $sizes['includes/functions_module.'.$phpEx] = '10328';
-$sizes['includes/functions_post.'.$phpEx] = '29148';
+$sizes['includes/functions_post.'.$phpEx] = '24611';
 $sizes['includes/functions_remove.'.$phpEx] = '16602';
 $sizes['includes/functions_search.'.$phpEx] = '11331';
 $sizes['includes/functions_selects.'.$phpEx] = '5754';
 $sizes['includes/functions_stats.'.$phpEx] = '9844';
-$sizes['includes/functions_validate.'.$phpEx] = '6074';
+$sizes['includes/functions_validate.'.$phpEx] = '6062';
 $sizes['includes/legacy_compat.'.$phpEx] = '1144';
 $sizes['includes/page_header.'.$phpEx] = '23111';
 $sizes['includes/page_tail.'.$phpEx] = '2534';
@@ -357,16 +352,16 @@ $sizes['includes/template.'.$phpEx] = '49720';
 $sizes['includes/template_old.'.$phpEx] = '6740';
 $sizes['includes/topic_review.'.$phpEx] = '8384';
 $sizes['includes/usercp_activate.'.$phpEx] = '4135';
-$sizes['includes/usercp_avatar.'.$phpEx] = '11985';
+$sizes['includes/usercp_avatar.'.$phpEx] = '11930';
 $sizes['includes/usercp_email.'.$phpEx] = '5636';
-$sizes['includes/usercp_register.'.$phpEx] = '60738';
+$sizes['includes/usercp_register.'.$phpEx] = '59157';
 $sizes['includes/usercp_sendpasswd.'.$phpEx] = '3913';
 $sizes['includes/usercp_signature.'.$phpEx] = '5598';
-$sizes['includes/usercp_viewprofile.'.$phpEx] = '30547';
+$sizes['includes/usercp_viewprofile.'.$phpEx] = '29655';
 $sizes['language/lang_english/lang_admin.'.$phpEx] = '42806';
 $sizes['language/lang_english/lang_admin_advert.'.$phpEx] = '3215';
 $sizes['language/lang_english/lang_admin_attach.'.$phpEx] = '16185';
-$sizes['language/lang_english/lang_admin_board.'.$phpEx] = '24952';
+$sizes['language/lang_english/lang_admin_board.'.$phpEx] = '24183';
 $sizes['language/lang_english/lang_admin_priv_msgs.'.$phpEx] = '708';
 $sizes['language/lang_english/lang_admin_voting.'.$phpEx] = '1238';
 $sizes['language/lang_english/lang_bbcode.'.$phpEx] = '10120';
@@ -376,13 +371,13 @@ $sizes['language/lang_english/lang_customize.'.$phpEx] = '1920';
 $sizes['language/lang_english/lang_faq_editor.'.$phpEx] = '1545';
 $sizes['language/lang_english/lang_install.'.$phpEx] = '5111';
 $sizes['language/lang_english/lang_jr_admin.'.$phpEx] = '336';
-$sizes['language/lang_english/lang_main.'.$phpEx] = '43290';
+$sizes['language/lang_english/lang_main.'.$phpEx] = '42350';
 $sizes['language/lang_english/lang_main_attach.'.$phpEx] = '7731';
 $sizes['language/lang_english/lang_mass_email.'.$phpEx] = '1787';
 $sizes['language/lang_english/lang_modcp.'.$phpEx] = '3734';
 $sizes['language/lang_english/lang_pcount_resync.'.$phpEx] = '2486';
 $sizes['language/lang_english/lang_post_history.'.$phpEx] = '1043';
-$sizes['language/lang_english/lang_profile.'.$phpEx] = '13301';
+$sizes['language/lang_english/lang_profile.'.$phpEx] = '13024';
 $sizes['language/lang_english/lang_prune_users.'.$phpEx] = '2893';
 $sizes['language/lang_english/lang_seeker.'.$phpEx] = '534';
 $sizes['language/lang_english/lang_statistics.'.$phpEx] = '3931';
@@ -391,7 +386,7 @@ $sizes['language/lang_english/lang_xs.'.$phpEx] = '32551';
 $sizes['language/lang_polish/lang_admin.'.$phpEx] = '47649';
 $sizes['language/lang_polish/lang_admin_advert.'.$phpEx] = '3508';
 $sizes['language/lang_polish/lang_admin_attach.'.$phpEx] = '14486';
-$sizes['language/lang_polish/lang_admin_board.'.$phpEx] = '30097';
+$sizes['language/lang_polish/lang_admin_board.'.$phpEx] = '29029';
 $sizes['language/lang_polish/lang_admin_priv_msgs.'.$phpEx] = '716';
 $sizes['language/lang_polish/lang_admin_voting.'.$phpEx] = '1254';
 $sizes['language/lang_polish/lang_bbcode.'.$phpEx] = '9866';
@@ -401,13 +396,13 @@ $sizes['language/lang_polish/lang_customize.'.$phpEx] = '2100';
 $sizes['language/lang_polish/lang_faq_editor.'.$phpEx] = '1596';
 $sizes['language/lang_polish/lang_install.'.$phpEx] = '6535';
 $sizes['language/lang_polish/lang_jr_admin.'.$phpEx] = '446';
-$sizes['language/lang_polish/lang_main.'.$phpEx] = '46374';
+$sizes['language/lang_polish/lang_main.'.$phpEx] = '45240';
 $sizes['language/lang_polish/lang_main_attach.'.$phpEx] = '7466';
 $sizes['language/lang_polish/lang_mass_email.'.$phpEx] = '2091';
 $sizes['language/lang_polish/lang_modcp.'.$phpEx] = '4160';
 $sizes['language/lang_polish/lang_pcount_resync.'.$phpEx] = '2133';
 $sizes['language/lang_polish/lang_post_history.'.$phpEx] = '1123';
-$sizes['language/lang_polish/lang_profile.'.$phpEx] = '13884';
+$sizes['language/lang_polish/lang_profile.'.$phpEx] = '13533';
 $sizes['language/lang_polish/lang_prune_users.'.$phpEx] = '3098';
 $sizes['language/lang_polish/lang_seeker.'.$phpEx] = '609';
 $sizes['language/lang_polish/lang_statistics.'.$phpEx] = '3600';
@@ -421,37 +416,36 @@ $sizes['download.'.$phpEx] = '10216';
 $sizes['extension.inc'] = '443';
 $sizes['faq.'.$phpEx] = '3887';
 $sizes['fetchposts.'.$phpEx] = '4882';
-$sizes['gg.'.$phpEx] = '4102';
 $sizes['groupcp.'.$phpEx] = '39984';
 $sizes['groupcp_mail.'.$phpEx] = '10637';
 $sizes['ignore.'.$phpEx] = '7890';
 $sizes['ignore_topics.'.$phpEx] = '8338';
 $sizes['index.'.$phpEx] = '21081';
 $sizes['login.'.$phpEx] = '16090';
-$sizes['memberlist.'.$phpEx] = '16023';
+$sizes['memberlist.'.$phpEx] = '15427';
 $sizes['modcp.'.$phpEx] = '68515';
 $sizes['post_history.'.$phpEx] = '6249';
 $sizes['posting.'.$phpEx] = '75479';
 $sizes['printview.'.$phpEx] = '8601';
-$sizes['privmsg.'.$phpEx] = '73660';
+$sizes['privmsg.'.$phpEx] = '72219';
 $sizes['profile.'.$phpEx] = '3291';
 $sizes['profilephoto_mod.'.$phpEx] = '13045';
 $sizes['quick_reply.'.$phpEx] = '4482';
 $sizes['report.'.$phpEx] = '11290';
 $sizes['resync_forum_stats.'.$phpEx] = '11864';
 $sizes['search.'.$phpEx] = '44183';
-$sizes['seeker.'.$phpEx] = '10411';
-$sizes['shoutbox.'.$phpEx] = '1247';
+$sizes['seeker.'.$phpEx] = '10229';
+$sizes['shoutbox.'.$phpEx] = '1257';
 $sizes['shoutbox_view.'.$phpEx] = '12115';
-$sizes['staff.'.$phpEx] = '8720';
+$sizes['staff.'.$phpEx] = '7876';
 $sizes['statistics.'.$phpEx] = '5657';
-$sizes['tellafriend.'.$phpEx] = '4598';
+$sizes['tellafriend.'.$phpEx] = '4629';
 $sizes['topic_spy.'.$phpEx] = '4863';
-$sizes['topic_view_users.'.$phpEx] = '11991';
+$sizes['topic_view_users.'.$phpEx] = '11093';
 $sizes['uacp.'.$phpEx] = '12383';
 $sizes['viewforum.'.$phpEx] = '32918';
 $sizes['viewonline.'.$phpEx] = '7435';
-$sizes['viewtopic.'.$phpEx] = '94986';
+$sizes['viewtopic.'.$phpEx] = '93458';
 $sizes['warnings.'.$phpEx] = '23486';
 
 $tables_structure = array(
@@ -907,7 +901,6 @@ $tables_structure = array(
 	'user_last_privmsg',
 	'user_emailtime',
 	'user_viewemail',
-	'user_viewaim',
 	'user_attachsig',
 	'user_allowhtml',
 	'user_allowbbcode',
@@ -929,7 +922,6 @@ $tables_structure = array(
 	'user_sig',
 	'user_sig_bbcode_uid',
 	'user_sig_image',
-	'user_aim',
 	'user_yim',
 	'user_msnm',
 	'user_occ',
@@ -948,7 +940,6 @@ $tables_structure = array(
 	'can_custom_color',
 	'user_gender',
 	'can_topic_color',
-	'user_notify_gg',
 	'allowpm',
 	'no_report_popup',
 	'refresh_report_popup',
@@ -1116,7 +1107,6 @@ $config_inserts = array(
 	'cleveld',
 	'cignore',
 	'cquick',
-	'cgg',
 	'csearch',
 	'cicq',
 	'cllogin',
@@ -1173,15 +1163,12 @@ $config_inserts = array(
 	'u_o_t_d',
 	'expire',
 	'expire_value',
-	'numer_gg',
-	'haslo_gg',
 	'block_time',
 	'max_login_error',
 	'min_password_len',
 	'force_complex_password',
 	'password_not_login',
 	'del_user_notify',
-	'require_aim',
 	'require_website',
 	'require_location',
 	'post_footer',
@@ -1282,10 +1269,6 @@ $config_inserts = array(
 	'max_smilies',
 	'search_enable',
 	'overlib',
-	'notify_gg',
-	'admin_notify_gg',
-	'admin_notify_reply',
-	'admin_notify_message',
 	'topic_start_date',
 	'topic_start_dateformat',
 	'autorepair_tables',

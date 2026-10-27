@@ -99,27 +99,7 @@
 					<td class="row1">{L_ANONYMOUS_SIMPLE}<br><span class="gensmall">{L_ANONYMOUS_SIMPLE_E}</span></td>
 					<td class="row2" width="50%"><input type="radio" name="anonymous_simple" value="1" {ANONYMOUS_SIMPLE_YES}> {L_YES}&nbsp;&nbsp;<input type="radio" name="anonymous_simple" value="0" {ANONYMOUS_SIMPLE_NO}> {L_NO}</td>
 				</tr>
-				<tr>
-					<td class="row1">{L_GG_NR}, {L_GG_PASS}</td>
-					<td class="row3" width="50%"><input type="text" class="post" onFocus="Active(this)" onBlur="NotActive(this)" name="numer_gg" value="{GG_NR}" size="10" maxlength="255">&nbsp;&nbsp;
-					<input type="password" class="post" onFocus="Active(this)" onBlur="NotActive(this)" name="haslo_gg" value="{GG_PASS}" size="10" maxlength="255"></td>
-				</tr>
-				<tr>
-					<td class="row1">{L_NOTIFY_GG}<br><span class="gensmall">{L_NOTIFY_GG_E}</span></td>
-					<td class="row3" width="50%"><input type="radio" name="notify_gg" value="1" {NOTIFY_GG_YES}> {L_YES}&nbsp;&nbsp;<input type="radio" name="notify_gg" value="0" {NOTIFY_GG_NO}> {L_NO}</td>
-				</tr>
-				<tr>
-					<td class="row1">{L_ADMIN_NOTIFY_GG}<br><span class="gensmall">{L_ADMIN_NOTIFY_GG_E}</span></td>
-					<td class="row3" width="50%"><textarea name="admin_notify_gg" class="post" onFocus="Active(this)" onBlur="NotActive(this)" rows="2" cols="30">{ADMIN_NOTIFY_GG}</textarea></td>
-				</tr>
-				<tr>
-					<td class="row1">{L_ADMIN_NOTIFY_REPLY}<br><span class="gensmall">{L_ADMIN_NOTIFY_REPLY_E}</span></td>
-					<td class="row3" width="50%"><input type="radio" name="admin_notify_reply" value="1" {ADMIN_NOTIFY_REPLY_YES}> {L_YES}&nbsp;&nbsp;<input type="radio" name="admin_notify_reply" value="0" {ADMIN_NOTIFY_REPLY_NO}> {L_NO}</td>
-				</tr>
-				<tr>
-					<td class="row1">{L_ADMIN_NOTIFY_MESSAGE}<br><span class="gensmall">{L_ADMIN_NOTIFY_MESSAGE_E}</span></td>
-					<td class="row3" width="50%"><input type="radio" name="admin_notify_message" value="1" {ADMIN_NOTIFY_MESSAGE_YES}> {L_YES}&nbsp;&nbsp;<input type="radio" name="admin_notify_message" value="0" {ADMIN_NOTIFY_MESSAGE_NO}> {L_NO}</td>
-				</tr>
+
 				<tr>
 					<td class="row1">{L_DEL_NOT_ENABLE}</td>
 					<td class="row2" width="50%"><input type="radio" name="del_notify_enable" value="1" {DEL_NOT_ENABLE_YES}> {L_YES}&nbsp;&nbsp;<input type="radio" name="del_notify_enable" value="0" {DEL_NOT_ENABLE_NO}> {L_NO}</td>

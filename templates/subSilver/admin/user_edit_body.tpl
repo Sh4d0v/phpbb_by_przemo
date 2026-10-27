@@ -86,12 +86,6 @@
 	  </td>
 	</tr>
 	<tr> 
-	  <td class="row1"><span class="gen">{L_AIM}</span></td>
-	  <td class="row2"> 
-		<input type="text" class="post" name="aim" size="20" maxlength="255" value="{AIM}">
-	  </td>
-	</tr>
-	<tr> 
 	  <td class="row1"><span class="gen">{L_MESSENGER}</span></td>
 	  <td class="row2"> 
 		<input type="text" class="post" name="msn" size="20" maxlength="255" value="{MSN}">
@@ -160,14 +154,6 @@
 		<span class="gen">{L_NO}</span></td>
 	</tr>
 	<tr> 
-	  <td class="row1"><span class="gen">{L_PUBLIC_VIEW_AIM}</span></td>
-	  <td class="row2"> 
-		<input type="radio" name="viewaim" value="1" {VIEW_AIM_YES}>
-		<span class="gen">{L_YES}</span>&nbsp;&nbsp; 
-		<input type="radio" name="viewaim" value="0" {VIEW_AIM_NO}>
-		<span class="gen">{L_NO}</span></td>
-	</tr>
-	<tr> 
 	  <td class="row1"><span class="gen">{L_HIDE_USER}</span></td>
 	  <td class="row2"> 
 		<input type="radio" name="hideonline" value="1" {HIDE_USER_YES}>
@@ -205,14 +191,6 @@
 		<input type="radio" name="allowpm" value="1" {ALLOWPM_YES}>
 		<span class="gen">{L_YES}</span>&nbsp;&nbsp; 
 		<input type="radio" name="allowpm" value="0" {ALLOWPM_NO}>
-		<span class="gen">{L_NO}</span></td>
-	</tr>
-	<tr> 
-	  <td class="row1"><span class="gen">{L_NOTIFY_GG}:</span></td>
-	  <td class="row2"> 
-		<input type="radio" name="user_notify_gg" value="1" {NOTIFY_GG_YES}>
-		<span class="gen">{L_YES}</span>&nbsp;&nbsp; 
-		<input type="radio" name="user_notify_gg" value="0" {NOTIFY_GG_NO}>
 		<span class="gen">{L_NO}</span></td>
 	</tr>
 	<tr> 

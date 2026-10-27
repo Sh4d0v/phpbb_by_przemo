@@ -53,7 +53,6 @@ $order   = get_vars('order',   '', 'POST,GET');
 // Define fields to look over
 $lookfor_vars = array(
 	'username' => array('lang' =>	$lang['Sort_Username'],			'field' =>	'u.username'),
-	'gadu' => array(	'lang' =>	$lang['AIM'],			'field' =>	'u.user_aim'),
 	'posts' => array(	'lang' =>	$lang['Posts'],			'field' =>	'u.user_posts'),
 	'from' => array(	'lang' =>	$lang['Location'],		'field' =>	'u.user_from'),
 	'title' => array(	'lang' =>	$lang['Custom_Rank'],	'field' =>	'u.user_custom_rank'),
@@ -165,7 +164,6 @@ if ( $query != '' && !empty($lookfor_vars[$lookfor]['field']) )
 			FROM " . USERS_TABLE . " u
 			WHERE $sql_field $sql_method '$q'
 				AND u.user_id <> " . ANONYMOUS . "
-				" . (($sql_field == 'u.user_aim') ? 'AND u.user_viewaim = 1' : '') . "
 				" . ( $q != '0' ? "AND $field <> ''" : "" );
 	}
 	else if ( $userdata['user_level'] == ADMIN && $sql_field)
@@ -242,7 +240,7 @@ if ( $query != '' && !empty($lookfor_vars[$lookfor]['field']) )
 				'NUM' => $pos_id,
 				'USERNAME' => '<b><a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;u=" . $row['user_id']) . '"' . $colored_username[1] . ' class="gen">' . $username . '</a></b>',
 				'JOINED' => create_date($board_config['default_dateformat'], $row['user_regdate'], $board_config['board_timezone']),
-				'FIELD_VALUE' => ($lookfor == 'gadu') ? '<a href="GG:' . $field_val . '">' . $field_val . '</a>' : $field_val,
+				'FIELD_VALUE' => $field_val,
 				'ROW_CLASS' => $pos_id % 2 ? 'row2' : 'row3')
 			);
 

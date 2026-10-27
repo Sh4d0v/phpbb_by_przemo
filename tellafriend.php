@@ -65,11 +65,11 @@ if ( isset($HTTP_POST_VARS['topic_id']) )
 	$message = trim(get_vars('message', '', 'POST'));
 	if ( empty($friendname) || empty($friendemail) )
 	{
-		message_die(GENERAL_MESSAGE, $lang['not_gg_addresat']);
+		message_die(GENERAL_MESSAGE, $lang['Tell_friend_recipient_missing']);
 	}
 	if ( empty($message) )
 	{
-		message_die(GENERAL_MESSAGE, $lang['not_gg_msg']);
+		message_die(GENERAL_MESSAGE, $lang['Tell_friend_message_missing']);
 	}
 
 	$sql = "SELECT user_emailtime

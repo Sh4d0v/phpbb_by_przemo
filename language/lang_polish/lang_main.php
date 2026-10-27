@@ -95,7 +95,6 @@ $lang['View_newest_post'] = 'Zobacz najnowszy post';
 $lang['Page_of'] = 'Strona <b>%d</b> z <b>%d</b>';
 
 $lang['ICQ'] = 'Numer ICQ';
-$lang['AIM'] = 'Numer Gadu-Gadu';
 $lang['MSNM'] = 'MSN Messenger';
 $lang['YIM'] = 'Yahoo Messenger';
 
@@ -788,12 +787,6 @@ $lang['write_link_text'] = 'Wpisz tekst który bêdzie pokazywany jako nazwa linku
 $lang['write_address'] = 'Podaj adres';
 $lang['img_address'] = 'Podaj adres do obrazka';
 $lang['stream_address'] = 'Podaj adres pliku';
-$lang['GG'] = 'Gadu-Gadu u¿ytkownika :: %s';
-$lang['STAT_GG'] = 'Status Gadu-Gadu u¿ytkownika';
-$lang['GG_wait'] = 'Wiadomo¶æ oczekuje w kolejce na odebranie.<br />Zostanie dostarczona gdy adresat w³±czy gadu-gadu<br /> lub adresat ma w tej chwili status <b>"niewidoczny"</b> b±d¼ "tylko dla znajomych".';
-$lang['GG_full'] = 'Skrzynka odbiorcza adresata jest pe³na, wiadomo¶æ nie zosta³a dostarczona.';
-$lang['GG_send'] = 'Wiadomo¶æ zosta³a dostarczona do adresata';
-$lang['GG_not_send'] = 'Wiadomo¶æ nie zosta³a dostarczona, spróbuj jeszcze raz (od¶wie¿ strone).';
 $lang['Last_visit'] = 'Ostatnia wizyta';
 $lang['Never'] = 'Nigdy';
 $lang['Sort_Last_visit'] = 'Data ostatniej aktywno¶ci';
@@ -868,7 +861,6 @@ $lang['post_expire_q'] = 'Wyga¶nie za';
 $lang['Password_not_complex'] = 'Has³o ';
 $lang['Ignore_mini'] = 'Ignoruj';
 $lang['pm_mini'] = 'PM';
-$lang['aim_mini'] = 'GG';
 $lang['quote_mini'] = 'Cytuj';
 $lang['edit_mini'] = 'Edytuj';
 $lang['mini_reply'] = 'ODPOWIEDZ';
@@ -900,11 +892,6 @@ $lang['Gender'] = 'P³eæ';
 $lang['Male'] = 'Mê¿czyzna';
 $lang['Female'] = 'Kobieta';
 $lang['No_gender_specify'] = 'Nie wiadomo :)';
-$lang['not_gg_account'] = 'Brak numeru lub has³a bramki GG. Poinformuj administratora';
-$lang['not_gg_addresat'] = 'Brak adresata';
-$lang['wrong_gg_addresat'] = 'Z³y format numeru adresata';
-$lang['not_gg_msg'] = 'Brak tre¶ci wiadomo¶ci';
-$lang['gg_too_long'] = 'D³ugo¶æ wiadomo¶ci nie mo¿e przekraczaæ 1800 znaków';
 $lang['topic_expire_mod'] = 'Wyga¶nie za: ';
 $lang['Forum_link_visited'] = 'Odwiedzono %d razy';
 $lang['Redirect'] = 'Przeniesienie';
@@ -954,15 +941,9 @@ $lang['more_topicicons'] = 'Masz do wyboru wiêksz± ilo¶æ ikon, po klikniêciu w t
 $lang['online_minutes'] = 'Jest na forum minut: <b>%s</b>';
 $lang['online_hours'] = 'Jest na forum godzin: <b>%s</b>';
 $lang['Viewing_topic'] = 'Czyta temat';
-$lang['gg_header_info_pm'] = 'Otrzyma³' .  (($he) ? 'e' : 'a') . '¶ now± prywatn± wiadomo¶æ od: %s';
-$lang['gg_notify_topic'] = 'W obserwowanym przez Ciebie temacie: "%s" u¿ytkownik: %s napisa³ odpowied¼';
-$lang['l_notify_gg_privmsg'] = 'Link do twojej skrzynki: %s';
-$lang['l_notify_gg_topic'] = '¯eby zobaczyæ temat kliknij: %s';
 $lang['generate_queries'] = 'Zapytañ do SQL';
 $lang['unread_post'] = 'Nieczytany post';
 $lang['refresh'] = 'Od¶wie¿';
-$lang['new_board_topic'] = 'Na forum %s u¿ytkownik %s napisa³ nowy temat: %s';
-$lang['new_board_post'] = 'Na forum %s u¿ytkownik %s napisa³ odpowied¼ w temacie: %s';
 $lang['Search_post_time'] = 'Wy¶wietl posty z ostatnich:</span><br /><span class="gensmall">Wy¶wietla posty napisane w ci±gu ostatniego wybranego czasu. Mo¿na wybraæ metodê wy¶wietlania: Posty i Tematy';
 $lang['user_not_allowpm'] = 'Nie mo¿esz wys³aæ prywatnej wiadomo¶ci do tego u¿ytkownika. U¿ytkownik wy³±czy³ prywatne wiadomo¶ci.';
 $lang['open_all_new_window'] = 'Otwórz wszystkie w nowych oknach';
@@ -1080,6 +1061,9 @@ $lang['Not_admin'] = 'Nie posiadasz uprawnieñ administratora.';
 $lang['Posting_disabled'] = 'Pisanie postów i tematów zosta³o wy³±czone.';
 $lang['Registering_disabled'] = 'Rejestracja zosta³a wy³±czona.';
 $lang['Pruning_unread_posts'] = 'Twoje konto przekroczy³o maksymaln± ilo¶æ nieprzeczytanych postów: <b>%s</b> Zosta³y usuniête informacje o nieczytanych postach z wyj±tkiem postów napisanych przez ostatnie: <b>%s</b> dni<br />Ilo¶æ usuniêtych nieczytanych postów: <b>%s</b><br /><br />Aby nie otrzymywaæ tego komunikatu, przeczytaj oznaczone tematy, lub oznacz wszystkie jako przeczytane.<br />W ka¿dej chwili mo¿esz skorzystaæ z wyszukiwarki postów aby odszukaæ posty napisane w ci±gu ostatniego wybranego czasu.';
+$lang['Tell_friend_recipient_missing'] = 'Podaj imiê i adres e-mail odbiorcy.';
+$lang['Tell_friend_message_missing'] = 'Wpisz tre¶æ wiadomo¶ci.';
+
 //
 // That's all Folks!
 // -------------------------------------------------

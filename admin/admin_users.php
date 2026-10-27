@@ -133,7 +133,6 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 		$password_confirm = ( !empty($HTTP_POST_VARS['password_confirm']) ) ? trim(strip_tags(xhtmlspecialchars( $HTTP_POST_VARS['password_confirm'] ) )) : '';
 
 		$icq = ( !empty($HTTP_POST_VARS['icq']) ) ? trim(strip_tags( $HTTP_POST_VARS['icq'] ) ) : '';
-		$aim = ( !empty($HTTP_POST_VARS['aim']) ) ? trim(strip_tags( $HTTP_POST_VARS['aim'] ) ) : '';
 		$msn = ( !empty($HTTP_POST_VARS['msn']) ) ? trim(strip_tags( $HTTP_POST_VARS['msn'] ) ) : '';
 		$yim = ( !empty($HTTP_POST_VARS['yim']) ) ? trim(strip_tags( $HTTP_POST_VARS['yim'] ) ) : '';
 
@@ -146,7 +145,7 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 		$custom_rank = ( !empty($HTTP_POST_VARS['custom_rank']) ) ? trim(strip_tags( $HTTP_POST_VARS['custom_rank'] ) ) : '';
 		$signature = ( !empty($HTTP_POST_VARS['signature']) ) ? trim(str_replace('<br />', "\n", $HTTP_POST_VARS['signature'] ) ) : '';
 
-		validate_optional_fields($icq, $aim, $msn, $yim, $website, $location, $occupation, $interests, $custom_color, $custom_rank, $signature);
+		validate_optional_fields($icq, $msn, $yim, $website, $location, $occupation, $interests, $custom_color, $signature);
 
 		if ( $custom_fields_exists )
 		{
@@ -158,14 +157,12 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 		}
 
 		$viewemail = ( isset( $HTTP_POST_VARS['viewemail']) ) ? ( ( $HTTP_POST_VARS['viewemail'] ) ? TRUE : 0 ) : 1;
-		$viewaim = ( isset( $HTTP_POST_VARS['viewaim']) ) ? ( ( $HTTP_POST_VARS['viewaim'] ) ? TRUE : 0 ) : 1;
 		$allowviewonline = ( isset( $HTTP_POST_VARS['hideonline']) ) ? ( ( $HTTP_POST_VARS['hideonline'] ) ? 0 : TRUE ) : TRUE;
 		$notifyreply = ( isset( $HTTP_POST_VARS['notifyreply']) ) ? ( ( $HTTP_POST_VARS['notifyreply'] ) ? TRUE : 0 ) : 0;
 		$user_ip_login_check = ( isset( $HTTP_POST_VARS['user_ip_login_check']) ) ? ( ( $HTTP_POST_VARS['user_ip_login_check'] ) ? 1 : 0 ) : 1;
 		$notifypm = ( isset( $HTTP_POST_VARS['notifypm']) ) ? ( ( $HTTP_POST_VARS['notifypm'] ) ? TRUE : 0 ) : TRUE;
 		$popuppm = ( isset( $HTTP_POST_VARS['popup_pm']) ) ? ( ( $HTTP_POST_VARS['popup_pm'] ) ? TRUE : 0 ) : TRUE;
 		$allowpm = ( isset( $HTTP_POST_VARS['allowpm']) ) ? ( ( $HTTP_POST_VARS['allowpm'] ) ? TRUE : 0 ) : TRUE;
-		$user_notify_gg = ( isset( $HTTP_POST_VARS['user_notify_gg']) ) ? ( ( $HTTP_POST_VARS['user_notify_gg'] ) ? TRUE : 0 ) : TRUE;
 		$attachsig = ( isset( $HTTP_POST_VARS['attachsig']) ) ? ( ( $HTTP_POST_VARS['attachsig'] ) ? TRUE : 0 ) : 0;
 		$allowhtml = ( isset( $HTTP_POST_VARS['allowhtml']) ) ? intval( $HTTP_POST_VARS['allowhtml'] ) : $board_config['allow_html'];
 		$allowbbcode = ( isset( $HTTP_POST_VARS['allowbbcode']) ) ? intval( $HTTP_POST_VARS['allowbbcode'] ) : $board_config['allow_bbcode'];
@@ -209,7 +206,6 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 			$password = '';
 			$password_confirm = '';
 			$icq = stripslashes($icq);
-			$aim = xhtmlspecialchars(stripslashes($aim));
 			$msn = xhtmlspecialchars(stripslashes($msn));
 			$yim = xhtmlspecialchars(stripslashes($yim));
 
@@ -916,7 +912,7 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 				}
 
 				$sql = "UPDATE " . USERS_TABLE . "
-					SET " . $username_sql . $passwd_sql . "user_email = '" . str_replace("\'", "''", $email) . "', user_icq = '" . str_replace("\'", "''", $icq) . "', user_website = '" . str_replace("\'", "''", $website) . "', user_occ = '" . str_replace("\'", "''", $occupation) . "', user_from = '" . str_replace("\'", "''", $location) . "' $sql_custom_fields user_interests = '" . str_replace("\'", "''", $interests) . "', user_custom_color = '" . str_replace("\'", "''", $custom_color) . "', user_custom_rank = '" . str_replace("\'", "''", $custom_rank) . "', user_sig = '" . str_replace("\'", "''", $signature) . "', user_viewemail = $viewemail, user_viewaim = $viewaim, user_aim = '" . str_replace("\'", "''", $aim) . "', user_yim = '" . str_replace("\'", "''", $yim) . "', user_msnm = '" . str_replace("\'", "''", $msn) . "', user_attachsig = $attachsig, user_sig_bbcode_uid = '$signature_bbcode_uid', user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_allowsig = $user_allowsig, user_allowbbcode = $allowbbcode, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popuppm, allowpm = $allowpm, user_notify_gg = $user_notify_gg, user_lang = '" . str_replace("\'", "''", $user_lang) . "', user_style = $user_style, user_timezone = $user_timezone, user_active = $user_status $reset_act_key, user_rank = $user_rank, user_gender = '$gender' " . $avatar_sql . $signature_sql . ", disallow_forums = '" . str_replace("\'", "''", $disallow_forums_sql) . "', can_custom_ranks = $can_custom_ranks, can_custom_color = $can_custom_color, can_topic_color = $can_topic_color, user_allow_helped = $user_allow_helped, user_ip_login_check = $user_ip_login_check
+					SET " . $username_sql . $passwd_sql . "user_email = '" . str_replace("\'", "''", $email) . "', user_icq = '" . str_replace("\'", "''", $icq) . "', user_website = '" . str_replace("\'", "''", $website) . "', user_occ = '" . str_replace("\'", "''", $occupation) . "', user_from = '" . str_replace("\'", "''", $location) . "' $sql_custom_fields user_interests = '" . str_replace("\'", "''", $interests) . "', user_custom_color = '" . str_replace("\'", "''", $custom_color) . "', user_custom_rank = '" . str_replace("\'", "''", $custom_rank) . "', user_sig = '" . str_replace("\'", "''", $signature) . "', user_viewemail = $viewemail, user_yim = '" . str_replace("\'", "''", $yim) . "', user_msnm = '" . str_replace("\'", "''", $msn) . "', user_attachsig = $attachsig, user_sig_bbcode_uid = '$signature_bbcode_uid', user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_allowsig = $user_allowsig, user_allowbbcode = $allowbbcode, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popuppm, allowpm = $allowpm, user_lang = '" . str_replace("\'", "''", $user_lang) . "', user_style = $user_style, user_timezone = $user_timezone, user_active = $user_status $reset_act_key, user_rank = $user_rank, user_gender = '$gender' " . $avatar_sql . $signature_sql . ", disallow_forums = '" . str_replace("\'", "''", $disallow_forums_sql) . "', can_custom_ranks = $can_custom_ranks, can_custom_color = $can_custom_color, can_topic_color = $can_topic_color, user_allow_helped = $user_allow_helped, user_ip_login_check = $user_ip_login_check
 					WHERE user_id = $user_id";
 				if ( !$result = $db->sql_query($sql) )
 				{
@@ -982,7 +978,6 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 			$password_confirm = '';
 
 			$icq = stripslashes($icq);
-			$aim =  xhtmlspecialchars(str_replace('+', ' ', stripslashes($aim)));
 			$msn =  xhtmlspecialchars(stripslashes($msn));
 			$yim =  xhtmlspecialchars(stripslashes($yim));
 
@@ -1035,7 +1030,6 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 		$password_confirm = '';
 
 		$icq = $this_userdata['user_icq'];
-		$aim = xhtmlspecialchars(str_replace('+', ' ', $this_userdata['user_aim'] ));
 		$msn = xhtmlspecialchars($this_userdata['user_msnm']);
 		$yim = xhtmlspecialchars($this_userdata['user_yim']);
 
@@ -1052,11 +1046,9 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 		$custom_rank = xhtmlspecialchars($this_userdata['user_custom_rank']);
 		$user_sig_image = $this_userdata['user_sig_image'];
 		$viewemail = $this_userdata['user_viewemail'];
-		$viewaim = $this_userdata['user_viewaim'];
 		$notifypm = $this_userdata['user_notify_pm'];
 		$popuppm = $this_userdata['user_popup_pm'];
 		$allowpm = $this_userdata['allowpm'];
-		$user_notify_gg = $this_userdata['user_notify_gg'];
 		$notifyreply = $this_userdata['user_notify'];
 		$user_ip_login_check = $this_userdata['user_ip_login_check'];
 		$attachsig = $this_userdata['user_attachsig'];
@@ -1193,7 +1185,6 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 			$s_hidden_fields .= '<input type="hidden" name="username" value="' . str_replace("\"", "&quot;", $username) . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="email" value="' . str_replace("\"", "&quot;", $email) . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="icq" value="' . str_replace("\"", "&quot;", $icq) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="aim" value="' . str_replace("\"", "&quot;", $aim) . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="msn" value="' . str_replace("\"", "&quot;", $msn) . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="yim" value="' . str_replace("\"", "&quot;", $yim) . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="website" value="' . str_replace("\"", "&quot;", $website) . '" />';
@@ -1204,12 +1195,10 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 			$s_hidden_fields .= '<input type="hidden" name="signature" value="' . str_replace("\"", "&quot;", $signature) . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="user_sig_image" value="' . str_replace("\"", "&quot;", $user_sig_image) . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="viewemail" value="' . $viewemail . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="viewaim" value="' . $viewaim . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="gender" value="' . $gender . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="notifypm" value="' . $notifypm . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="popup_pm" value="' . $popuppm . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="allowpm" value="' . $allowpm . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_notify_gg" value="' . $user_notify_gg . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="notifyreply" value="' . $notifyreply . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="user_ip_login_check" value="' . $user_ip_login_check . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="attachsig" value="' . $attachsig . '" />';
@@ -1407,7 +1396,6 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 			'L_MESSENGER' => $lang['MSNM'],
 			'L_YAHOO' => $lang['YIM'],
 			'L_WEBSITE' => $lang['Website'],
-			'L_AIM' => $lang['AIM'],
 			'L_LOCATION' => $lang['Location'],
 			'L_OCCUPATION' => $lang['Occupation'],
 			'L_BOARD_LANGUAGE' => $lang['Board_lang'],
@@ -1463,10 +1451,8 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 			'L_NOTIFY_ON_REPLY' => $lang['Always_notify'],
 			'L_POPUP_ON_PRIVMSG' => $lang['Popup_on_privmsg'],
 			'L_ALLOWPM' => $lang['allowpm'],
-			'L_NOTIFY_GG' => $lang['l_notify_gg'],
 			'L_PREFERENCES' => $lang['Preferences'],
 			'L_PUBLIC_VIEW_EMAIL' => $lang['Public_view_email'],
-			'L_PUBLIC_VIEW_AIM' => $lang['Public_view_aim'],
 			'L_ITEMS_REQUIRED' => $lang['Items_required'],
 			'L_REGISTRATION_INFO' => $lang['Registration_info'],
 			'L_PROFILE_INFO' => $lang['Profile_info'],
@@ -1485,7 +1471,6 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 			'YIM' => $yim,
 			'ICQ' => $icq,
 			'MSN' => $msn,
-			'AIM' => $aim,
 			'OCCUPATION' => $occupation,
 			'INTERESTS' => $interests,
 			'GENDER' => $gender,
@@ -1505,8 +1490,6 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 			'ALLOW_SIG_IMAGE_NO' => ( !$allow_sig_image ) ? ' checked="checked"' : '',
 			'VIEW_EMAIL_YES' => ($viewemail) ? $checked : '',
 			'VIEW_EMAIL_NO' => (!$viewemail) ? $checked : '',
-			'VIEW_AIM_YES' => ($viewaim) ? $checked : '',
-			'VIEW_AIM_NO' => (!$viewaim) ? $checked : '',
 			'HIDE_USER_YES' => (!$allowviewonline) ? $checked : '',
 			'HIDE_USER_NO' => ($allowviewonline) ? $checked : '',
 			'NOTIFY_PM_YES' => ($notifypm) ? $checked : '',
@@ -1515,8 +1498,6 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 			'POPUP_PM_NO' => (!$popuppm) ? $checked : '',
 			'ALLOWPM_YES' => ($allowpm) ? $checked : '',
 			'ALLOWPM_NO' => (!$allowpm) ? $checked : '',
-			'NOTIFY_GG_YES' => ($user_notify_gg) ? $checked : '',
-			'NOTIFY_GG_NO' => (!$user_notify_gg) ? $checked : '',
 			'ALWAYS_ADD_SIGNATURE_YES' => ($attachsig) ? $checked : '',
 			'ALWAYS_ADD_SIGNATURE_NO' => (!$attachsig) ? $checked : '',
 			'NOTIFY_REPLY_YES' => ( $notifyreply ) ? $checked : '',

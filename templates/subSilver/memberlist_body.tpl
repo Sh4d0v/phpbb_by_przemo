@@ -29,9 +29,6 @@
 		<th class="thTop" nowrap="nowrap">{L_LAST_VISIT}</th>
 		<!-- END llogin -->
 		<th class="thTop" nowrap="nowrap">{L_POSTS}</th>
-		<!-- BEGIN aim -->
-		<th class="thTop" nowrap="nowrap">GG</th>
-		<!-- END aim -->
 		<th class="thCornerR" nowrap="nowrap">{L_WEBSITE}</th>
 	</tr>
 	<!-- BEGIN memberrow -->
@@ -45,9 +42,6 @@
 		<td class="{memberrow.ROW_CLASS}" width="15%" align="center" nowrap="nowrap" valign="middle"><span class="gensmall">{memberrow.LAST_VISIT}</span></td>
 		<!-- END llogin_row -->
 		<td class="{memberrow.ROW_CLASS}" width="3%" align="center" valign="middle"><span class="gen">{memberrow.POSTS}</span></td>
-		<!-- BEGIN aim_row -->
-		<td class="{memberrow.ROW_CLASS}" width="3%" align="center" valign="middle"><span class="gen">{memberrow.AIM_STATUS_IMG}</span></td>
-		<!-- END aim_row -->
 		<td class="{memberrow.ROW_CLASS}" width="5%" align="center">&nbsp;{memberrow.WWW_IMG}&nbsp;</td>
 	</tr>
 	<!-- END memberrow -->

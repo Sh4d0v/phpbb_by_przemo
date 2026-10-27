@@ -120,7 +120,6 @@ INSERT INTO phpbb_config (config_name, config_value) VALUES ('clevell', '0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('cleveld', '0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('cignore', '1');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('cquick', '1');
-INSERT INTO phpbb_config (config_name, config_value) VALUES ('cgg', '1');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('csearch', '1');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('cicq', '0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('cllogin', '1');
@@ -177,15 +176,12 @@ INSERT INTO phpbb_config (config_name, config_value) VALUES ('address_whois', 'h
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('u_o_t_d', '1');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('expire', '1');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('expire_value', '0');
-INSERT INTO phpbb_config (config_name, config_value) VALUES ('numer_gg', '');
-INSERT INTO phpbb_config (config_name, config_value) VALUES ('haslo_gg', '');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('block_time', '40');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('max_login_error', '10');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('min_password_len', '3');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('force_complex_password', '0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('password_not_login', '0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('del_user_notify', '1');
-INSERT INTO phpbb_config (config_name, config_value) VALUES ('require_aim', '0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('require_website', '0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('require_location', '0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('post_footer', '1');
@@ -288,10 +284,6 @@ INSERT INTO phpbb_config (config_name, config_value) VALUES ('not_anonymous_quic
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('max_smilies', '24');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('search_enable', '1');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('overlib',	'1');
-INSERT INTO phpbb_config (config_name, config_value) VALUES ('notify_gg', '1');
-INSERT INTO phpbb_config (config_name, config_value) VALUES ('admin_notify_gg',	'');
-INSERT INTO phpbb_config (config_name, config_value) VALUES ('admin_notify_reply', '1');
-INSERT INTO phpbb_config (config_name, config_value) VALUES ('admin_notify_message', '0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('topic_start_date', '1');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('topic_start_dateformat', 'd-m-y');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('autorepair_tables', '1');
@@ -441,8 +433,8 @@ INSERT INTO phpbb_topics (topic_id, forum_id, topic_title, topic_poster, topic_t
 INSERT INTO phpbb_topics (topic_id, forum_id, topic_title, topic_poster, topic_time, topic_views, topic_replies, topic_status, topic_vote, topic_type, topic_first_post_id, topic_last_post_id, topic_moved_id, topic_attachment, topic_icon, topic_expire, topic_color, topic_title_e, topic_action, topic_action_user, topic_action_date, topic_tree_width) VALUES (7, 6, 'test drugiego newsa', 2, 1065137383, 0, 0, 0, 0, 0, 9, 9, 0, 0, 0, 0, '', '', 0, 0, 0, 0);
 
 # -- users
-INSERT INTO phpbb_users (user_id, username, user_level, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_interests, user_sig, user_viewemail, user_style, user_aim, user_yim, user_msnm, user_posts, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_pm, user_notify_pm, user_allow_viewonline, user_rank, user_avatar, user_lang, user_timezone, user_actkey, user_newpasswd, user_notify, user_active) VALUES ( -1, 'Anonymous', 0, 0, '', '', '', '', '', '', '', '', 0, NULL, '', '', '', 0, 1, 1, 1, 1, 0, 1, 1, 0, '', 'polish', 1.00, '', '', 0, 0);
-INSERT INTO phpbb_users (user_id, username, user_level, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_interests, user_sig, user_viewemail, user_style, user_aim, user_yim, user_msnm, user_posts, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_pm, user_notify_pm, user_popup_pm, user_allow_viewonline, user_rank, user_avatar, user_lang, user_timezone, user_actkey, user_newpasswd, user_notify, user_active) VALUES ( 2, 'Admin', 1, 0, '21232f297a57a5a743894a0e4a801fc3', 'admin@yourdomain.com', '', '', '', '', '', '', 1, 1, '', '', '', 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, '', '', 1.00, '', '', 0, 1);
+INSERT INTO phpbb_users (user_id, username, user_level, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_interests, user_sig, user_viewemail, user_style, user_yim, user_msnm, user_posts, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_pm, user_notify_pm, user_allow_viewonline, user_rank, user_avatar, user_lang, user_timezone, user_actkey, user_newpasswd, user_notify, user_active) VALUES ( -1, 'Anonymous', 0, 0, '', '', '', '', '', '', '', '', 0, NULL, '', '', 0, 1, 1, 1, 1, 0, 1, 1, 0, '', 'polish', 1.00, '', '', 0, 0);
+INSERT INTO phpbb_users (user_id, username, user_level, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_interests, user_sig, user_viewemail, user_style, user_yim, user_msnm, user_posts, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_pm, user_notify_pm, user_popup_pm, user_allow_viewonline, user_rank, user_avatar, user_lang, user_timezone, user_actkey, user_newpasswd, user_notify, user_active) VALUES ( 2, 'Admin', 1, 0, '21232f297a57a5a743894a0e4a801fc3', 'admin@yourdomain.com', '', '', '', '', '', '', 1, 1, '', '', 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, '', '', 1.00, '', '', 0, 1);
 
 # -- user_group
 INSERT INTO phpbb_user_group (group_id, user_id, user_pending) VALUES (1, -1, 0);

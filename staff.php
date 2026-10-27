@@ -175,27 +175,6 @@ while($staff = $db->sql_fetchrow($results))
 
 		$msn = ($staff['user_msnm']) ? '<a href="mailto: '.$staff['user_msnm'].'"><img src="' . $images['icon_msnm'] . '" alt="' . $lang['MSNM'] . '" title="' . $lang['MSNM'] . '" border="0" /></a>' : '';
 		$yim = ($staff['user_yim']) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $staff['user_yim'] . '&amp;.src=pg"><img src="' . $images['icon_yim'] . '" alt="' . $lang['YIM'] . '" title="' . $lang['YIM'] . '" border="0" /></a>' : '';
-
-		if ( !empty($staff['user_aim']) )
-		{
-			$gg_url = append_sid("gg.$phpEx?mode=gadu&amp;" . POST_USERS_URL . "=$user_id");
-			if ( $staff['user_viewaim'] )
-			{
-				$aim_status_img = '<a href="gg:' .$staff['user_aim'] . '"><img alt="' .$staff['user_aim'] . '" src="http://status.gadu-gadu.pl/users/status.asp?id=' . $staff['user_aim'] . '&amp;styl=1" border="0" width="16" height="16" /></a>';
-				$aim_img = '<a href="' . $gg_url . '"><img src="' . $images['icon_aim'] . '" alt="' . $lang['AIM'] . '" title="' . $lang['AIM'] . ': ' . $staff['user_aim'] . '" border="0" /></a>';
-			}
-			else
-			{
-				$aim_status_img = '';
-				$aim_img = '<a href="' . $gg_url . '"><img src="' . $images['icon_aim'] . '" alt="" border="0" /></a>';
-			}
-		}
-		else
-		{
-			$aim_status_img = '';
-			$aim_img = '';
-		}
-
 		$icq = ($staff['user_icq']) ? '<a href="http://wwp.icq.com/scripts/contact.dll?msgto=' . $staff['user_icq'] . '"><img src="' . $images['icon_icq'] . '" alt="' . $lang['ICQ'] . '" title="' . $lang['ICQ'] . '" border="0" /></a>' : '';
 		$www = ($staff['user_website']) ? '<a href="' . $staff['user_website'] . '" target="_userwww" rel="nofollow"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" border="0" /></a>' : '';
 
@@ -251,16 +230,10 @@ while($staff = $db->sql_fetchrow($results))
 			'PM' => $pm,
 			'MSN' => $msn,
 			'YIM' => $yim,
-			'AIM' => $aim_img,
-			'AIM_STATUS_IMG' => $aim_status_img,
 			'ICQ' => $icq,
 			'WWW' => $www)
 		);
 
-		if ( $board_config['cgg'] )
-		{
-			$template->assign_block_vars('staff.aim_row', array());
-		}
 	}
 	$users_match = true;
 }
@@ -282,10 +255,6 @@ $template->assign_vars(array(
 	'L_WWW' => $lang['Website'])
 );
 
-if ( $board_config['cgg'] )
-{
-	$template->assign_block_vars('aim', array());
-}
 
 $template->pparse('body');
 
