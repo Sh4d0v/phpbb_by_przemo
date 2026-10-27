@@ -39,33 +39,42 @@ $template->set_filenames(array(
 	"body" => "admin/logs_body.tpl")
 );
 
-$start = ( isset($HTTP_GET_VARS['start']) ) ? intval($HTTP_GET_VARS['start']) : 0;
-if ( isset($HTTP_POST_VARS['start']) )
+$start = 0;
+if ( isset($HTTP_GET_VARS['start']) && is_scalar($HTTP_GET_VARS['start']) )
 {
-	$start = intval($HTTP_POST_VARS['start']);
+	$start = max(0, intval($HTTP_GET_VARS['start']));
+}
+if ( isset($HTTP_POST_VARS['start']) && is_scalar($HTTP_POST_VARS['start']) )
+{
+	$start = max(0, intval($HTTP_POST_VARS['start']));
+}
+
+$mode = '';
+if ( isset($HTTP_GET_VARS['mode']) && is_scalar($HTTP_GET_VARS['mode']) )
+{
+	$mode = $HTTP_GET_VARS['mode'];
+}
+if ( isset($HTTP_POST_VARS['mode']) && is_scalar($HTTP_POST_VARS['mode']) )
+{
+	$mode = $HTTP_POST_VARS['mode'];
 }
 
 if ( isset($HTTP_POST_VARS['order']) )
-	{
-		$sort_order = ($HTTP_POST_VARS['order'] == 'ASC') ? 'ASC' : 'DESC';
-	}
+{
+	$sort_order = ($HTTP_POST_VARS['order'] == 'ASC') ? 'ASC' : 'DESC';
+}
 else if ( isset($HTTP_GET_VARS['order']) )
-	{
-		$sort_order = ($HTTP_GET_VARS['order'] == 'ASC') ? 'ASC' : 'DESC';
-	}
+{
+	$sort_order = ($HTTP_GET_VARS['order'] == 'ASC') ? 'ASC' : 'DESC';
+}
 else
-	{
-		$sort_order = 'ASC';
-	}
+{
+	$sort_order = 'DESC';
+}
 
 if ( file_exists(@phpbb_realpath($phpbb_root_path . 'install_tables.' . $phpEx)) )
 {
 	message_die(GENERAL_MESSAGE, 'You have not yet delete the file install_tables.php : do it before trying to see this page.');
-}
-
-if ( isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']) )
-{
-	$mode = ( isset($HTTP_POST_VARS['mode']) ) ? $HTTP_POST_VARS['mode'] : $HTTP_GET_VARS['mode'];
 }
 
 if ( $mode == 'rem_all' )
@@ -98,11 +107,16 @@ if ( $mode == 'rem_all' )
 	}
 }
 
+if ( !in_array($mode, array('time', 'username', 'mode'), true) )
+{
+	$mode = 'time';
+}
+
 //
 // Logs sorting
 //
 $mode_types_text = array($lang['Time'], $lang['Username'], $lang['Action']);
-$mode_types = array('time', 'username', 'mode', 'id');
+$mode_types = array('time', 'username', 'mode');
 $select_sort_mode = '<select name="mode">';
 for($i = 0; $i < count($mode_types_text); $i++)
 {
@@ -126,6 +140,7 @@ $template->assign_vars(array(
 	'L_LOG_ACTIONS_TITLE' => $lang['Log_action_title'],
 	'L_LOG_ACTION_EXPLAIN' => $lang['Log_action_explain'],
 	'L_CHOOSE_SORT' => $lang['Choose_sort_method'],
+	'L_ORDER' => $lang['Sort'],
 	'L_GO' => $lang['Go'],
 	'L_CANCEL' => $lang['Cancel'],
 	'L_DELETE' => $lang['Delete'], 
@@ -147,28 +162,11 @@ $template->assign_vars(array(
 	'S_CANCEL_ACTION' => append_sid("admin_logging.$phpEx"))
 );
 
-if ( isset($mode) )
-{
-	switch( $mode )
-	{
-		case 'mode' :
-			$order_by = "mode $sort_order LIMIT $start, " . $board_config['topics_per_page'];
-			break;
-		case 'username' :
-			$order_by = "username $sort_order LIMIT $start, " . $board_config['topics_per_page'];
-			break;
-		case 'time' :
-			$order_by = "time $sort_order LIMIT $start, " . $board_config['topics_per_page'];
-			break;
-		default:
-			$order_by = "time DESC LIMIT $start, " . $board_config['topics_per_page'];
-			break;
-	}
-}
-else
-{
-	$order_by = "time DESC LIMIT $start, " . $board_config['topics_per_page'];
-}
+$sort_columns = array('time' => 'time', 'username' => 'username', 'mode' => 'mode');
+$sort_mode = $mode;
+$sort_column = $sort_columns[$sort_mode];
+$per_page = max(1, intval($board_config['topics_per_page']));
+$order_by = $sort_column . ' ' . $sort_order . ' LIMIT ' . $start . ', ' . $per_page;
 
 	$sql = "SELECT *
 		FROM " . LOGS_TABLE . "
@@ -178,38 +176,44 @@ else
 			message_die(CRITICAL_ERROR, "Could not query log informations", "", __LINE__, __FILE__, $sql);
 		}
 
-		$c_rows=0;
-        $rows = $c_name = $unique_uids = array();
-        while( $row = $db->sql_fetchrow($result) )
-        {
-            if( !in_array($row['user_id'],$unique_uids) ) $unique_uids[]=$row['user_id'];
+		$c_rows = 0;
+		$rows = $c_name = $unique_uids = array();
+		while ( $row = $db->sql_fetchrow($result) )
+		{
+			$user_id = intval($row['user_id']);
+			if ( !in_array($user_id, $unique_uids, true) )
+			{
+				$unique_uids[] = $user_id;
+			}
 
-            $rows[] = $row;
+			$rows[] = $row;
 			$c_rows++;
-        }
+		}
+		$db->sql_freeresult($result);
 
-        if( !empty($unique_uids) )
-        {
-            $sql = "SELECT user_id, username, user_level, user_jr FROM " . USERS_TABLE . " WHERE user_id IN (".implode(',', $unique_uids).")";
-            if(!$result = $db->sql_query($sql)){
-                message_die(CRITICAL_ERROR, "Could not retrieve information from users table", "", __LINE__, __FILE__, $sql);
-            }
-            while( $row = $db->sql_fetchrow($result) )
-            {
-                $colored_username = color_username($row['user_level'], $row['user_jr'], $row['user_id'], $row['username']);
-                $c_name[$row['user_id']]['username'] = $colored_username[0];
-                $c_name[$row['user_id']]['style']    = $colored_username[1];
-                $colored_username = '';
-            }
-        }
+		if ( !empty($unique_uids) )
+		{
+			$sql = "SELECT user_id, username, user_level, user_jr FROM " . USERS_TABLE . " WHERE user_id IN (" . implode(',', $unique_uids) . ")";
+			if ( !$result = $db->sql_query($sql) )
+			{
+				message_die(CRITICAL_ERROR, "Could not retrieve information from users table", "", __LINE__, __FILE__, $sql);
+			}
+			while ( $row = $db->sql_fetchrow($result) )
+			{
+				$colored_username = color_username($row['user_level'], $row['user_jr'], $row['user_id'], htmlspecialchars($row['username'], ENT_QUOTES, 'ISO-8859-2'));
+				$c_name[$row['user_id']]['username'] = $colored_username[0];
+				$c_name[$row['user_id']]['style'] = $colored_username[1];
+			}
+			$db->sql_freeresult($result);
+		}
 
 		for ($i = 0; $i < $c_rows; $i++)
 		{
-			$id_log = $rows[$i]['id_log'];
+			$id_log = intval($rows[$i]['id_log']);
 			$action = ucfirst($rows[$i]['mode']);
-			$topic = $rows[$i]['topic_id'];
-			$user_id = $rows[$i]['user_id'];
-			$username = ( !empty($c_name[$user_id]['username']) ) ? $c_name[$user_id]['username'] : $rows[$i]['username'];
+			$topic = intval($rows[$i]['topic_id']);
+			$user_id = intval($rows[$i]['user_id']);
+			$username = ( !empty($c_name[$user_id]['username']) ) ? $c_name[$user_id]['username'] : htmlspecialchars($rows[$i]['username'], ENT_QUOTES, 'ISO-8859-2');
 			$style    = ( !empty($c_name[$user_id]['style']) )    ? $c_name[$user_id]['style']    : '';
 			$user_ip = decode_ip($rows[$i]['user_ip']);
 			$date = $rows[$i]['time'];
@@ -234,7 +238,7 @@ else
 
 			$template->assign_block_vars('record_row', array(
 			'ID_LOG' => $id_log,
-			'ACTION' => $lang[$action],
+			'ACTION' => ( isset($lang[$action]) ) ? $lang[$action] : htmlspecialchars($action, ENT_QUOTES, 'ISO-8859-2'),
 			'TOPIC' => ($action != 'Admin' && $action != 'Delete_all') ? $topic : '',
 			'TOPIC_IMG' => ($action != 'Admin' && $action != 'Delete_all') ? '<a href="' . $log_url . '" target="_blank"><img src = "' .$phpbb_root_path . $images['icon_latest_reply']. '" alt="" border="0"></a>' : '',
 			'USER_ID' => $user_id,
@@ -244,9 +248,9 @@ else
 			'DATE' => create_date($board_config['default_dateformat'], $date, $board_config['board_timezone'], true))
 			);
 		}
-$db->sql_freeresult($result);
 
-$log_list = ( isset($HTTP_POST_VARS['log_list']) ) ? $HTTP_POST_VARS['log_list'] : array();
+$log_list = ( isset($HTTP_POST_VARS['log_list']) && is_array($HTTP_POST_VARS['log_list']) ) ? array_filter($HTTP_POST_VARS['log_list'], 'is_scalar') : array();
+$log_list = array_values(array_unique(array_filter(array_map('intval', $log_list), function($log_id) { return $log_id > 0; })));
 $delete = ( isset($HTTP_POST_VARS['delete']) ) ? $HTTP_POST_VARS['delete'] : '';
 
 $log_list_sql = implode(', ', $log_list);
@@ -273,25 +277,22 @@ if ( $log_list_sql != '' )
 	}
 }
 
-if ( $board_config['topics_per_page'] > 10 )
-{
+
 	$sql = "SELECT count(*) AS total
 		FROM " . LOGS_TABLE;
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Error getting total informations for logs', '', __LINE__, __FILE__, $sql);
-		}
+	if ( !($result = $db->sql_query($sql)) )
+	{
+		message_die(GENERAL_ERROR, 'Error getting total informations for logs', '', __LINE__, __FILE__, $sql);
+}
 
-		if ( $total = $db->sql_fetchrow($result) )
-		{
-			$total_records = $total['total'];
-			generate_pagination("admin_logging.$phpEx?mode=$mode&amp;order=$sort_order", $total_records, $board_config['topics_per_page'], $start). '&nbsp;';
-		}
-}
-else
-{
-	$total_records = 10;
-}
+	$total = $db->sql_fetchrow($result);
+	$db->sql_freeresult($result);
+	$total_records = ( $total ) ? intval($total['total']) : 0;
+	$pagination = generate_pagination("admin_logging.$phpEx?mode=$sort_mode&amp;order=$sort_order", $total_records, $per_page, $start) . '&nbsp;';
+	$template->assign_vars(array(
+		'PAGE_NUMBER' => ( $total_records > 0 ) ? sprintf($lang['Page_of'], floor($start / $per_page) + 1, ceil($total_records / $per_page)) : '',
+		'PAGINATION' => $pagination)
+	);
 
 $template->pparse("body");
 
