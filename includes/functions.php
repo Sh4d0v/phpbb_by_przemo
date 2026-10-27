@@ -532,11 +532,12 @@ function get_auth_keys($cur = 'Root', $all = false, $level = -1, $max = -1, $aut
 			$keys['level'][$last_i]	= $level;
 			$keys['idx'][$last_i] = (isset($tree['keys'][$cur]) ? $tree['keys'][$cur] : -1);
 
-			// get sub-levels
-			for($i=0; $i < count($tree['sub'][$cur]); $i++)
+			// get sub-levels; leaf nodes do not have a sub entry
+			$sub_nodes = (isset($tree['sub'][$cur]) && is_array($tree['sub'][$cur])) ? $tree['sub'][$cur] : array();
+			for($i=0; $i < count($sub_nodes); $i++)
 			{
 				$tkeys = array();
-				$tkeys = get_auth_keys($tree['sub'][$cur][$i], $all, $orig_level+1, $max, $auth_key);
+				$tkeys = get_auth_keys($sub_nodes[$i], $all, $orig_level+1, $max, $auth_key);
 
 				// add sub-levels
 				for($j=0; $j < count($tkeys['id']); $j++)
@@ -2006,6 +2007,7 @@ function custom_fields($check = '', $view = false, $forum_id = '')
 
 	if ( $check )
 	{
+		$where = '';
 		if ( $check == 'viewable' )
 		{
 			if ( $view == 0 )
@@ -2050,10 +2052,18 @@ function custom_fields($check = '', $view = false, $forum_id = '')
 
 		$cache_name = 'multisqlcache_fieldsc_' . md5($sql);
 		$row = sql_cache('check', $cache_name);
-		if (!isset($row))
+		if (!is_array($row) || !isset($row['total']))
 		{
 			$result = $db->sql_query($sql);
+			if (!$result)
+			{
+				message_die(GENERAL_ERROR, 'Could not query custom field information', '', __LINE__, __FILE__, $sql);
+			}
 			$row = $db->sql_fetchrow($result);
+			if (!is_array($row))
+			{
+				$row = array('total' => 0);
+			}
 			sql_cache('write', $cache_name, $row);
 		}
 		if ( $row['total'] > 0 )
@@ -2089,12 +2099,25 @@ function custom_fields($check = '', $view = false, $forum_id = '')
 
 		$cache_name = 'multisqlcache_fields_' . md5($sql);
 		$row_f = sql_cache('check', $cache_name);
-		if (!isset($row_f))
+		if (!is_array($row_f))
 		{
 			$result = $db->sql_query($sql);
+			if (!$result)
+			{
+				message_die(GENERAL_ERROR, 'Could not query custom field information', '', __LINE__, __FILE__, $sql);
+			}
 			$row_f = $db->sql_fetchrowset($result);
+			if (!is_array($row_f))
+			{
+				$row_f = array();
+			}
 			sql_cache('write', $cache_name, $row_f);
 		}
+
+		$id = $desc = $max_value = $min_value = $numerics = array();
+		$requires = $desc_long = $set_form = $jumpbox = array();
+		$makelinks = $view_post = $prefix = $suffix = array();
+		$editable = $view_by = array();
 
 		for($i=0; $i < count($row_f); $i++)
 		{
@@ -2174,12 +2197,12 @@ function sql_cache($mode, $file, $data = '')
 {
 	global $sql_cache_enable, $sql_work, $phpbb_root_path, $phpEx;
 
-	if ( !$sql_cache_enable || !$sql_work ) { return false; }
+	if ( !$sql_cache_enable || !$sql_work ) { return ($mode == 'check') ? null : false; }
 
 	$cache_dir = $phpbb_root_path . 'cache/';
 	$filename  = $cache_dir . $file . ".$phpEx";
 
-	if ( !(@is_writable($cache_dir)) ) {  return false; }
+	if ( !(@is_writable($cache_dir)) ) { return ($mode == 'check') ? null : false; }
 
 	if ( $mode == 'check' )
     	{
@@ -2616,10 +2639,10 @@ function moderarots_list($forum_id, $mode)
 {
 	global $db, $phpEx, $moderators_list;
 
-	if ( !isset($moderators_list) )
+	if ( !isset($moderators_list) || !is_array($moderators_list) )
 	{
 		$moderators_list = sql_cache('check', 'moderators_list');
-		if (!isset($moderators_list))
+		if (!is_array($moderators_list))
 		{		
 			$moderators_list = $groups_check = $groups_check_se = array();
 			$sql = "SELECT aa.forum_id, g.group_id, g.group_name, g.group_single_user, g.group_type, g.group_color, g.group_prefix, g.group_style, u.username, u.user_id
@@ -2635,19 +2658,40 @@ function moderarots_list($forum_id, $mode)
 			}
 			while( $row = $db->sql_fetchrow($result) )
 			{
-				if ( $row['user_id'] && !(@in_array($row['user_id'], $moderators_list[$row['forum_id']]['mod_list'])) )
+				$forum_key = $row['forum_id'];
+				if (!isset($moderators_list[$forum_key]) || !is_array($moderators_list[$forum_key]))
+				{
+					$moderators_list[$forum_key] = array('mod_list' => array(), 'group_list' => array());
+				}
+				if (!isset($moderators_list[$forum_key]['mod_list']) || !is_array($moderators_list[$forum_key]['mod_list']))
+				{
+					$moderators_list[$forum_key]['mod_list'] = array();
+				}
+				if (!isset($moderators_list[$forum_key]['group_list']) || !is_array($moderators_list[$forum_key]['group_list']))
+				{
+					$moderators_list[$forum_key]['group_list'] = array();
+				}
+				if (!isset($groups_check[$forum_key]) || !is_array($groups_check[$forum_key]))
+				{
+					$groups_check[$forum_key] = array();
+				}
+				if (!isset($groups_check_se[$forum_key]) || !is_array($groups_check_se[$forum_key]))
+				{
+					$groups_check_se[$forum_key] = array();
+				}
+				if ( $row['user_id'] && !(@in_array($row['user_id'], $moderators_list[$forum_key]['mod_list'])) )
 				{
 					$moderators_list[$row['forum_id']]['mod_list'][] = $row['user_id'];
 				}
-				if ( $row['group_single_user'] == 0 && $row['group_type'] != GROUP_HIDDEN && !(@in_array($row['group_id'], $groups_check[$row['forum_id']]) ) )
+				if ( $row['group_single_user'] == 0 && $row['group_type'] != GROUP_HIDDEN && !(@in_array($row['group_id'], $groups_check[$forum_key]) ) )
 				{
-					$groups_check[$row['forum_id']][] = $row['group_id'];
-					$moderators_list[$row['forum_id']]['group_list'][] = array($row['group_id'], $row['group_name'], 0, $row['group_color'], $row['group_prefix'], $row['group_style']);
+					$groups_check[$forum_key][] = $row['group_id'];
+					$moderators_list[$forum_key]['group_list'][] = array($row['group_id'], $row['group_name'], 0, $row['group_color'], $row['group_prefix'], $row['group_style']);
 				}
-				else if ( $row['group_single_user'] == 1 && !(@in_array($row['user_id'], $groups_check_se[$row['forum_id']])) )
+				else if ( $row['group_single_user'] == 1 && !(@in_array($row['user_id'], $groups_check_se[$forum_key])) )
 				{
-					$groups_check_se[$row['forum_id']][] = $row['user_id'];
-					$moderators_list[$row['forum_id']]['group_list'][] = array($row['user_id'], $row['username'], 1);
+					$groups_check_se[$forum_key][] = $row['user_id'];
+					$moderators_list[$forum_key]['group_list'][] = array($row['user_id'], $row['username'], 1);
 				}
 			}
 			sql_cache('write', 'moderators_list', $moderators_list);
@@ -2657,9 +2701,10 @@ function moderarots_list($forum_id, $mode)
 	if ( $mode == 'groups' )
 	{
 		$return_groups = array();
-		for($i=0; $i < count($moderators_list[$forum_id]['group_list']); $i++)
+		$group_list = (isset($moderators_list[$forum_id]['group_list']) && is_array($moderators_list[$forum_id]['group_list'])) ? $moderators_list[$forum_id]['group_list'] : array();
+		for($i=0; $i < count($group_list); $i++)
 		{
-			$dat = $moderators_list[$forum_id]['group_list'][$i];
+			$dat = $group_list[$i];
 			if ( $dat[2] == 0 )
 			{
 				$return_groups[] = '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=" . $dat[0]) . '" class="gensmall" style="' . (($dat[3]) ? 'color: #' . $dat[3] . ';' : '') . (($dat[5]) ? $dat[5] . ';' : '') . '">' . $dat[4] . $dat[1] . '</a>';
@@ -2673,7 +2718,7 @@ function moderarots_list($forum_id, $mode)
 	}
 	else if ( $mode == 'mod' )
 	{
-		return (is_array($moderators_list[$forum_id]['mod_list'])) ? $moderators_list[$forum_id]['mod_list'] : array();
+		return (isset($moderators_list[$forum_id]['mod_list']) && is_array($moderators_list[$forum_id]['mod_list'])) ? $moderators_list[$forum_id]['mod_list'] : array();
 	}
 	return false;
 }

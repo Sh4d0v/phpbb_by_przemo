@@ -1206,6 +1206,7 @@ else
 	// a pending membership.
 	//
 	$in_group = array();
+	$s_member_groups_opt = array();
 	
 	if ( $userdata['session_logged_in'] ) 
 	{
