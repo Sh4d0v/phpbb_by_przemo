@@ -92,6 +92,7 @@ class Template {
 
 	// Root template directory.
 	var $root = '';
+	var $root_requested = '';
 
 	// Cache directory (compatible with default cache mod)
 	var $cachedir = '';
@@ -168,7 +169,16 @@ class Template {
 		);
 
 	/**
-	 * Constructor. Installs XS mod on first run or updates it and sets the root dir.
+	 * PHP 5+ constructor. PHP 8 no longer calls a method named after the class
+	 * automatically, so delegate to the legacy constructor to preserve setup.
+	 */
+	function __construct($root = '.')
+	{
+		$this->Template($root);
+	}
+
+	/**
+	 * Legacy constructor. Installs XS mod on first run or updates it and sets the root dir.
 	 */
 	function Template($root = '.')
 	{
@@ -318,9 +328,28 @@ class Template {
 	function set_rootdir($dir)
 	{
 		global $board_config, $phpbb_root_path;
-		if (!@is_dir($dir))
+		$this->root_requested = $dir;
+		if (!@is_dir($dir) || !$this->template_name($dir))
+		{
+			$relative_root = dirname(__FILE__) . '/../' . $dir;
+			if (@is_dir($relative_root) && $this->template_name($relative_root))
+			{
+				$dir = $relative_root;
+			}
+		}
+		if (!@is_dir($dir) || !$this->template_name($dir))
+		{
+			$default_template = !empty($this->tpldef) ? $this->tpldef : 'subSilver';
+			$dir = dirname(__FILE__) . '/../templates/' . $default_template;
+		}
+		if (!@is_dir($dir) || !$this->template_name($dir))
 		{
 			return false;
+		}
+		$resolved_dir = realpath($dir);
+		if ($resolved_dir !== false)
+		{
+			$dir = $resolved_dir;
 		}
 		$dir = str_replace('\\', '/', $dir);
 		// creating absolute path for cache
@@ -884,7 +913,7 @@ class Template {
 				$error = 'Template->make_filename(): Error - template file not found: ' . $filename;
 				if (defined('DEBUG_EXTRA') && DEBUG_EXTRA)
 				{
-					$error .= ' [template=' . $this->tpl . '; root=' . $this->root . '; path=' . $this->files[$handle] . ']';
+					$error .= ' [requested_root=' . $this->root_requested . '; template=' . $this->tpl . '; root=' . $this->root . '; path=' . $this->files[$handle] . ']';
 				}
 				die($error);
 			}
