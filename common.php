@@ -167,19 +167,19 @@ $subdirectory = '';
 // Default items that should be valid on all pages.
 // Defined here and not in page_header.php so they can be redefined in the code
 $nav_links['top'] = array ( 
-	'url' => append_sid($phpbb_root_dir."index.".$phpEx),
+	'url' => append_sid($phpbb_root_path."index.".$phpEx),
 	'title' => sprintf($lang['Forum_Index'], $board_config['sitename'])
 );
 $nav_links['search'] = array ( 
-	'url' => append_sid($phpbb_root_dir."search.".$phpEx),
+	'url' => append_sid($phpbb_root_path."search.".$phpEx),
 	'title' => $lang['Search']
 );
 $nav_links['help'] = array ( 
-	'url' => append_sid($phpbb_root_dir."faq.".$phpEx),
+	'url' => append_sid($phpbb_root_path."faq.".$phpEx),
 	'title' => $lang['FAQ']
 );
 $nav_links['author'] = array ( 
-	'url' => append_sid($phpbb_root_dir."memberlist.".$phpEx),
+	'url' => append_sid($phpbb_root_path."memberlist.".$phpEx),
 	'title' => $lang['Memberlist']
 );
 

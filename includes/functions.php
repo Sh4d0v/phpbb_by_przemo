@@ -184,18 +184,18 @@ function build_tree(&$cats, &$forums, &$new_topic_data, &$tracking_topics, &$tra
 	$tree_level = array();
 
 	// get the forums of the level
-	for($i=0; $i < count($parents[POST_FORUM_URL][$main]); $i++)
+	$forum_children = (isset($parents[POST_FORUM_URL][$main]) && is_array($parents[POST_FORUM_URL][$main])) ? $parents[POST_FORUM_URL][$main] : array();
+	foreach ($forum_children as $idx)
 	{
-		$idx = $parents[POST_FORUM_URL][$main][$i];
 		$tree_level['type'][] = POST_FORUM_URL;
 		$tree_level['id'][]	= $forums[$idx]['forum_id'];
 		$tree_level['sort'][] = $forums[$idx]['forum_order'];
 		$tree_level['data'][] = $forums[$idx];
 	}
 	// add the categories of this level
-	for($i=0; $i < count($parents[POST_CAT_URL][$main]); $i++)
+	$category_children = (isset($parents[POST_CAT_URL][$main]) && is_array($parents[POST_CAT_URL][$main])) ? $parents[POST_CAT_URL][$main] : array();
+	foreach ($category_children as $idx)
 	{
-		$idx = $parents[POST_CAT_URL][$main][$i];
 		$tree_level['type'][] = POST_CAT_URL;
 		$tree_level['id'][]	= $cats[$idx]['cat_id'];
 		$tree_level['sort'][] = $cats[$idx]['cat_order'];
@@ -223,6 +223,7 @@ function build_tree(&$cats, &$forums, &$new_topic_data, &$tracking_topics, &$tra
 		$tree['data'][]	= $tree_level['data'][$i];
 
 		$tree['sub'][$main][] = $key;
+		$tree['sub'][$key] = array();
 
 		// add sub levels
 		build_tree($cats, $forums, $new_topic_data, $tracking_topics, $tracking_forums, $tracking_all, $parents, $level, $tree_level['type'][$i] . $tree_level['id'][$i]);
@@ -325,7 +326,7 @@ function read_tree()
 	$new_topic_data = $tracking_topics = $tracking_forums = $tracking_all = array();
 
 	// build the tree
-	$tree = array();
+	$tree = array('data' => array(), 'sub' => array('Root' => array()));
 	build_tree($cats, $forums, $new_topic_data, $tracking_topics, $tracking_forums, $tracking_all, $parents);
 
 	return;
