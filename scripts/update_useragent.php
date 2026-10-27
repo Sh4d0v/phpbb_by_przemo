@@ -54,8 +54,8 @@ while ($i <= $max_posts)
 	{
 		if ( strpos($row['user_agent'], 'a:3:{') !== false )
 		{
-			$user_agent = @unserialize($row['user_agent']);
-			$user_agent = ($user_agent[2]) ? $user_agent[2] : '';
+			$user_agent_data = @phpbb_safe_unserialize($row['user_agent']);
+			$user_agent = (is_array($user_agent_data) && isset($user_agent_data[2]) && is_scalar($user_agent_data[2])) ? (string) $user_agent_data[2] : '';
 		}
 		else
 		{

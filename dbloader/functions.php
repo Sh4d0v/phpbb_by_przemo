@@ -4,6 +4,12 @@
 //
 function make_download($dbms, $dbhost, $dbname, $dbuser, $dbpasswd, $table_prefix)
 {
+	$dbms = dbloader_php_literal($dbms);
+	$dbhost = dbloader_php_literal($dbhost);
+	$dbname = dbloader_php_literal($dbname);
+	$dbuser = dbloader_php_literal($dbuser);
+	$dbpasswd = dbloader_php_literal($dbpasswd);
+	$table_prefix = dbloader_php_literal($table_prefix);
 	$config_file = '<?php' . "\n\n";
 	$config_file .= '//' . "\n";
 	$config_file .= '// phpBB 2.x auto-generated config file' . "\n";
@@ -333,8 +339,10 @@ Ostatnie zapytanie:<br /><span style="font-size:8pt"><pre style="height:110px; m
 function generate_error_notify(&$rt_data, $error_mode)
 {
 	$engine = ( $rt_data['alt_engine'] ) ? SQL_READER_FAST : SQL_READER_PMA;
-	$table_list = ( $rt_data['tables'] != '' )
-		? implode(', ', array_diff(tables_in_db(), unserialize($rt_data['tables'])))
+	$created_tables = ($rt_data['tables'] != '') ? phpbb_safe_unserialize($rt_data['tables']) : array();
+	$created_tables = is_array($created_tables) ? $created_tables : array();
+	$table_list = ($rt_data['tables'] != '')
+		? htmlspecialchars(implode(', ', array_diff(tables_in_db(), $created_tables)), ENT_QUOTES, 'ISO-8859-2')
 		: '';
 	return '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -361,7 +369,7 @@ label:hover {color:red}
 		. '). Na pewno chcesz kontynuowaæ wgrywanie pliku?'
 	: 'Poprzednie wczytywanie bazy SQL zosta³o przerwane. Mo¿esz zmieniæ ilo¶æ zapytañ lub algorytm wczytywania i je przywróciæ.' )
 	. '<br /><br />
-<form method="post" action="?mode=dbread&amp;step=error_notify_continue">
+<form method="post" action="?mode=dbread&amp;step=error_notify_continue">' . '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($_SESSION['dbloader_csrf_token'], ENT_QUOTES, 'ISO-8859-2') . '" />
 <b>Kontynuuj wczytywanie z algorytmem:</b><br />
 <input type="radio" name="new_engine" value="std" id="engine_1" '
 	. ( $engine == SQL_READER_PMA
@@ -395,5 +403,43 @@ label:hover {color:red}
 </span>
 </div>
 </body></html>';
+}
+function dbloader_php_literal($value)
+{
+	$value = (string) $value;
+	return str_replace(array('\\', "'"), array('\\\\', "\\'"), $value);
+}
+
+function dbloader_resolve_sql_file($candidate, $root)
+{
+	if (!is_string($candidate) || strpos($candidate, "\0") !== false || !function_exists('realpath'))
+	{
+		return false;
+	}
+	$root_real = realpath($root);
+	$file_real = realpath($candidate);
+	if ($root_real === false || $file_real === false || !is_file($file_real) || !is_readable($file_real) || !is_sql_file($file_real))
+	{
+		return false;
+	}
+	$root_prefix = rtrim($root_real, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+	if (strpos($file_real, $root_prefix) !== 0)
+	{
+		return false;
+	}
+	$allowed_files = scan_dir($root, 1);
+	foreach ($allowed_files as $relative_file)
+	{
+		if (strpos($relative_file, 'scripts/') === 0 || stristr($relative_file, 'admin_logs'))
+		{
+			continue;
+		}
+		$allowed_real = realpath(rtrim($root, '/\\') . DIRECTORY_SEPARATOR . $relative_file);
+		if ($allowed_real !== false && $allowed_real === $file_real)
+		{
+			return $file_real;
+		}
+	}
+	return false;
 }
 ?>

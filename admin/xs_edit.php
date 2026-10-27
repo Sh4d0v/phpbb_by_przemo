@@ -50,7 +50,11 @@ if(isset($HTTP_POST_VARS['filter_update']))
 }
 else
 {
-	$filter_data = @unserialize($filter);
+	$filter_data = @phpbb_safe_unserialize($filter);
+	if (!is_array($filter_data))
+	{
+		$filter_data = array();
+	}
 	if(empty($filter_data['ext']))
 	{
 		$filter_data['ext'] = '';

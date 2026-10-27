@@ -28,7 +28,7 @@ if (!$statistics->result_cache_used)
 	{
 		if ( $row['user_agent'] )
 		{
-			$agent = @unserialize($row['user_agent']);
+			$agent = @phpbb_safe_unserialize($row['user_agent']);
 			if ( is_array($agent) )
 			{
 				if ( !strpos($agent[0], 'unknown') )

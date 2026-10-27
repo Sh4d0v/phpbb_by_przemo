@@ -81,7 +81,11 @@ if ( !function_exists('mass_email') )
 
 			$message = $row['mass_email_text'];
 			$subject = $row['mass_email_subject'];
-			$bcc_list = unserialize($row['mass_email_bcc']);
+			$bcc_list = phpbb_safe_unserialize($row['mass_email_bcc']);
+			if (!is_array($bcc_list))
+			{
+				$bcc_list = array();
+			}
 			$use_html = $row['mass_email_html'];
 			$to = $row['mass_email_to'];
 		}
@@ -107,7 +111,7 @@ if ( !function_exists('mass_email') )
 		$emailer->from($board_config['email_from']);
 		$emailer->replyto($board_config['email_return_path']);
 
-		if ( is_array($bcc_list[$start]) )
+		if ( isset($bcc_list[$start]) && is_array($bcc_list[$start]) )
 		{
 			$users_ids = implode(', ', $bcc_list[$start]);
 

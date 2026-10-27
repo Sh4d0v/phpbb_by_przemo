@@ -33,18 +33,95 @@ function sql_quote($data)
 	return (str_replace("\'", "''", $data));
 }
 
+function phpbb_stats_valid_module_name($module_name)
+{
+	return is_string($module_name) && preg_match('/^[A-Za-z0-9_-]+$/D', $module_name);
+}
+
+function phpbb_stats_modules_path($modules_dir = null)
+{
+	global $phpbb_root_path, $stats_config;
+
+	if ($modules_dir === null)
+	{
+		$modules_dir = isset($stats_config['modules_dir']) ? trim($stats_config['modules_dir']) : '';
+	}
+	if (!is_string($modules_dir) || !preg_match('#^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*$#D', $modules_dir))
+	{
+		return false;
+	}
+
+	$root_path = realpath($phpbb_root_path);
+	$modules_path = ($root_path !== false) ? realpath($root_path . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $modules_dir)) : false;
+	$root_prefix = ($root_path !== false) ? rtrim($root_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR : '';
+
+	if ($modules_path === false || !is_dir($modules_path) || strncmp($modules_path, $root_prefix, strlen($root_prefix)) !== 0)
+	{
+		return false;
+	}
+
+	return $modules_path;
+}
+
+function phpbb_stats_module_path($module_name, $relative_file = '')
+{
+	$modules_path = phpbb_stats_modules_path();
+	if ($modules_path === false || !phpbb_stats_valid_module_name($module_name))
+	{
+		return false;
+	}
+
+	$module_path = realpath($modules_path . DIRECTORY_SEPARATOR . $module_name);
+	$modules_prefix = rtrim($modules_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+	if ($module_path === false || !is_dir($module_path) || strncmp($module_path, $modules_prefix, strlen($modules_prefix)) !== 0)
+	{
+		return false;
+	}
+	if ($relative_file === '')
+	{
+		return $module_path;
+	}
+
+	if (!is_string($relative_file))
+	{
+		return false;
+	}
+	$segments = explode('/', str_replace('\\', '/', $relative_file));
+	foreach ($segments as $segment)
+	{
+		if ($segment === '' || $segment === '.' || $segment === '..' || !preg_match('/^[A-Za-z0-9_.-]+$/D', $segment))
+		{
+			return false;
+		}
+	}
+
+	$module_prefix = rtrim($module_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+	$file_path = realpath($module_path . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relative_file));
+	if ($file_path === false || strncmp($file_path, $module_prefix, strlen($module_prefix)) !== 0 || !is_file($file_path))
+	{
+		return false;
+	}
+
+	return $file_path;
+}
+
 function generate_module_info($module_data)
 {
 	global $db, $phpbb_root_path, $stats_config;
 
-	$module_dir = trim($module_data['name']);
+	$module_dir = isset($module_data['name']) ? trim($module_data['name']) : '';
+	$info_file = phpbb_stats_module_path($module_dir, 'info.txt');
+	if ($info_file === false)
+	{
+		message_die(GENERAL_ERROR, 'Invalid statistics module path');
+	}
 
 	//
 	// Get Info from Cache or not...
 	//
-	if ($module_data['module_info_time'] == filemtime($phpbb_root_path . $stats_config['modules_dir'] . '/' . $module_dir . '/info.txt'))
+	if ($module_data['module_info_time'] == filemtime($info_file))
 	{
-		$ret_array = unserialize(stripslashes($module_data['module_info_cache']));
+		$ret_array = phpbb_safe_unserialize(stripslashes($module_data['module_info_cache']));
 	}
 	else
 	{
@@ -53,7 +130,7 @@ function generate_module_info($module_data)
 		$ret_array['default_update_time'] = 0;
 		$ret_array['condition_result'] = TRUE;
 		$condition = '';
-		$data_file = @file($phpbb_root_path . trim($stats_config['modules_dir']) . '/' . $module_dir . '/info.txt');
+		$data_file = @file($info_file);
 		
 		foreach ((array) $data_file as $key => $data)
 		{
@@ -135,7 +212,7 @@ function generate_module_info($module_data)
 
 		$sql = "UPDATE " . MODULES_TABLE . "
 		SET module_info_cache = '" . addslashes(serialize($ret_array)) . "',
-		module_info_time = " . filemtime($phpbb_root_path . $stats_config['modules_dir'] . '/' . $module_dir . '/info.txt') . "
+		module_info_time = " . filemtime($info_file) . "
 		WHERE module_id = " . intval($module_data['module_id']);
 
 		if (!$db->sql_query($sql))
@@ -143,6 +220,10 @@ function generate_module_info($module_data)
 			message_die(GENERAL_ERROR, 'Could not update Info Cache', '', __LINE__, __FILE__, $sql);
 		}
 		
+	}
+	if (!is_array($ret_array))
+	{
+		$ret_array = array('default_update_time' => 0, 'condition_result' => TRUE);
 	}
 	
 	$ret_array['dname'] = $module_dir;
@@ -164,20 +245,23 @@ function update_module_list()
 	//
 	$ret_list = array();
 
-	$handle = @opendir($phpbb_root_path . $stats_config['modules_dir']);
+	$modules_path = phpbb_stats_modules_path();
+	$handle = ($modules_path !== false) ? @opendir($modules_path) : false;
 
 	if (!$handle)
 	{
-		message_die(GENERAL_ERROR, "Unable to open directory " . $phpbb_root_path . $stats_config['modules_dir']);
+		message_die(GENERAL_ERROR, 'Unable to open statistics modules directory');
 	}
 
 	$dir_list = '';
 
 	while ($file = readdir($handle))
 	{
-		if ($file != '.' && $file != '..' && is_dir($phpbb_root_path . $stats_config['modules_dir'] . '/' . $file) && ($file != '_vti_cnf') && ($file != 'CVS') )
+		$module_path = phpbb_stats_module_path($file);
+		if ($file != '.' && $file != '..' && $module_path !== false && ($file != '_vti_cnf') && ($file != 'CVS'))
 		{
-			$dir_list .= ($dir_list == '') ? "'$file'" : ", '$file'";
+			$safe_module_name = $db->sql_escape($file);
+			$dir_list .= ($dir_list == '') ? "'$safe_module_name'" : ", '$safe_module_name'";
 
 			$sql = "SELECT MAX(display_order) as max
 			FROM " . MODULES_TABLE;
@@ -193,7 +277,7 @@ function update_module_list()
 
 			$sql = "SELECT module_id, name, display_order, active
 			FROM " . MODULES_TABLE . "
-			WHERE (name = '" . trim($file) . "')";
+			WHERE (name = '" . $safe_module_name . "')";
 
 			if (!$result = $db->sql_query($sql))
 			{
@@ -214,7 +298,7 @@ function update_module_list()
 
 				$sql = "INSERT INTO " . MODULES_TABLE . "
 				(module_id, name, display_order, module_info_cache, module_db_cache, module_result_cache)
-				VALUES (" . $next_id . ", '" . trim($file) . "', " . ($curr_max + 10) . ", '', '', '')";
+				VALUES (" . $next_id . ", '" . $safe_module_name . "', " . ($curr_max + 10) . ", '', '', '')";
 
 				if (!$db->sql_query($sql))
 				{
@@ -239,11 +323,14 @@ function update_module_list()
 		}
 	}
 
+	closedir($handle);
+
 	//
 	// Kill old module folders that were deleted
 	//
-	$sql = "DELETE FROM " . MODULES_TABLE . "
-	WHERE (name NOT IN ($dir_list))";
+	$sql = ($dir_list !== '')
+		? "DELETE FROM " . MODULES_TABLE . " WHERE (name NOT IN ($dir_list))"
+		: "DELETE FROM " . MODULES_TABLE;
 
 	if (!$db->sql_query($sql))
 	{
@@ -279,7 +366,10 @@ function get_module_list_from_db()
 
 		for ($i = 0; $i < count($rows); $i++)
 		{
-			$ret_list[$rows[$i]['module_id']] = $rows[$i]['name'];
+			if (phpbb_stats_valid_module_name($rows[$i]['name']) && phpbb_stats_module_path($rows[$i]['name']) !== false)
+			{
+				$ret_list[$rows[$i]['module_id']] = $rows[$i]['name'];
+			}
 		}
 	}
 
@@ -314,7 +404,10 @@ function get_module_data_from_db()
 
 		for ($i = 0; $i < $num_rows; $i++)
 		{
-			$ret_list[$rows[$i]['module_id']] = $rows[$i];
+			if (isset($rows[$i]['name']) && phpbb_stats_valid_module_name($rows[$i]['name']) && phpbb_stats_module_path($rows[$i]['name']) !== false)
+			{
+				$ret_list[$rows[$i]['module_id']] = $rows[$i];
+			}
 		}
 	}
 

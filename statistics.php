@@ -39,6 +39,10 @@ while ($row = $db->sql_fetchrow($result))
 }
 
 include($phpbb_root_path . 'includes/functions_stats.' . $phpEx);
+if (phpbb_stats_modules_path() === false)
+{
+	message_die(GENERAL_ERROR, 'Invalid statistics modules directory');
+}
 include($phpbb_root_path . 'includes/functions_module.' . $phpEx);
 
 //

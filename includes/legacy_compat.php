@@ -41,6 +41,17 @@ if (!function_exists('set_magic_quotes_runtime')) {
 	}
 }
 
+if (!function_exists('phpbb_safe_unserialize')) {
+	function phpbb_safe_unserialize($serialized)
+	{
+		if (!is_string($serialized) || $serialized === '') {
+			return false;
+		}
+
+		return @unserialize($serialized, array('allowed_classes' => false));
+	}
+}
+
 // The old database abstraction uses ext/mysql fetch-mode constants with mysqli.
 if (!defined('MYSQL_ASSOC')) {
 	define('MYSQL_ASSOC', defined('MYSQLI_ASSOC') ? MYSQLI_ASSOC : 1);

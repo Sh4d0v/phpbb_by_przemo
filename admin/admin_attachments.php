@@ -467,8 +467,12 @@ if ($mode == 'manage')
 
 	for ($i = 0; $i < sizeof($yes_no_switches); $i++)
 	{
-		eval("\$" . $yes_no_switches[$i] . "_yes = ( \$new_attach['" . $yes_no_switches[$i] . "'] != '0' ) ? 'checked=\"checked\"' : '';");
-		eval("\$" . $yes_no_switches[$i] . "_no = ( \$new_attach['" . $yes_no_switches[$i] . "'] == '0' ) ? 'checked=\"checked\"' : '';");
+		$switch_name = $yes_no_switches[$i];
+		$value = isset($new_attach[$switch_name]) ? $new_attach[$switch_name] : '0';
+		$yes_name = $switch_name . '_yes';
+		$no_name = $switch_name . '_no';
+		$$yes_name = ($value != '0') ? 'checked="checked"' : '';
+		$$no_name = ($value == '0') ? 'checked="checked"' : '';
 	}
 
 	if (!function_exists('ftp_connect'))
@@ -655,7 +659,11 @@ if ($mode == 'shadow')
 		'S_ATTACH_ACTION' => append_sid('admin_attachments.' . $phpEx . '?mode=shadow'))
 	);
 
-	$table_attachments = array();
+	$table_attachments = array(
+		'attach_id' => array(),
+		'physical_filename' => array(),
+		'comment' => array()
+	);
 	$assign_attachments = array();
 	$file_attachments = array();
 
@@ -701,7 +709,11 @@ if ($mode == 'shadow')
 	$file_attachments = collect_attachments();
 
 	$shadow_attachments = array();
-	$shadow_row = array();	
+	$shadow_row = array(
+		'attach_id' => array(),
+		'physical_filename' => array(),
+		'comment' => array()
+	);
 
 	//
 	// Now determine the needed Informations

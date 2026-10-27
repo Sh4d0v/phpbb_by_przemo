@@ -432,14 +432,24 @@ function xs_get_style_header($filename, $str = '')
 		return false;
 	}
 	$start = strlen(STYLE_HEADER_START);
+	if (strlen($str) < $start + 9 + strlen(STYLE_HEADER_END))
+	{
+		$xs_header_error = $lang['xs_style_header_error_invalid'];
+		return false;
+	}
 	$str1 = substr($str, $start, 8);
-	$data = unpack('Nvar1/Nvar2', $str1);
+	$data = @unpack('Nvar1/Nvar2', $str1);
+	if (!is_array($data))
+	{
+		$xs_header_error = $lang['xs_style_header_error_invalid'];
+		return false;
+	}
 	$start += 8;
 	$header_size = $data['var1'];
 	$filesize = $data['var2'];
 	$total = ord($str[$start]);
 	$start ++;
-	if($total < 3)
+	if($total < 3 || $total > XS_MAX_ITEMS_PER_STYLE || $start + $total > strlen($str))
 	{
 		$xs_header_error = $lang['xs_style_header_error_invalid'];
 		return false;
@@ -460,7 +470,12 @@ function xs_get_style_header($filename, $str = '')
 		else	$items[] = $str1;
 		$start += $items_len[$i];
 	}
-	if(substr($str, $start, strlen(STYLE_HEADER_END)) !== STYLE_HEADER_END)
+	if(substr($str, $start, strlen(STYLE_HEADER_END)) !== STYLE_HEADER_END
+		|| $header_size !== $start + strlen(STYLE_HEADER_END)
+		|| $header_size > 10240 || $filesize < $header_size
+		|| $tpl === '' || strlen($tpl) > 64 || trim($tpl) !== $tpl || rtrim($tpl, ' .') !== $tpl
+		|| strpos($tpl, '/') !== false || strpos($tpl, '\\') !== false || strpos($tpl, ':') !== false
+		|| preg_match('/[\x00-\x1F\x7F]/', $tpl))
 	{
 		$xs_header_error = $lang['xs_style_header_error_invalid'];
 		return false;
@@ -476,6 +491,27 @@ function xs_get_style_header($filename, $str = '')
 		);
 }
 
+
+function xs_safe_archive_path($path)
+{
+	if (!is_string($path) || $path === '' || strlen($path) > 255
+		|| preg_match('/[\x00-\x1F\x7F]/', $path) || strpos($path, '\\') !== false
+		|| $path[0] === '/' || preg_match('/^[A-Za-z]:/', $path))
+	{
+		return false;
+	}
+
+	$path_parts = explode('/', rtrim($path, '/'));
+	foreach ($path_parts as $path_part)
+	{
+		if ($path_part === '' || $path_part === '.' || $path_part === '..' || strpos($path_part, ':') !== false)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
 
 // check if cache is writable
 function xs_check_cache($filename)

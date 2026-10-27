@@ -38,10 +38,23 @@ if(empty($template->xs_version) || $template->xs_version !== 7)
 define('IN_XS', true);
 include_once('xs_include.' . $phpEx);
 
-$tpl = isset($HTTP_POST_VARS['tpl']) ? $HTTP_POST_VARS['tpl'] : (isset($HTTP_GET_VARS['tpl']) ? $HTTP_GET_VARS['tpl'] : '');
-$filename = $phpbb_root_path . 'templates/' . $tpl . '/xs_config.cfg';
+$tpl_value = isset($HTTP_POST_VARS['tpl']) ? $HTTP_POST_VARS['tpl'] : (isset($HTTP_GET_VARS['tpl']) ? $HTTP_GET_VARS['tpl'] : '');
+$tpl = is_string($tpl_value) ? $tpl_value : '';
+$templates_root = realpath($phpbb_root_path . 'templates');
+$style_dir = false;
+$filename = '';
 
-if(empty($tpl))
+if ($tpl !== '' && $tpl !== '.' && $tpl !== '..' && !preg_match('/[\/\\\\\x00-\x1F\x7F]/', $tpl) && $templates_root !== false)
+{
+	$style_dir = realpath($templates_root . DIRECTORY_SEPARATOR . $tpl);
+	$templates_prefix = rtrim($templates_root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+	if ($style_dir !== false && strpos($style_dir, $templates_prefix) === 0 && is_dir($style_dir))
+	{
+		$filename = $style_dir . DIRECTORY_SEPARATOR . 'xs_config.cfg';
+	}
+}
+
+if ($filename === '')
 {
 	xs_error($lang['xs_invalid_style_name']);
 }

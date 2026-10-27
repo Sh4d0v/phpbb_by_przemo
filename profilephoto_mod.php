@@ -80,38 +80,36 @@ function user_photo_url($mode, &$error, &$error_msg, $photo_filename)
 {
 	global $board_config, $lang;
 
-	if ( !preg_match('#^(http)|(ftp):\/\/#i', $photo_filename) )
+	if (!is_string($photo_filename))
+	{
+		$error = true;
+		$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['Wrong_remote_avatar_format'] : $lang['Wrong_remote_avatar_format'];
+		return;
+	}
+	if (!preg_match('#^http://#i', $photo_filename))
 	{
 		$photo_filename = 'http://' . $photo_filename;
 	}
 
-//	if ( !preg_match('#^(http:\/\/[a-z0-9\-]+?\.([a-z0-9\-]+\.)*[a-z]+(:[0-9]+)*\/[^\"]*?\.(gif|jpg|jpeg|png)$)#is', $photo_filename) )
-
-	if ( !preg_match('(gif|jpg|jpeg|png)', end(explode('.',$photo_filename))) )
+	$image = phpbb_fetch_remote_image($photo_filename, isset($board_config['photo_filesize']) ? $board_config['photo_filesize'] : 0);
+	if ($image === false)
 	{
 		$error = true;
-		$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['Wrong_remote_avatar_format'] : $lang['Wrong_remote_avatar_format'];
-		return;
-	}
-	if (preg_match('/(&|\?|\.php)/i',$photo_filename))
-	{
-		$error = true;
-		$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['Wrong_remote_avatar_format'] : $lang['Wrong_remote_avatar_format'];
+		$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['Wrong_remote_avatar_format'] : $lang['Wrong_remote_avatar_format'];
 		return;
 	}
 
-	list($width, $height) = @getimagesize($photo_filename);
-	
-	if ( ($width > $board_config['photo_max_width']) || ($height > $board_config['photo_max_height']) )
+	if ($image['width'] > $board_config['photo_max_width'] || $image['height'] > $board_config['photo_max_height'])
 	{
 		$l_photo_size = sprintf($lang['Avatar_imagesize'], $board_config['photo_max_width'], $board_config['photo_max_height']);
-
 		$error = true;
-		$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $l_photo_size : $l_photo_size;
+		$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $l_photo_size : $l_photo_size;
 		return;
 	}
 
-	return ( $mode == 'editprofile' ) ? " user_photo = '" . str_replace("\'", "''", $photo_filename) . "', user_photo_type = " . USER_AVATAR_REMOTE : '';
+	return ($mode == 'editprofile')
+		? " user_photo = '" . str_replace("'", "''", $photo_filename) . "', user_photo_type = " . USER_AVATAR_REMOTE
+		: '';
 }
 
 function user_photo_upload($mode, $photo_mode, &$current_photo, &$current_type, &$error, &$error_msg, $photo_filename, $photo_realname, $photo_filesize, $photo_filetype)
@@ -120,71 +118,41 @@ function user_photo_upload($mode, $photo_mode, &$current_photo, &$current_type, 
 
 	$ini_val = ( @phpversion() >= '4.0.0' ) ? 'ini_get' : 'get_cfg_var';
 
-	if ( $photo_mode == 'remote' && preg_match('/^(http:\/\/)?([\w\-\.]+)\:?([0-9]*)\/(.*)$/', $photo_filename, $url_ary) )
+	if ($photo_mode == 'remote')
 	{
-		if ( empty($url_ary[4]) )
+		$remote_image = phpbb_fetch_remote_image($photo_filename, isset($board_config['photo_filesize']) ? $board_config['photo_filesize'] : 0);
+		if ($remote_image === false)
 		{
 			$error = true;
-			$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['Incomplete_URL'] : $lang['Incomplete_URL'];
+			$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['File_no_data'] : $lang['File_no_data'];
 			return;
 		}
 
-		$base_get = '/' . $url_ary[4];
-		$port = ( !empty($url_ary[3]) ) ? $url_ary[3] : 80;
-
-		if ( !($fsock = @fsockopen($url_ary[2], $port, $errno, $errstr)) )
+		$photo_data = $remote_image['body'];
+		$photo_filesize = strlen($photo_data);
+		$photo_filetype = $remote_image['mime'];
+		$width = $remote_image['width'];
+		$height = $remote_image['height'];
+		$tmp_path = (!@$ini_val('safe_mode') && !@$ini_val('open_basedir')) ? sys_get_temp_dir() : './' . $board_config['photo_path'] . '/tmp';
+		$tmp_filename = @tempnam($tmp_path, 'photo-');
+		if (!$tmp_filename || !($fptr = @fopen($tmp_filename, 'wb')))
 		{
-			$error = true;
-			$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['No_connection_URL'] : $lang['No_connection_URL'];
-			return;
-		}
-
-		@fputs($fsock, "GET $base_get HTTP/1.1\r\n");
-		@fputs($fsock, "HOST: " . $url_ary[2] . "\r\n");
-		@fputs($fsock, "Connection: close\r\n\r\n");
-
-		unset($photo_data);
-		while( !@feof($fsock) )
-		{
-			$photo_data .= @fread($fsock, $board_config['photo_filesize']);
-		}
-		@fclose($fsock);
-
-		if ( !preg_match('/Content-Length\: ([0-9]+)[^\/ ][\s]+/i', $photo_data, $file_data1) || !preg_match('/Content-Type\: image\/[x\-]*([a-z]+)[\s]+/i', $photo_data, $file_data2) )
-		{
-			$error = true;
-			$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['File_no_data'] : $lang['File_no_data'];
-			return;
-		}
-
-		$photo_filesize = $file_data1[1];
-		$photo_filetype = $file_data2[1];
-
-		if ( !$error && $photo_filesize > 0 && $photo_filesize < $board_config['photo_filesize'] )
-		{
-			$photo_data = substr($photo_data, strlen($photo_data) - $photo_filesize, $photo_filesize);
-
-			$tmp_path = ( !@$ini_val('safe_mode') && !@$ini_val('open_basedir') ) ? '/tmp' : './' . $board_config['photo_path'] . '/tmp';
-			$tmp_filename = tempnam($tmp_path, uniqid($user_ip) . '-');
-
-			$fptr = @fopen($tmp_filename, 'wb');
-			$bytes_written = @fwrite($fptr, $photo_data, $photo_filesize);
-			@fclose($fptr);
-
-			if ( $bytes_written != $photo_filesize )
+			if ($tmp_filename)
 			{
 				@unlink($tmp_filename);
-				message_die(GENERAL_ERROR, 'Could not write photo file to local storage. Please contact the board administrator with this message', '', __LINE__, __FILE__);
 			}
-
-			list($width, $height) = @getimagesize($tmp_filename);
-		}
-		else
-		{
-			$l_photo_size = sprintf($lang['Avatar_filesize'], round($board_config['photo_filesize'] / 1024));
-
 			$error = true;
-			$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $l_photo_size : $l_photo_size;
+			$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['File_no_data'] : $lang['File_no_data'];
+			return;
+		}
+		$bytes_written = @fwrite($fptr, $photo_data);
+		@fclose($fptr);
+		if ($bytes_written !== $photo_filesize)
+		{
+			@unlink($tmp_filename);
+			$error = true;
+			$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['File_no_data'] : $lang['File_no_data'];
+			return;
 		}
 	}
 	else if ( $photo_mode == 'local' && file_exists($photo_filename) && preg_match('/\.(jpg|jpeg|gif|png)$/i', $photo_realname) )
@@ -213,7 +181,7 @@ function user_photo_upload($mode, $photo_mode, &$current_photo, &$current_type, 
 
 	if ( $width <= $board_config['photo_max_width'] && $height <= $board_config['photo_max_height'] )
 	{
-		$new_filename = uniqid($user_ip) . $imgtype;
+		$new_filename = bin2hex(random_bytes(16)) . $imgtype;
 
 		if ( $mode == 'editprofile' && $current_type == USER_AVATAR_UPLOAD && $current_photo != '' )
 		{
@@ -225,7 +193,13 @@ function user_photo_upload($mode, $photo_mode, &$current_photo, &$current_type, 
 
 		if( $photo_mode == 'remote' )
 		{
-			@copy($tmp_filename, './' . $board_config['photo_path'] . "/$new_filename");
+			if (!@copy($tmp_filename, './' . $board_config['photo_path'] . "/$new_filename"))
+			{
+				@unlink($tmp_filename);
+				$error = true;
+				$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['File_no_data'] : $lang['File_no_data'];
+				return;
+			}
 			@unlink($tmp_filename);
 		}
 		else
@@ -244,10 +218,13 @@ function user_photo_upload($mode, $photo_mode, &$current_photo, &$current_type, 
 				$move_file = 'copy';
 			}
 
-			$move_file($photo_filename, './' . $board_config['photo_path'] . "/$new_filename");
+			if (!is_uploaded_file($photo_filename) || !$move_file($photo_filename, './' . $board_config['photo_path'] . "/$new_filename"))
+			{
+				message_die(GENERAL_ERROR, 'Unable to upload profile photo', '', __LINE__, __FILE__);
+			}
 		}
 
-		@chmod('./' . $board_config['photo_path'] . "/$new_filename", 0777);
+		@chmod('./' . $board_config['photo_path'] . "/$new_filename", 0644);
 
 		$photo_sql = " user_photo = '$new_filename', user_photo_type = " . USER_AVATAR_UPLOAD;
 	}

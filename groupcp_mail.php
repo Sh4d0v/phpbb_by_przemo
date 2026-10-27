@@ -63,7 +63,11 @@ function mass_email($bcc_list, $to, $use_html, $message, $subject, $start)
 
 		$message = $row['mass_email_text'];
 		$subject = $row['mass_email_subject'];
-		$bcc_list = unserialize($row['mass_email_bcc']);
+		$bcc_list = phpbb_safe_unserialize($row['mass_email_bcc']);
+		if (!is_array($bcc_list))
+		{
+			$bcc_list = array();
+		}
 		$use_html = $row['mass_email_html'];
 		$to = $row['mass_email_to'];
 	}
@@ -89,7 +93,7 @@ function mass_email($bcc_list, $to, $use_html, $message, $subject, $start)
 	$emailer->from($userdata['user_email']);
 	$emailer->replyto($userdata['user_email']);
 
-	if ( is_array($bcc_list[$start]) )
+	if ( isset($bcc_list[$start]) && is_array($bcc_list[$start]) )
 	{
 		$users_ids = implode(', ', $bcc_list[$start]);
 

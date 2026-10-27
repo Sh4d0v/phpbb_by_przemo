@@ -58,6 +58,10 @@ while ($row = $db->sql_fetchrow($result))
 }
 
 include($phpbb_root_path . 'includes/functions_stats.' . $phpEx);
+if (phpbb_stats_modules_path() === false)
+{
+	message_die(GENERAL_ERROR, 'Invalid statistics modules directory');
+}
 include($phpbb_root_path . 'includes/functions_module.' . $phpEx);
 include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . $phpEx);
 
@@ -197,10 +201,16 @@ if ($submit && $mode == 'config')
 
 	if ( !empty($HTTP_POST_VARS['modules_dir_set']) )
 	{
-		$update_value = ( !empty($HTTP_POST_VARS['modules_dir_set']) ) ? $HTTP_POST_VARS['modules_dir_set'] : '';
+		$update_value = (isset($HTTP_POST_VARS['modules_dir_set']) && is_string($HTTP_POST_VARS['modules_dir_set'])) ? trim($HTTP_POST_VARS['modules_dir_set']) : '';
+
+		if (phpbb_stats_modules_path($update_value) === false)
+		{
+			message_die(GENERAL_MESSAGE, 'Invalid statistics modules directory');
+		}
 
 		if ($stats_config['modules_dir'] != $update_value)
 		{
+			$update_value = $db->sql_escape($update_value);
 			$sql = "UPDATE " . STATS_CONFIG_TABLE . "
 			SET config_value = '$update_value'
 			WHERE (config_name = 'modules_dir')";

@@ -2524,7 +2524,7 @@ for($i = 0; $i < $total_posts; $i++)
 		$post_reply_img = '<a href="' . $temp_url . '" title="' . $lang['Post_reply_pm'] . '"><img src="' . $images['post_reply_new'] . '" border="0" /></a>';
 	}
 
-	$user_agent = ($board_config['cagent'] && $postrow[$i]['user_agent'] && !$ignore_this_post && $show_post && $userdata['cagent']) ? unserialize($postrow[$i]['user_agent']) : '';
+	$user_agent = ($board_config['cagent'] && $postrow[$i]['user_agent'] && !$ignore_this_post && $show_post && $userdata['cagent']) ? phpbb_safe_unserialize($postrow[$i]['user_agent']) : '';
 
 	$template->assign_block_vars('postrow', array(
 		'ICON' => $icon,

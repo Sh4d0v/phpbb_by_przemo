@@ -168,7 +168,8 @@ if(!count($urls))
 // getting data
 for($i=0; $i<count($urls); $i++)
 {
-	$arr = @file($urls[$i]);
+	$update_response = (isset($urls[$i]) && is_string($urls[$i])) ? phpbb_fetch_remote_file($urls[$i], 1048576) : false;
+	$arr = ($update_response !== false && $update_response !== '') ? preg_split('/\r\n|\r|\n/', $update_response) : array();
 	if(empty($arr))
 	{
 		// cannot connect. show it as error message

@@ -82,7 +82,11 @@ $config_data = array(
 $cookie_config = array();
 
 $_cookie_config = md5('_cookie_config' . $userdata['user_id']);
-$cookie_read_config = unserialize(stripslashes($HTTP_COOKIE_VARS[$unique_cookie_name . $_cookie_config]));
+$cookie_read_config = isset($HTTP_COOKIE_VARS[$unique_cookie_name . $_cookie_config]) ? phpbb_safe_unserialize(stripslashes($HTTP_COOKIE_VARS[$unique_cookie_name . $_cookie_config])) : array();
+if (!is_array($cookie_read_config))
+{
+	$cookie_read_config = array();
+}
 
 foreach($config_data as $key => $val)
 {

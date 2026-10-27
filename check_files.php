@@ -18,7 +18,7 @@
  *
  ***************************************************************************/
 
-$only_admin = 0; // Tylko admin ma dostep do check_files ?
+$only_admin = 1; // Naprawy i raporty sa dostepne tylko dla administratorow.
 
 define('IN_PHPBB', true);
 
@@ -57,9 +57,38 @@ else
 $lang['checksum_correct'] = ($lang['checksum_correct']) ? $lang['checksum_correct'] : 'correct checksum';
 $lang['checksum_current'] = ($lang['checksum_current']) ? $lang['checksum_current'] : 'current checksum';
 
-$mode = $_GET['mode'];
-$type = $_GET['type'];
+$mode = isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : '');
+$type = isset($_POST['type']) ? $_POST['type'] : (isset($_GET['type']) ? $_GET['type'] : '');
 $cf = 'check_files.' . $phpEx;
+
+if (isset($userdata) && is_array($userdata) && $userdata['user_level'] == ADMIN)
+{
+	$repair_fields = array('repair', 'repair_w', 'repair_ug');
+	$repair_requested = false;
+	foreach ($repair_fields as $repair_field)
+	{
+		if (isset($_GET[$repair_field]) || isset($_POST[$repair_field]))
+		{
+			$repair_requested = true;
+			break;
+		}
+	}
+
+	if ($repair_requested && (strtoupper(isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '') !== 'POST' || !check_sid(isset($_POST['sid']) ? $_POST['sid'] : '')))
+	{
+		http_response_code(403);
+		exit('Invalid repair request. Reload the report and try again.');
+	}
+}
+
+function check_files_repair_form_start($type, $field)
+{
+	global $cf, $userdata;
+	$sid = isset($userdata['session_id']) ? htmlspecialchars($userdata['session_id'], ENT_QUOTES, 'ISO-8859-2') : '';
+	$type = htmlspecialchars($type, ENT_QUOTES, 'ISO-8859-2');
+	$field = htmlspecialchars($field, ENT_QUOTES, 'ISO-8859-2');
+	return '<form action="' . $cf . '" method="post"><input type="hidden" name="sid" value="' . $sid . '" /><input type="hidden" name="mode" value="sql" /><input type="hidden" name="type" value="' . $type . '" /><input type="hidden" name="' . $field . '" value="1" /><button type="submit">';
+}
 
 function md5_checksum($file)
 {
@@ -277,7 +306,7 @@ if ( defined('PHPBB_INSTALLED') )
 
 		if ( $type == 'posts_text' || $all )
 		{
-			if ( isset($_GET['repair']) )
+			if ( isset($_POST['repair']) )
 			{
 				$sql = "SELECT post_id
 					FROM " . POSTS_TABLE;
@@ -378,7 +407,7 @@ if ( defined('PHPBB_INSTALLED') )
 			}
 			if ( $pt_diff || $p_diff )
 			{
-				$print_result .= '<tr><td><a href="' . $cf . '?mode=sql&amp;type=posts_text&amp;repair=1">' . $lang['delete_empty_posts'] . '</a></td></tr>';
+				$print_result .= '<tr><td>' . check_files_repair_form_start('posts_text', 'repair') . htmlspecialchars($lang['delete_empty_posts'], ENT_QUOTES, 'ISO-8859-2') . '</button></form></td></tr>';
 			}
 		}
 
@@ -629,7 +658,7 @@ if ( defined('PHPBB_INSTALLED') )
 
 			if ( $forums )
 			{
-				if ( isset($_GET['repair_w']) )
+				if ( isset($_POST['repair_w']) )
 				{
 					$sql_w = "DELETE FROM " . TOPICS_TABLE . "
 							WHERE forum_id NOT IN($forums)";
@@ -665,7 +694,7 @@ if ( defined('PHPBB_INSTALLED') )
 					{
 						$echo_ids .= ($echo_ids) ? ', [' . $wforum_ids[$i] . ']' : '[' . $wforum_ids[$i] . ']';
 					}
-					$print_result .= '<tr><td><br /><br />' . sprintf($lang['empty_topics'], $sql_results_name['without_forum'], $echo_ids, '<a href="' . $cf . '?mode=sql&amp;type=without_forum&amp;repair_w=1">', '</a>') . '</td></tr>';
+					$print_result .= '<tr><td><br /><br />' . sprintf($lang['empty_topics'], $sql_results_name['without_forum'], $echo_ids, check_files_repair_form_start('without_forum', 'repair_w'), '</button></form>') . '</td></tr>';
 				}
 			}
 		}
@@ -832,7 +861,7 @@ if ( defined('PHPBB_INSTALLED') )
             while($row = $db->sql_fetchrow($result)) $uids[$row['user_id']] = $row['group_id'];
             $db->sql_freeresult($result);
 
-            if ( isset($_GET['repair_ug']) && !empty($uids) )
+            if ( isset($_POST['repair_ug']) && !empty($uids) )
             {
                 foreach($uids as $k => $v)
                 {
@@ -870,7 +899,7 @@ if ( defined('PHPBB_INSTALLED') )
                 {
                     $gecho_ids[] = '<a href="profile.'.$phpEx.'?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $k . '">' . $k . '</a>';
                 }
-                $print_result .= '<tr><td><br /><br />' . sprintf($lang['users_without_groups'], count($uids), implode(',',$gecho_ids), '<a href="' . $cf . '?mode=sql&amp;type=users&amp;repair_ug=1">', '</a>') . '</td></tr>';
+                $print_result .= '<tr><td><br /><br />' . sprintf($lang['users_without_groups'], count($uids), implode(',',$gecho_ids), check_files_repair_form_start('users', 'repair_ug'), '</button></form>') . '</td></tr>';
             }
         }
 

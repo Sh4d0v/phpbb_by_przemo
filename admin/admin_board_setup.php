@@ -141,10 +141,18 @@ if ( isset($HTTP_POST_VARS['action']) )
 			{
 				message_die(GENERAL_ERROR, "Could not get last saved configuration data",__LINE__, __FILE__, $sql);
 			}
-			$last_value = unserialize($row['config_value']);
+			$last_value = phpbb_safe_unserialize($row['config_value']);
+			if (!is_array($last_value))
+			{
+				message_die(GENERAL_ERROR, 'Could not decode saved configuration data', '', __LINE__, __FILE__, $sql);
+			}
 
 			foreach( $last_value as $table => $data )
 			{
+				if (!is_array($data))
+				{
+					continue;
+				}
 				foreach( $data as $field => $val )
 				{
 					$sql = "UPDATE " . $table_prefix . $table . "

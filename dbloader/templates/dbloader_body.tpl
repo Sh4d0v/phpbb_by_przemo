@@ -207,6 +207,7 @@ label:hover {
        {CONTENT}
 <!-- BEGIN login -->
 <form action="{PHP_SELF}" method="post">
+<input type="hidden" name="csrf_token" value="{CSRF_TOKEN}" />
  Skrypt jest zabezpieczony has³em. Aby móc z nim dalej pracowaæ musisz je
  wpisaæ w pole poni¿ej.<br /><br />
  <input type="password" name="password"> <input type="submit" value="Zaloguj">
@@ -248,7 +249,8 @@ wed³ug poni¿szego schematu.<br /><br />
 <h5><span style="color:red">UWAGA! Po zakoñczeniu pracy DumpLoadera KONIECZNIE wy³±cz skrypt (ustaw $twoje_ip na 'DISABLED')</span></h5>
 <!-- END index -->
 <!-- BEGIN config -->
-<form action="{PHP_SELF}?mode=makeconfig" method="post"> 
+<form action="{PHP_SELF}?mode=makeconfig" method="post">
+<input type="hidden" name="csrf_token" value="{CSRF_TOKEN}" />
 <table width="100%" cellpadding="2" cellspacing="1" border="0" class="forumline"> 
  <tr> 
   <td class="row1" align="right" style="width:300px"><span class="gen">Typ Bazy Danych:&nbsp;</span></td>
@@ -288,6 +290,7 @@ wed³ug poni¿szego schematu.<br /><br />
 </form>
 <!-- BEGIN code -->
 <form action="{PHP_SELF}?mode=makeconfig" method="post">
+<input type="hidden" name="csrf_token" value="{CSRF_TOKEN}" />
  <table border="0" cellspacing="0">
   <tr>
    <th style="width:50%">Info</th>
@@ -326,6 +329,7 @@ wed³ug poni¿szego schematu.<br /><br />
 <!-- END config -->
 <!-- BEGIN forumconfig -->
 <form action="{PHP_SELF}?mode=forumconfig" method="post">
+<input type="hidden" name="csrf_token" value="{CSRF_TOKEN}" />
 <!-- BEGIN result -->
 <div class="quote" style="padding:2px; margin:5px">
  {forumconfig.result.RESULT}
@@ -429,6 +433,7 @@ Plik definicji tabel dla wersji: <b>{db_check.TABLES_DEF_FOR}</b><br /><br />
        Plik do wczytania: <b>{dbread.SQL_FILE}</b><br /><br />
        <!-- BEGIN form -->
        <form action="{dbread.form.FORM_ACTION}" method="post">
+<input type="hidden" name="csrf_token" value="{CSRF_TOKEN}" />
 	    <table border="0" cellpadding="3" cellspacing="1" class="forumline" style="margin-left:10px">
          <tr>
           <td class="row2"><span class="gen">Ilo¶æ zapytañ jednorazowo czytana z pliku:</span></td>
@@ -525,6 +530,7 @@ Plik definicji tabel dla wersji: <b>{db_check.TABLES_DEF_FOR}</b><br /><br />
    </div><br />
    <span class="gen">{misc.DBCREATE_RESULT}</span>
    <form action="{PHP_SELF}?mode=misc&amp;func=dbcreate" method="post">
+<input type="hidden" name="csrf_token" value="{CSRF_TOKEN}" />
     <span class="gen"><b>Nazwa bazy:</b> </span>
     <input type="text" name="dbcreate_dbname">
     <input type="submit" name="dbcreate_create" value="Utwórz"> <input type="submit" name="dbcreate_drop" value="Usuñ">
@@ -543,6 +549,7 @@ Plik definicji tabel dla wersji: <b>{db_check.TABLES_DEF_FOR}</b><br /><br />
   <td class="row2">
    <span class="gen">{misc.BBDROP_RESULT}</span>
    <form action="{PHP_SELF}?mode=misc&amp;func=bbdrop" method="post">
+<input type="hidden" name="csrf_token" value="{CSRF_TOKEN}" />
     <span class="gen">Aby usun±æ tabele z bazy danych wpisz w pole poni¿ej <b>skasuj</b> i kliknij na <b>Usuñ tabele</b>.<br />
     Uwaga - dane z bazy zostan± usuniête, je¶li chcesz tylko odinstalowaæ wersjê Przema i uzyskaæ czyste phpBB skorzystaj z odpowiedniej opcji w PA.</span><br />
 	<input type="text" name="bbdrop_check"> <input type="submit" name="bbdrop_drop" value="Usuñ tabele">

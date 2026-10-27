@@ -57,6 +57,183 @@ function check_array_level($arr, $array_level, $int = false, $x = 0, $loop = fal
     return $arr;
 }
 
+function phpbb_fetch_remote_file($url, $max_bytes)
+{
+	if (!is_string($url) || strlen($url) > 2048 || preg_match('/[\x00-\x20\x7F]/', $url))
+	{
+		return false;
+	}
+
+	$url_parts = @parse_url($url);
+	if (!is_array($url_parts) || strtolower(isset($url_parts['scheme']) ? $url_parts['scheme'] : '') != 'http'
+		|| empty($url_parts['host']) || (isset($url_parts['port']) && intval($url_parts['port']) != 80)
+		|| isset($url_parts['user']) || isset($url_parts['pass']))
+	{
+		return false;
+	}
+
+	$host = rtrim($url_parts['host'], '.');
+	if (!preg_match('/^[A-Za-z0-9.-]+$/D', $host))
+	{
+		return false;
+	}
+
+	if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+	{
+		$addresses = array($host);
+	}
+	else
+	{
+		$addresses = @gethostbynamel($host);
+	}
+	if (!is_array($addresses) || !count($addresses))
+	{
+		return false;
+	}
+
+	$public_ip = false;
+	foreach ($addresses as $address)
+	{
+		if (!filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
+		{
+			return false;
+		}
+		$public_ip = $address;
+	}
+	if ($public_ip === false)
+	{
+		return false;
+	}
+
+	$max_bytes = max(1, min(intval($max_bytes), 20971520));
+	$target = isset($url_parts['path']) && $url_parts['path'] !== '' ? $url_parts['path'] : '/';
+	if (isset($url_parts['query']) && $url_parts['query'] !== '')
+	{
+		$target .= '?' . $url_parts['query'];
+	}
+	if (preg_match('/[\r\n\x00]/', $target))
+	{
+		return false;
+	}
+
+	$socket = @fsockopen($public_ip, 80, $errno, $errstr, 5);
+	if (!$socket)
+	{
+		return false;
+	}
+	stream_set_timeout($socket, 5);
+	$fetch_deadline = microtime(true) + 15;
+	$request = "GET " . $target . " HTTP/1.0\r\n"
+		. "Host: " . $host . "\r\n"
+		. "Connection: close\r\n"
+		. "User-Agent: phpBB-remote-file-fetch\r\n\r\n";
+	$request_length = strlen($request);
+	$request_sent = 0;
+	while ($request_sent < $request_length)
+	{
+		$written = @fwrite($socket, substr($request, $request_sent));
+		if ($written === false || $written === 0)
+		{
+			fclose($socket);
+			return false;
+		}
+		$request_sent += $written;
+	}
+
+	$status_line = @fgets($socket, 2048);
+	if (!is_string($status_line) || microtime(true) > $fetch_deadline || !preg_match('#^HTTP/1\\.[01] 200(?:\\s|$)#i', $status_line))
+	{
+		fclose($socket);
+		return false;
+	}
+
+	$headers = array();
+	$header_bytes = strlen($status_line);
+	$headers_complete = false;
+	while (($line = @fgets($socket, 2048)) !== false)
+	{
+		if (microtime(true) > $fetch_deadline)
+		{
+			fclose($socket);
+			return false;
+		}
+		$header_bytes += strlen($line);
+		if ($header_bytes > 8192)
+		{
+			fclose($socket);
+			return false;
+		}
+		if ($line === "\r\n" || $line === "\n")
+		{
+			$headers_complete = true;
+			break;
+		}
+		$separator = strpos($line, ':');
+		if ($separator !== false)
+		{
+			$headers[strtolower(trim(substr($line, 0, $separator)))] = trim(substr($line, $separator + 1));
+		}
+	}
+
+	if (!$headers_complete || !isset($headers['content-length']) || !ctype_digit($headers['content-length'])
+		|| intval($headers['content-length']) < 1 || intval($headers['content-length']) > $max_bytes
+		|| isset($headers['transfer-encoding']))
+	{
+		fclose($socket);
+		return false;
+	}
+
+	$content_length = intval($headers['content-length']);
+	$file_data = '';
+	while (strlen($file_data) < $content_length && !feof($socket))
+	{
+		if (microtime(true) > $fetch_deadline)
+		{
+			fclose($socket);
+			return false;
+		}
+		$chunk = @fread($socket, min(8192, $content_length - strlen($file_data)));
+		if ($chunk === false || $chunk === '')
+		{
+			break;
+		}
+		$file_data .= $chunk;
+	}
+	$stream_meta = stream_get_meta_data($socket);
+	fclose($socket);
+
+	if (strlen($file_data) !== $content_length || !empty($stream_meta['timed_out']))
+	{
+		return false;
+	}
+
+	return $file_data;
+}
+
+function phpbb_fetch_remote_image($url, $max_bytes)
+{
+	$image_data = phpbb_fetch_remote_file($url, $max_bytes);
+	if ($image_data === false)
+	{
+		return false;
+	}
+
+	$image_info = @getimagesizefromstring($image_data);
+	if (!is_array($image_info) || empty($image_info['width']) || empty($image_info['height'])
+		|| empty($image_info['mime']) || !in_array($image_info['mime'], array('image/jpeg', 'image/png', 'image/gif'), true))
+	{
+		return false;
+	}
+
+	return array(
+		'body' => $image_data,
+		'width' => intval($image_info[0]),
+		'height' => intval($image_info[1]),
+		'type' => isset($image_info[2]) ? intval($image_info[2]) : 0,
+		'mime' => $image_info['mime']
+	);
+}
+
 function get_vars($name, $empty = false, $methods = 'POST,GET', $int = false, $array_level = 0)
 {
     global $HTTP_POST_VARS, $HTTP_GET_VARS, $HTTP_COOKIE_VARS;
@@ -784,7 +961,7 @@ function selectbox($box_name, $ignore_forum = false, $select_forum = '')
 function get_db_stat($mode)
 {
 	global $board_config;
-	return ($mode == 'newestuser') ? unserialize($board_config[$mode]) : $board_config[$mode];
+	return ($mode == 'newestuser') ? phpbb_safe_unserialize($board_config[$mode]) : $board_config[$mode];
 }
 
 function db_stat_update($mode)

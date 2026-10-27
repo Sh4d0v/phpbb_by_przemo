@@ -13,19 +13,77 @@ error_reporting  (E_ERROR | E_WARNING | E_PARSE);
 define('IN_PHPBB', true);
 $version = '1.0';
 @ini_set('arg_separator.output', '&amp;');
+ini_set('session.use_strict_mode', '1');
+ini_set('session.cookie_httponly', '1');
+ini_set('session.cookie_samesite', 'Lax');
+ini_set('session.cookie_secure', (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') ? '1' : '0');
 session_start();
-if( $pass_hash != '' )
+if (empty($_SESSION['dbloader_csrf_token']))
 {
-	if( isset($_POST['password']) )
+	$_SESSION['dbloader_csrf_token'] = bin2hex(random_bytes(32));
+}
+$request_method = strtoupper(isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '');
+$post_token = (isset($_POST['csrf_token']) && is_string($_POST['csrf_token'])) ? $_POST['csrf_token'] : '';
+$get_token = (isset($_GET['csrf_token']) && is_string($_GET['csrf_token'])) ? $_GET['csrf_token'] : '';
+$csrf_valid = hash_equals($_SESSION['dbloader_csrf_token'], $request_method === 'POST' ? $post_token : $get_token);
+if ($request_method === 'POST' && !$csrf_valid)
+{
+	http_response_code(403);
+	exit('Invalid request token. Reload the page and try again.');
+}
+if( $pass_hash !== '' && isset($_POST['password']) )
+{
+	$password = is_scalar($_POST['password']) ? (string) $_POST['password'] : '';
+	$password_is_valid = false;
+	if (function_exists('password_verify') && preg_match('/^\$(2[aby]|argon2(id|i)?)\$/', $pass_hash))
 	{
-		$_SESSION['hash'] = md5($_POST['password']);
+		$password_is_valid = password_verify($password, $pass_hash);
+	}
+	elseif (preg_match('/^[a-f0-9]{32}$/i', $pass_hash))
+	{
+		$password_is_valid = hash_equals(strtolower($pass_hash), md5($password));
+	}
+	if ($password_is_valid)
+	{
+		session_regenerate_id(true);
+		$_SESSION['dbloader_auth_hash'] = hash('sha256', $pass_hash);
+	}
+	else
+	{
+		unset($_SESSION['dbloader_auth_hash']);
 	}
 }
-$has_access = ($disable_ip_check || $_SERVER['REMOTE_ADDR'] == $twoje_ip) && ($pass_hash == '' || $pass_hash == $_SESSION['hash']);
+$remote_ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+$password_matches = ($pass_hash !== '' && isset($_SESSION['dbloader_auth_hash']) && hash_equals(hash('sha256', $pass_hash), $_SESSION['dbloader_auth_hash']));
+$has_access = $disable_ip_check
+	? $password_matches
+	: ($remote_ip === $twoje_ip && ($pass_hash === '' || $password_matches));
+$ip_allowed = $disable_ip_check || $remote_ip === $twoje_ip;
+if (!$ip_allowed)
+{
+	http_response_code(403);
+	exit('Access denied.');
+}
+if (!$has_access)
+{
+	if ($pass_hash !== '')
+	{
+		$login_action = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
+		header('Content-Type: text/html; charset=iso-8859-2');
+		echo '<!DOCTYPE html><html><head><meta charset="iso-8859-2"><title>Logowanie do DumpLoader</title></head><body><form action="' . htmlspecialchars($login_action, ENT_QUOTES, 'ISO-8859-2') . '" method="post"><input type="hidden" name="csrf_token" value="' . htmlspecialchars($_SESSION['dbloader_csrf_token'], ENT_QUOTES, 'ISO-8859-2') . '" /><label>Haslo: <input type="password" name="password" /></label> <button type="submit">Zaloguj</button></form></body></html>';
+	}
+	else
+	{
+		http_response_code(403);
+		exit('Access denied. Configure an IP allowlist or password to use dbloader.');
+	}
+	exit;
+}
 $phpbb_root_path = ( file_exists('extension.inc') ) ? './' : '../';
 
 $img_path = $phpbb_root_path . 'dbloader/templates/images/';
 include $phpbb_root_path.'extension.inc';
+include_once $phpbb_root_path . 'includes/legacy_compat.'.$phpEx;
 include_once 'functions.'.$phpEx;
 include_once 'Timer.class.'.$phpEx;
 include_once 'FileReader.class.'.$phpEx;
@@ -50,6 +108,11 @@ else
 if( $config_size_ok ) // config w porz±dku, po³±cz z baz± danych
 {
 	include $phpbb_root_path . 'config.' . $phpEx;
+	if (!isset($table_prefix) || !is_string($table_prefix) || !preg_match('/^[A-Za-z0-9_]{0,64}$/D', $table_prefix))
+	{
+		http_response_code(400);
+		exit('Invalid table prefix in config.');
+	}
     define('BEGIN_TRANSACTION', 1);
     define('END_TRANSACTION',   2);
 
@@ -89,20 +152,29 @@ $template->set_filenames(array(
 	'body' => 'dbloader_body.tpl')
 );
 $template->assign_vars(array(
+	'CSRF_TOKEN' => htmlspecialchars($_SESSION['dbloader_csrf_token'], ENT_QUOTES, 'ISO-8859-2'),
 	'VERSION' => $version,
 	'PHP_EX' => $phpEx,
 	'STYLE_IMAGES' => $img_path,
 	'PHP_SELF' => $PHP_SELF)
 );
 
-if( !$has_access && $pass_hash != '' )
+if( !$has_access )
 {
-	$template->assign_block_vars('login', array());
-	$template->assign_vars(array(
-		'TITLE' => 'Logowanie',
-		'PAGE_GENTIME' => $page_time->elapsed())
-	);
-	$template->pparse('body');
+	if ($pass_hash !== '')
+	{
+		$template->assign_block_vars('login', array());
+		$template->assign_vars(array(
+			'TITLE' => 'Logowanie',
+			'PAGE_GENTIME' => $page_time->elapsed())
+		);
+		$template->pparse('body');
+	}
+	else
+	{
+		http_response_code(403);
+		exit('Access denied. Configure an IP allowlist or password to use dbloader.');
+	}
 	exit;
 }
 elseif( !$is_config )
@@ -124,7 +196,7 @@ elseif( $db_error )
 	$msg = 'Podczas próby po³±czenia z baz± danych nast±pi³ b³±d.<br />';
 	$sql_error = $db->sql_error($connect);
 	$msg .= ' &nbsp; Error code: ' . $sql_error['code'] . '<br />';
-	$msg .= ' &nbsp; Error message: ' . $sql_error['message'];
+	$msg .= ' &nbsp; Error message: ' . htmlspecialchars((string) $sql_error['message'], ENT_QUOTES, 'ISO-8859-2');
 	$template->assign_block_vars('info', array(
 		'TITLE' => 'B³±d bazy danych',
 		'CONTENT' => $msg)
@@ -140,18 +212,28 @@ if( $is_config && !$db_error )
 	$template->assign_block_vars('db_actions', array());
 }
 
-$mode_get = isset($_GET['mode']) ? $_GET['mode'] : '';
+$csrf_input = '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($_SESSION['dbloader_csrf_token'], ENT_QUOTES, 'ISO-8859-2') . '" />';
+$csrf_query = 'csrf_token=' . rawurlencode($_SESSION['dbloader_csrf_token']);
+$mode_get = (isset($_GET['mode']) && is_string($_GET['mode'])) ? $_GET['mode'] : '';
 $mode = ( $has_access ) ? $mode_get : '';
+$unsafe_get = ($mode === 'checkdb' && (isset($_GET['create']) || isset($_GET['config_update'])))
+	|| ($mode === 'dbread' && isset($_GET['step']) && $_GET['step'] === 'go')
+	|| isset($_GET['droptables']);
+if ($request_method === 'GET' && $unsafe_get && !$csrf_valid)
+{
+	http_response_code(403);
+	exit('Invalid request token. Reload the page and try again.');
+}
 if ( $mode == 'makeconfig' )
 {
 	if( isset($_POST['submit']) || isset($_POST['download_config']) )
 	{
-		$dbms = $_POST['dbms'];
-		$dbhost = $_POST['dbhost'];
-		$dbname = $_POST['dbname'];
-		$dbuser = $_POST['dbuser'];
-		$dbpasswd = $_POST['dbpasswd'];
-		$table_prefix = $_POST['table_prefix'];
+		$dbms = (isset($_POST['dbms']) && is_string($_POST['dbms']) && in_array($_POST['dbms'], array('mysql', 'mysql4', 'mysqli'), true)) ? $_POST['dbms'] : 'mysqli';
+		$dbhost = (isset($_POST['dbhost']) && is_scalar($_POST['dbhost'])) ? (string) $_POST['dbhost'] : '';
+		$dbname = (isset($_POST['dbname']) && is_scalar($_POST['dbname'])) ? (string) $_POST['dbname'] : '';
+		$dbuser = (isset($_POST['dbuser']) && is_scalar($_POST['dbuser'])) ? (string) $_POST['dbuser'] : '';
+		$dbpasswd = (isset($_POST['dbpasswd']) && is_scalar($_POST['dbpasswd'])) ? (string) $_POST['dbpasswd'] : '';
+		$table_prefix = (isset($_POST['table_prefix']) && is_string($_POST['table_prefix']) && preg_match('/^[A-Za-z0-9_]{0,64}$/D', $_POST['table_prefix'])) ? $_POST['table_prefix'] : '';
 	}
 
 	$config_save = false;
@@ -198,12 +280,12 @@ if ( $mode == 'makeconfig' )
 
 	$template->assign_block_vars('config', array(
 		'DBMS_OPTIONS' => $dbms_options,
-		'DBMS' => @$dbms,
-		'DBHOST' => @$dbhost,
-		'DBNAME' => @$dbname,
-		'DBUSER' => @$dbuser,
-		'DBPASSWORD' => @$dbpasswd,
-		'TABLE_PREFIX' => @$table_prefix)
+		'DBMS' => htmlspecialchars((string) @$dbms, ENT_QUOTES, 'ISO-8859-2'),
+		'DBHOST' => htmlspecialchars((string) @$dbhost, ENT_QUOTES, 'ISO-8859-2'),
+		'DBNAME' => htmlspecialchars((string) @$dbname, ENT_QUOTES, 'ISO-8859-2'),
+		'DBUSER' => htmlspecialchars((string) @$dbuser, ENT_QUOTES, 'ISO-8859-2'),
+		'DBPASSWORD' => htmlspecialchars((string) @$dbpasswd, ENT_QUOTES, 'ISO-8859-2'),
+		'TABLE_PREFIX' => htmlspecialchars((string) @$table_prefix, ENT_QUOTES, 'ISO-8859-2'))
 	);
 	if( (isset($_POST['generate_config']) && $_POST['generate_config'] == true) || $config_save )
 	{
@@ -244,24 +326,20 @@ elseif( $mode == 'forumconfig' )
 	// Je¶li wys³ano forumularz, zapisz konfiguracjê do bazy
 	if( isset($_POST['save_config']) && $_POST['save_config'] == 'true' )
 	{
-		$new_cfg = array(
-			'server_name' => $_POST['server_name'],
-			'server_port' => $_POST['server_port'],
-			'script_path' => $_POST['script_path'],
-			'check_address' => $_POST['check_address'],
-			'cookie_domain' => $_POST['cookie_domain'],
-			'cookie_name' => $_POST['cookie_name'],
-			'cookie_path' => $_POST['cookie_path'],
-			'cookie_secure' => $_POST['cookie_secure']			
-		);
+		$config_fields = array('server_name', 'server_port', 'script_path', 'check_address', 'cookie_domain', 'cookie_name', 'cookie_path', 'cookie_secure');
+		$new_cfg = array();
+		foreach ($config_fields as $config_field)
+		{
+			$new_cfg[$config_field] = (isset($_POST[$config_field]) && is_scalar($_POST[$config_field])) ? (string) $_POST[$config_field] : '';
+		}
 		$q_error = '';
 		foreach( $new_cfg as $cfg_name => $cfg_value )
 		{
-			$sql = "UPDATE `" . $table_prefix . "config` SET config_value = '$cfg_value' WHERE config_name = '$cfg_name' LIMIT 1";
+			$sql = "UPDATE `" . $table_prefix . "config` SET config_value = '" . escape_str($cfg_value) . "' WHERE config_name = '" . escape_str($cfg_name) . "' LIMIT 1";
 			if( !$db->sql_query($sql) )
 			{
 				$err = $db->sql_error();
-				$q_error .= '<span class="color:red">SQL: ' . $sql . 'Code: ' . $err['code'] . '<br />Message: ' . $err['message'] . '<br /><br />';
+				$q_error .= '<span class="color:red">SQL: ' . htmlspecialchars($sql, ENT_QUOTES, 'ISO-8859-2') . ' Code: ' . htmlspecialchars((string) $err['code'], ENT_QUOTES, 'ISO-8859-2') . '<br />Message: ' . htmlspecialchars($err['message'], ENT_QUOTES, 'ISO-8859-2') . '<br /><br />';
 			}
 		}
 		@unlink($phpbb_root_path . 'cache/board_config.'.$phpEx);
@@ -270,16 +348,20 @@ elseif( $mode == 'forumconfig' )
 	$db->sql_query("SELECT * FROM " . $table_prefix . "config");
 	$bb_cfg = $db->sql_fetchrowset();
 	$bb_cfg = config_assoc($bb_cfg, 'config_name', 'config_value');
+	foreach ($bb_cfg as $cfg_name => $cfg_value)
+	{
+		$bb_cfg[$cfg_name] = htmlspecialchars((string) $cfg_value, ENT_QUOTES, 'ISO-8859-2');
+	}
 
 	$template->assign_block_vars('forumconfig', array(
-		'SERVER_NAME' => $server_name,
-		'SERVER_PORT' => $server_port,
-		'SCRIPT_PATH' => $script_path,
+		'SERVER_NAME' => htmlspecialchars((string) $server_name, ENT_QUOTES, 'ISO-8859-2'),
+		'SERVER_PORT' => htmlspecialchars((string) $server_port, ENT_QUOTES, 'ISO-8859-2'),
+		'SCRIPT_PATH' => htmlspecialchars((string) $script_path, ENT_QUOTES, 'ISO-8859-2'),
 		'CHECK_ADDRESS_0' => ($check_address ? '' : 'checked="checked"'),
 		'CHECK_ADDRESS_1' => ($check_address ? 'checked="checked"' : ''),
-		'COOKIE_DOMAIN' => $cookie_domain,
+		'COOKIE_DOMAIN' => htmlspecialchars((string) $cookie_domain, ENT_QUOTES, 'ISO-8859-2'),
 		'COOKIE_NAME' => $bb_cfg['cookie_name'],
-		'COOKIE_PATH' => $cookie_path,
+		'COOKIE_PATH' => htmlspecialchars((string) $cookie_path, ENT_QUOTES, 'ISO-8859-2'),
 		'COOKIE_SECURE_0' => ($cookie_secure ? '' : 'checked="checked"'),
 		'COOKIE_SECURE_1' => ($cookie_secure ? 'checked="checked"' : ''),
 		'SERVER_NAME_DB' => $bb_cfg['server_name'],
@@ -311,32 +393,32 @@ elseif( $mode == 'checkdb' )
 	}
 	include 'dbdata.inc.php'; // $dbs, $dbs_for
 	$dbs = append_prefix($table_prefix, $dbs);
-	if( isset($_GET['create']) )
+	$create_table_request = (isset($_POST['create']) && is_string($_POST['create'])) ? $_POST['create'] : '';
+if ($create_table_request !== '')
+{
+	foreach ($dbs as $dbs_item)
 	{
-		foreach($dbs as $dbs_item)
+		if (isset($dbs_item['table']) && $dbs_item['table'] === $create_table_request && isset($dbs_item['create']))
 		{
-			if( $dbs_item['table'] == $_GET['create'] )
+			$cr_query = nl2br($dbs_item['create']);
+			if ($db->sql_query($dbs_item['create']))
 			{
-				$cr_query = nl2br($dbs_item['create']);
-				if( $db->sql_query($dbs_item['create']) )
-				{
-					$cr_res = '<span style="color:green">Utworzono tabelê ' . $dbs_item['table'] . '</span>';
-				}
-				else
-				{
-					$cr_res = '<span style="color:red">Nie utworzono tabeli ' . $dbs_item['table'] . '<br />';
-					$error = $db->sql_error();
-					$cr_res .= 'Code: ' . $error['code'] . '<br />Message: ' . $error['message'] . '</span>';
-				}
+				$cr_res = '<span style="color:green">Table created.</span>';
+			}
+			else
+			{
+				$error = $db->sql_error();
+				$cr_res = '<span style="color:red">Table was not created.<br />Code: ' . htmlspecialchars((string) $error['code'], ENT_QUOTES, 'ISO-8859-2') . '<br />Message: ' . htmlspecialchars((string) $error['message'], ENT_QUOTES, 'ISO-8859-2') . '</span>';
 			}
 		}
 	}
-	if ( isset($_GET['config_update']) && $_GET['config_update'] == 'text' )
-	{
-		$db->sql_query("ALTER TABLE `" . $table_prefix . "config`
-			CHANGE config_value config_value TEXT NOT NULL");
-	}
-	$tables_check = '';
+}
+$config_update_request = (isset($_POST['config_update']) && is_string($_POST['config_update'])) ? $_POST['config_update'] : '';
+if ($config_update_request === 'text')
+{
+	$db->sql_query("ALTER TABLE " . $table_prefix . "config CHANGE config_value config_value TEXT NOT NULL");
+}
+$tables_check = '';
 	$tbls_in_db = tables_in_db();
 	foreach($dbs as $dbs_item)
 	{
@@ -348,7 +430,7 @@ elseif( $mode == 'checkdb' )
 			$tables_check .= '<span style="color:red"><b>brak tabeli</b> ' . $table_name . '</span> <img src="'.$img_path.'icon_mini_ignore.gif" alt="B³±d">';
 			if( isset($dbs_item['create']) )
 			{
-				$tables_check .= ' <a class="nav" href="?mode=checkdb&amp;create=' . $table_name . '"><i>Utwórz</i></a>';
+				$tables_check .= ' <form action="' . htmlspecialchars($PHP_SELF, ENT_QUOTES, 'ISO-8859-2') . '?mode=checkdb" method="post">' . $csrf_input . '<input type="hidden" name="create" value="' . htmlspecialchars($table_name, ENT_QUOTES, 'ISO-8859-2') . '" /><button type="submit">Create</button></form>';
 			}
 			$tables_check .= '<br />';
 		}
@@ -374,26 +456,26 @@ elseif( $mode == 'checkdb' )
 				if ( $ret['Type'] != 'text' )
 				{
 					$tables_check .= '<span style="color:red"><b>tabela </b> ' . $table_name . ' ma niepoprawny typ kolumny config_value</span> <img src="'.$img_path.'icon_mini_ignore.gif" alt="B³±d">';
-					$tables_check .= ' <a class="nav" href="?mode=checkdb&amp;config_update=text"><i>Napraw</i></a><br />';
+					$tables_check .= ' <form action="' . htmlspecialchars($PHP_SELF, ENT_QUOTES, 'ISO-8859-2') . '?mode=checkdb" method="post">' . $csrf_input . '<input type="hidden" name="config_update" value="text" /><button type="submit">Repair</button></form><br />';
 				}
 			}
 		}
 	}
 	$tables_check = ( $tables_check == '' ) ? '<span style="color:green">Wszystkie tabele (' . count($dbs) . ') istniej± i nie zawieraj± b³êdów</span> <img src="'.$img_path.'icon_mini_register.gif" alt="Ok"><br />' : $tables_check ;
 	$template->assign_block_vars('db_check', array(
-		'DB' => $dbuser.'.'.$dbname.' @ '.$dbhost,
+		'DB' => htmlspecialchars($dbuser.'.'.$dbname.' @ '.$dbhost, ENT_QUOTES, 'ISO-8859-2'),
 		'TABES_CHECK' => $tables_check,
 		'TABLES_DEF_FOR' => $dbs_for)
 	);
-	if( isset($_GET['create']) )
-	{
-		$template->assign_block_vars('db_check.create', array(
-			'SQL' => $cr_query,
-			'RESULT' => $cr_res)
-		);
-	}
+	if ($create_table_request !== '')
+{
+	$template->assign_block_vars('db_check.create', array(
+		'SQL' => isset($cr_query) ? nl2br(htmlspecialchars($dbs_item['create'], ENT_QUOTES, 'ISO-8859-2')) : '',
+		'RESULT' => isset($cr_res) ? $cr_res : '')
+	);
+}
 
-	$template->assign_var('PAGE_GENTIME', $page_time->elapsed());
+$template->assign_var('PAGE_GENTIME', $page_time->elapsed());
 	$template->pparse('body');
 }
 elseif( $mode == 'sqllist' )
@@ -404,8 +486,6 @@ elseif( $mode == 'sqllist' )
 		message_die('', true, true);
 	}
 
-	$db->sql_query("DROP TABLE IF EXISTS _dbloader");
-	$db->sql_query("DROP TABLE IF EXISTS _dbloader_err");
 
 	$tmp_list = scan_dir($phpbb_root_path, 1);
 	$alist = array();
@@ -424,7 +504,7 @@ elseif( $mode == 'sqllist' )
 			$template->assign_block_vars('sqllist.item', array(
 				'ROW_STYLE' => ($i % 2 ? '2' : '3'),
 				'LINK' => '?mode=dbread&amp;step=prepare&amp;file='.urlencode(str_replace("..", "kat_wyzej", $phpbb_root_path).$alist[$i]),
-				'TEXT' => $alist[$i],
+				'TEXT' => htmlspecialchars($alist[$i], ENT_QUOTES, 'ISO-8859-2'),
 				'SIZE' => round(filesize($phpbb_root_path.$alist[$i]) / 1024, 2))
 			);
 		}
@@ -458,12 +538,16 @@ elseif( $mode == 'dbread' )
 	}
 	else
 	{
-		$rt_data['max_queries'] = intval($_POST['max_queries']);
-		$rt_data['file_name'] = ( isset($_GET['file']) ) ? str_replace("kat_wyzej", "..", $_GET['file']) : '';
+		$rt_data['max_queries'] = (isset($_POST['max_queries']) && is_scalar($_POST['max_queries'])) ? max(0, intval($_POST['max_queries'])) : 0;
+		$file_request = (isset($_GET['file']) && is_string($_GET['file'])) ? $_GET['file'] : '';
+		$rt_data['file_name'] = ($file_request !== '') ? str_replace("kat_wyzej", "..", $file_request) : '';
 	}
-	if( $rt_data['file_name'] == '' || !file_exists($rt_data['file_name']) )
+	$requested_file = (isset($rt_data['file_name']) && is_string($rt_data['file_name'])) ? $rt_data['file_name'] : '';
+	$resolved_file = dbloader_resolve_sql_file($requested_file, $phpbb_root_path);
+	$rt_data['file_name'] = ($resolved_file !== false) ? $resolved_file : '';
+	if( $rt_data['file_name'] == '' )
 	{
-		$msg = 'Plik \''.$rt_data['file_name'].'\' nie istnieje.';
+		$msg = 'The selected file does not exist or is not an allowed SQL backup.';
 		$template->assign_vars(array(
 			'TITLE' => 'Wczytywanie zrzutu bazy danych...',
 			'CONTENT' => $msg,
@@ -472,7 +556,7 @@ elseif( $mode == 'dbread' )
 		$template->pparse('body');
 		exit;
 	}
-	$step = ( isset($_GET['step']) ) ? $_GET['step'] : '';
+	$step = (isset($_GET['step']) && is_string($_GET['step'])) ? $_GET['step'] : '';
 	$allowed_steps = array('prepare', 'go', 'completed', 'error_notify',
 		'error_notify_continue', 'break', 'show_errors');
 	if( !in_array($step, $allowed_steps) )
@@ -492,8 +576,8 @@ elseif( $mode == 'dbread' )
 	if( $step == 'prepare' )
 	{
 		$template->assign_block_vars('dbread', array(
-			'DB' => $dbuser.'.'.$dbname.' @ '.$dbhost,
-			'SQL_FILE' => $rt_data['file_name'])
+			'DB' => htmlspecialchars($dbuser.'.'.$dbname.' @ '.$dbhost, ENT_QUOTES, 'ISO-8859-2'),
+			'SQL_FILE' => htmlspecialchars((string) $rt_data['file_name'], ENT_QUOTES, 'ISO-8859-2'))
 		);
 		if( $rt_data['max_queries'] > 0 )
 		{
@@ -505,7 +589,9 @@ elseif( $mode == 'dbread' )
 			$tables[] = '_dbloader';
 			$tables[] = '_dbloader_err';
 			$tables = escape_str(serialize($tables));
-			$db->sql_freeresult($result);
+			$db->sql_query("DROP TABLE IF EXISTS _dbloader");
+			$db->sql_query("DROP TABLE IF EXISTS _dbloader_err");
+			if (isset($result)) { $db->sql_freeresult($result); }
 			// Wpisz zmienne do bazy danych, bêd± ³adowane do tablicy $rt_cfg
 			$queries = array(
 "CREATE TABLE IF NOT EXISTS `_dbloader` (
@@ -520,18 +606,18 @@ elseif( $mode == 'dbread' )
 PRIMARY KEY ( `id` ) ) DEFAULT CHARSET latin2 COLLATE latin2_general_ci",
 "TRUNCATE TABLE `_dbloader_err`",
 "INSERT INTO `_dbloader` VALUES ('max_queries', '".$rt_data['max_queries']."')",
-"INSERT INTO `_dbloader` VALUES ('omit_search', '".($_POST['omit_search'] == 'on' ? 1 : 0)."')",
+"INSERT INTO `_dbloader` VALUES ('omit_search', '".(!empty($_POST['omit_search']) ? 1 : 0)."')",
 "INSERT INTO `_dbloader` VALUES ('loaded_queries', '0')",
 "INSERT INTO `_dbloader` VALUES ('omitted_queries', '0')",
-"INSERT INTO `_dbloader` VALUES ('file_name', '".escape_str(str_replace("kat_wyzej", "..", $_GET['file']))."')",
+"INSERT INTO `_dbloader` VALUES ('file_name', '".escape_str($rt_data['file_name'])."')",
 "INSERT INTO `_dbloader` VALUES ('file_size', '$file_size')",
 "INSERT INTO `_dbloader` VALUES ('offset', '0')",
 "INSERT INTO `_dbloader` VALUES ('php_time', '0')",
 "INSERT INTO `_dbloader` VALUES ('sql_time', '0')",
 "INSERT INTO `_dbloader` VALUES ('errors', '0')",
 "INSERT INTO `_dbloader` VALUES ('max_errors', '1')",
-"INSERT INTO `_dbloader` VALUES ('alt_engine', '".($_POST['alt_engine'] == 'on' ? 1 : 0)."')",
-"INSERT INTO `_dbloader` VALUES ('lock_tables', '".($_POST['lock_tables'] == 'on' ? 1 : 0)."')",
+"INSERT INTO `_dbloader` VALUES ('alt_engine', '".(!empty($_POST['alt_engine']) ? 1 : 0)."')",
+"INSERT INTO `_dbloader` VALUES ('lock_tables', '".(!empty($_POST['lock_tables']) ? 1 : 0)."')",
 "INSERT INTO `_dbloader` VALUES ('last_lock', '')",
 "INSERT INTO `_dbloader` VALUES ('tables', '$tables')",
 "INSERT INTO `_dbloader` VALUES ('completed', '0')");
@@ -541,7 +627,7 @@ PRIMARY KEY ( `id` ) ) DEFAULT CHARSET latin2 COLLATE latin2_general_ci",
 			}
 			$rt_data['file_size'] = $file_size;
 			echo generate_progress($rt_data, 'Rozpoczynanie wczytywania...');
-			echo '<meta http-equiv="refresh" content="0;url=' . $PHP_SELF . '?mode=dbread&step=go"></body></html>';
+			echo '<meta http-equiv="refresh" content="0;url=' . htmlspecialchars($PHP_SELF, ENT_QUOTES, 'ISO-8859-2') . '?mode=dbread&amp;step=go&amp;' . $csrf_query . '"></body></html>';
 			exit;
 		}
 		else
@@ -718,15 +804,15 @@ VALUES ( '".$errors[$i]['pos']."', '".$errors[$i]['code']."', '".escape_str($err
 		}
 		if( $rt_data['errors'] >= $rt_data['max_errors'] )
 		{
-			$redir = $PHP_SELF.'?mode=dbread&step=error_notify';
+			$redir = $PHP_SELF.'?mode=dbread&step=error_notify&' . $csrf_query;
 		}
 		elseif( $do_redir )
 		{
-			$redir = $PHP_SELF.'?mode=dbread&step=go';
+			$redir = $PHP_SELF.'?mode=dbread&step=go&' . $csrf_query;
 		}
 		else
 		{
-			$redir = $PHP_SELF.'?mode=dbread&step=completed';
+			$redir = $PHP_SELF.'?mode=dbread&step=completed&' . $csrf_query;
 		}
 		if( $save_error )
 		{
@@ -758,19 +844,21 @@ VALUES ( '".$errors[$i]['pos']."', '".$errors[$i]['code']."', '".escape_str($err
 			$max_queries = ( $max_queries < 2 ) ? 2 : $max_queries;
 			$db->sql_query("UPDATE _dbloader SET value = "
 				. $max_queries . " WHERE config = 'alt_engine' LIMIT 1");
-			$redir = "$PHP_SELF?mode=dbread&step=go";
+			$redir = "$PHP_SELF?mode=dbread&step=go&" . $csrf_query;
 		}
 		elseif( isset($_POST['break']) )
 		{
 			if( $rt_data['tables'] != '' && $_POST['delete_new_tables'] == 'on' )
 			{
-				$del_tables = array_diff(tables_in_db(), unserialize($rt_data['tables']));
+				$created_tables = phpbb_safe_unserialize($rt_data['tables']);
+				$created_tables = is_array($created_tables) ? $created_tables : array();
+				$del_tables = array_diff(tables_in_db(), $created_tables);
 				foreach( $del_tables as $table )
 				{
 					$db->sql_query("DROP TABLE IF EXISTS `" . escape_str($table) . "`");
 				}
 			}
-			$redir = "$PHP_SELF?mode=main&droptables=1";
+			$redir = "$PHP_SELF?mode=main&droptables=1&" . $csrf_query;
 		}
 		header('HTTP/1.1 301');
 		header("Location: $redir");
@@ -782,8 +870,8 @@ VALUES ( '".$errors[$i]['pos']."', '".$errors[$i]['code']."', '".escape_str($err
 	elseif( $step == 'completed' )
 	{
 		$template->assign_block_vars('dbread', array(
-			'DB' => $dbuser.'.'.$dbname.' @ '.$dbhost,
-			'SQL_FILE' => $rt_data['file_name'])
+			'DB' => htmlspecialchars($dbuser.'.'.$dbname.' @ '.$dbhost, ENT_QUOTES, 'ISO-8859-2'),
+			'SQL_FILE' => htmlspecialchars((string) $rt_data['file_name'], ENT_QUOTES, 'ISO-8859-2'))
 		);
 
 		$php_time = $rt_data['php_time'];
@@ -821,8 +909,8 @@ VALUES ( '".$errors[$i]['pos']."', '".$errors[$i]['code']."', '".escape_str($err
 		@set_time_limit($execution_time);
 
 		$template->assign_block_vars('dbread', array(
-			'DB' => $dbuser.'.'.$dbname.' @ '.$dbhost,
-			'SQL_FILE' => $rt_data['file_name'])
+			'DB' => htmlspecialchars($dbuser.'.'.$dbname.' @ '.$dbhost, ENT_QUOTES, 'ISO-8859-2'),
+			'SQL_FILE' => htmlspecialchars((string) $rt_data['file_name'], ENT_QUOTES, 'ISO-8859-2'))
 		);
 
 		$db->sql_query("SELECT * FROM _dbloader_err");
@@ -865,17 +953,25 @@ elseif( $mode == 'misc' )
 	if( $func == 'dbcreate' )
 	{
 		$res = '';
-		$query = (isset($_POST['dbcreate_create']) ? 'CREATE' : 'DROP') . " DATABASE `" . escape_str($_POST['dbcreate_dbname']) . '`';
-		if( !$db->sql_query($query) )
+		$db_name = (isset($_POST['dbcreate_dbname']) && is_scalar($_POST['dbcreate_dbname'])) ? trim((string) $_POST['dbcreate_dbname']) : '';
+		if (!preg_match('/^[A-Za-z0-9_$]{1,64}$/D', $db_name))
 		{
-			$err = $db->sql_error();
-			$res = '<div class="code">' . $query . '</div><br /><span style="color:red">Error code: ' . $err['code'] . '<br />Message: ' . $err['message'] . '</span>';
+			$res = '<span style="color:red">Invalid database name.</span>';
 		}
 		else
 		{
-			$res = '<div class="code">' . $query . '</div><br /><span style="color:green">Baza <b>' . $_POST['dbcreate_dbname'] . '</b> zosta³a ' . ( isset($_POST['dbcreate_create']) ? 'utworzona' : 'usuniêta' ) . '.</span>';
+			$query = (isset($_POST['dbcreate_create']) ? 'CREATE' : 'DROP') . " DATABASE `" . $db_name . '`';
+			if( !$db->sql_query($query) )
+			{
+				$err = $db->sql_error();
+				$res = '<div class="code">' . htmlspecialchars($query, ENT_QUOTES, 'ISO-8859-2') . '</div><br /><span style="color:red">Error code: ' . htmlspecialchars((string) $err['code'], ENT_QUOTES, 'ISO-8859-2') . '<br />Message: ' . htmlspecialchars($err['message'], ENT_QUOTES, 'ISO-8859-2') . '</span>';
+			}
+			else
+			{
+				$res = '<div class="code">' . htmlspecialchars($query, ENT_QUOTES, 'ISO-8859-2') . '</div><br /><span style="color:green">Database <b>' . htmlspecialchars($db_name, ENT_QUOTES, 'ISO-8859-2') . '</b> was ' . ( isset($_POST['dbcreate_create']) ? 'created' : 'dropped' ) . '.</span>';
+			}
 		}
-	 	$_SESSION['dbcreate_res'] = $res;
+		$_SESSION['dbcreate_res'] = $res;
 	}
 	elseif( $func == 'bbdrop' )
 	{
@@ -924,7 +1020,7 @@ elseif( $mode == 'misc' )
 		$db_list[] = '<i>brak baz</i>';
 	}
 	$template->assign_block_vars('misc', array(
-		'DBLIST' => implode('<br />', $db_list),
+		'DBLIST' => implode('<br />', array_map(function($name) { return htmlspecialchars((string) $name, ENT_QUOTES, 'ISO-8859-2'); }, $db_list)),
 		'DBCREATE_RESULT' => session_load_once('dbcreate_res'),
 		'BBDROP_RESULT' => session_load_once('bbdrop_res'))
 	);
@@ -943,17 +1039,16 @@ else
 			$check_data = $db->sql_fetchrowset();
 			$check_data = config_assoc($check_data, 'config', 'value');
 
-			if ( $check_data['max_queries'] > 0
-				&& !(isset($_GET['droptables']) || $check_data['completed']) )
-			{
-				echo generate_error_notify($check_data, false);
-				exit;
-			}
-			else
+			if (isset($_GET['droptables']))
 			{
 				$db->sql_query("DROP TABLE IF EXISTS _dbloader");
 				$db->sql_query("DROP TABLE IF EXISTS _dbloader_err");
 				$tables_deleted = true;
+			}
+			elseif ($check_data['max_queries'] > 0 && empty($check_data['completed']))
+			{
+				echo generate_error_notify($check_data, false);
+				exit;
 			}
 		}
 	}
@@ -978,7 +1073,7 @@ else
 	$content .= '<br /><b>baza danych</b><br />';
 	if( !$db_error )
 	{
-		$content .= '<span style="color:green">nawi±zano po³±czenie ('.$dbuser.'.'.$dbname.' @ '.$dbhost.')</span> <img src="'.$img_path.'icon_mini_register.gif" alt="Ok"><br />';
+		$content .= '<span style="color:green">nawi±zano po³±czenie ('.htmlspecialchars($dbuser, ENT_QUOTES, 'ISO-8859-2').'.'.htmlspecialchars($dbname, ENT_QUOTES, 'ISO-8859-2').' @ '.htmlspecialchars($dbhost, ENT_QUOTES, 'ISO-8859-2').')</span> <img src="'.$img_path.'icon_mini_register.gif" alt="Ok"><br />';
 		$content .= ( $tables_deleted ) ? '<span style="color:green">usuniêto tymczasowe tabele _dloader i _dbloader_err</span> <img src="'.$img_path.'icon_mini_register.gif" alt="Ok"><br />' : '';
 		$content .= ( $not_supported ) ? '<span style="color:red">nieobs³ugiwany typ bazy danych: <b>'.$dbms.'</b>, skrypt mo¿e nie dzia³aæ poprawnie</span> <img src="'.$img_path.'icon_mini_ignore.gif" alt="B³±d"><br />' : '';
 		if( $cfg_table_ex )

@@ -27,7 +27,7 @@ if ( isset($HTTP_GET_VARS['sid']) || isset($HTTP_POST_VARS['sid']) )
 	include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_advert.' . $phpEx);
 }
 
-$user_id = ( isset($HTTP_GET_VARS['user_id']) ) ? intval($HTTP_GET_VARS['user_id']) : intval($HTTP_POST_VARS['user_id']);
+$user_id = ( isset($HTTP_GET_VARS['user_id']) ) ? intval($HTTP_GET_VARS['user_id']) : (isset($HTTP_POST_VARS['user_id']) ? intval($HTTP_POST_VARS['user_id']) : 0);
 
 $start = ( isset($HTTP_GET_VARS['start']) ) ? intval($HTTP_GET_VARS['start']) : 0;
 if ( isset($HTTP_POST_VARS['start']) )
@@ -97,16 +97,17 @@ while( $row = $db->sql_fetchrow($result) )
 {
 	$i++;
 	$list_users = '';
-	for($j = 0; $j < count($users[$row['user_id']]); $j++)
+	$related_users = (isset($users[$row['user_id']]) && is_array($users[$row['user_id']])) ? $users[$row['user_id']] : array();
+	for($j = 0; $j < count($related_users); $j++)
 	{
-		$cr_user = $users[$row['user_id']][$j];
+		$cr_user = $related_users[$j];
 		$list_users .= '<tr><td><a href="' . append_sid("../profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL .'=' . $cr_user[0]) . '" target="_blank" class="name">' . $cr_user[1] . '</a> - </td><td>' . $cr_user[2] . ' ,</td><td>' . $cr_user[3] . ' ,</td><td>' . $cr_user[4] . ' ,</td><td>' . $cr_user[5] . ' ,</td><td>' . $cr_user[6] . '</td></tr>';
 	}
 	$template->assign_block_vars('list',array(
 		'ROW' => ($i % 2) ? '1' : '2',
 		'USERNAME' => '<a href="' . append_sid("../profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL .'=' . $row['user_id']) . '" target="_blank" class="name">' . $row['username'] . '</a>',
 		'JOINED' => create_date($board_config['default_dateformat'], $row['user_regdate'], $board_config['board_timezone']),
-		'COUNTER' => $row[$adv_person_field],
+		'COUNTER' => ($adv_person_field !== '' && isset($row[$adv_person_field])) ? $row[$adv_person_field] : '',
 		'ADV_USERS' => $list_users,
 		'POSTS' => $row['user_posts'])
 	);

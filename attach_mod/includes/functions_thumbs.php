@@ -176,7 +176,12 @@ function create_thumbnail($source, $new_file, $mimetype)
 
 	if (is_imagick()) 
 	{
-		passthru($imagick . ' -quality 85 -antialias -sample ' . $new_width . 'x' . $new_height . ' "' . str_replace('\\', '/', $source) . '" +profile "*" "' . str_replace('\\', '/', $new_file) . '"');
+		$imagick_command = escapeshellarg($imagick)
+			. ' -quality 85 -antialias -sample ' . intval($new_width) . 'x' . intval($new_height)
+			. ' ' . escapeshellarg(str_replace('\\', '/', $source))
+			. ' +profile "*" '
+			. escapeshellarg(str_replace('\\', '/', $new_file));
+		passthru($imagick_command);
 		if (@file_exists($new_file))
 		{
 			$used_imagick = true;

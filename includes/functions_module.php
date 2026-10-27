@@ -254,7 +254,7 @@ class StatisticsDB
 		{
 			$this->db_cached = TRUE;
 			$this->use_cache = TRUE;
-			$data = @unserialize(stripslashes($cached_data));
+			$data = @phpbb_safe_unserialize(stripslashes($cached_data));
 			$this->numrows_data = (is_object($data) && isset($data->n) && is_array($data->n)) ? $data->n : array();
 			$this->fetchrowset_data = (is_object($data) && isset($data->fs) && is_array($data->fs)) ? $data->fs : array();
 			$this->fetchrow_data = (is_object($data) && isset($data->f) && is_array($data->f)) ? $data->f : array();
@@ -446,7 +446,7 @@ class Results
 		if ($cache_enabled)
 		{
 			$this->use_cache = TRUE;
-			$data = @unserialize(stripslashes($cached_data));
+			$data = @phpbb_safe_unserialize(stripslashes($cached_data));
 			$this->var_data = (is_object($data) && isset($data->var_data) && is_array($data->var_data)) ? $data->var_data : array();
 		}
 	}

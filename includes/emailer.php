@@ -141,7 +141,14 @@ class emailer
 	// assign variables
 	function assign_vars($vars)
 	{
-		$this->vars = (empty($this->vars)) ? $vars : $this->vars . $vars;
+		if (!is_array($this->vars))
+		{
+			$this->vars = array();
+		}
+		if (is_array($vars))
+		{
+			$this->vars = array_merge($this->vars, $vars);
+		}
 	}
 
 	// Send the mail out to the recipients set previously in var $this->address
@@ -154,25 +161,20 @@ class emailer
 			return;
 		}
 
-    	// Escape all quotes, else the eval will fail.
-		$this->msg = str_replace ("'", "\'", $this->msg);
-		$this->msg = preg_replace('#\{([a-z0-9\-_]*?)\}#is', "' . $\\1 . '", $this->msg);
+		// Substitute template placeholders without evaluating generated PHP.
+		$this->msg = preg_replace_callback(
+			'#\\{([a-z0-9\\-_]*?)\\}#i',
+			function ($matches) {
+				$key = $matches[1];
+				if (!is_array($this->vars) || !isset($this->vars[$key]) || !is_scalar($this->vars[$key]))
+				{
+					return '';
+				}
+				return (string) $this->vars[$key];
+			},
+			$this->msg
+		);
 
-		// Set vars
-		reset ($this->vars);
-		foreach ((array) ($this->vars) as $key => $val)
-		{
-			$$key = $val;
-		}
-
-		eval("\$this->msg = '$this->msg';");
-
-		// Clear vars
-		reset ($this->vars);
-		foreach ((array) ($this->vars) as $key => $val)
-		{
-			unset($$key);
-		}
 
 		// We now try and pull a subject from the email body ... if it exists,
 		// do this here because the subject may contain a variable

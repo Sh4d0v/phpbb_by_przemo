@@ -104,78 +104,38 @@ function user_avatar_gallery($mode, &$error, &$error_msg, $avatar_filename, $ava
 function user_avatar_url($mode, &$error, &$error_msg, $avatar_filename)
 {
 	global $board_config, $lang;
-	
-	if ( !preg_match('#^(http)|(ftp):\/\/#i', $avatar_filename) )
+
+	if (!is_string($avatar_filename))
+	{
+		$error = true;
+		$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['Wrong_remote_avatar_format'] : $lang['Wrong_remote_avatar_format'];
+		return;
+	}
+	if (!preg_match('#^http://#i', $avatar_filename))
 	{
 		$avatar_filename = 'http://' . $avatar_filename;
 	}
 
-	if ( !preg_match("#^((ht|f)tp://)([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png))$)#is", $avatar_filename) )
+	$image = phpbb_fetch_remote_image($avatar_filename, isset($board_config['avatar_filesize']) ? $board_config['avatar_filesize'] : 0);
+	if ($image === false)
 	{
 		$error = true;
-		$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['Wrong_remote_avatar_format'] : $lang['Wrong_remote_avatar_format'];
+		$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['Wrong_remote_avatar_format'] : $lang['Wrong_remote_avatar_format'];
 		return;
 	}
-	
-	list($width, $height) = @getimagesize($avatar_filename);
-	
-	if ( ($width > $board_config['avatar_max_width']) || ($height > $board_config['avatar_max_height']) )
+
+	if ($image['width'] > $board_config['avatar_max_width'] || $image['height'] > $board_config['avatar_max_height'])
 	{
 		$l_avatar_size = sprintf($lang['Avatar_imagesize'], $board_config['avatar_max_width'], $board_config['avatar_max_height']);
 		$error = true;
-		$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $l_avatar_size : $l_avatar_size;
+		$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $l_avatar_size : $l_avatar_size;
 		return;
 	}
-	
-	// Ensures the image doesn't exceed the max width and height specified in the board's configuration
-	$user_avatar_dimensions = @GetImageSize($avatar_filename);
 
-	if ($user_avatar_dimensions == NULL)
-	{
-//		$user_avatar_xsize = 0; // Remote avatar not found, zero
-//		$user_avatar_ysize = 0;
-		$error = true;
-		$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['Wrong_remote_avatar_format'] : $lang['Wrong_remote_avatar_format'];
-		return;
-
-	}
-	else
-	{  // Check avatar dimensions, adjust if necessary
-		
-		// Extract the image's width and height
-		$firstquote = strpos($user_avatar_dimensions[3],'"');
-		$strwidth = substr($user_avatar_dimensions[3],$firstquote+1);
-		$lastquote = strpos($strwidth,'"');
-		$user_avatar_xsize = substr($strwidth,0,$lastquote);
-
-		$strheight = substr($strwidth,$lastquote+1);
-		
-		$firstquote = strpos($strheight,'"');
-		
-		$strheight = substr($strheight,$firstquote+1);
-	
-		$lastquote = strpos($strheight,'"');
-		$user_avatar_ysize = substr($strheight,0,$lastquote);
-		
-		if ($user_avatar_xsize > $board_config['avatar_max_width']) // width exceeds max
-		{
-			$user_avatar_ratio = $board_config['avatar_max_width'] / $user_avatar_xsize;
-
-			$user_avatar_xsize = $user_avatar_xsize * $user_avatar_ratio;
-			$user_avatar_ysize = $user_avatar_ysize * $user_avatar_ratio;
-		}
-		
-		if ($user_avatar_ysize > $board_config['avatar_max_height']) // height exceeds max
-		{
-			$user_avatar_ratio = $board_config['avatar_max_height'] / $user_avatar_ysize;
-
-			$user_avatar_xsize = $user_avatar_xsize * $user_avatar_ratio;
-			$user_avatar_ysize = $user_avatar_ysize * $user_avatar_ratio;
-		}
-	}
-	return ( $mode == 'editprofile' ) ? ", user_avatar = '" . str_replace("\'", "''", $avatar_filename) . "', user_avatar_type = " . USER_AVATAR_REMOTE . ", user_avatar_width = " . $user_avatar_xsize . ", user_avatar_height = " . $user_avatar_ysize : '';
+	return ($mode == 'editprofile')
+		? ", user_avatar = '" . str_replace("'", "''", $avatar_filename) . "', user_avatar_type = " . USER_AVATAR_REMOTE . ", user_avatar_width = " . $image['width'] . ", user_avatar_height = " . $image['height']
+		: '';
 }
-
 
 function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_type, &$error, &$error_msg, $avatar_filename, $avatar_realname, $avatar_filesize, $avatar_filetype)
 {
@@ -186,71 +146,42 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 	$width = $height = 0;
 	$type = '';
 
-	if ( $avatar_mode == 'remote' && preg_match('/^(http:\/\/)?([\w\-\.]+)\:?([0-9]*)\/(.*)$/', $avatar_filename, $url_ary) )
+	if ($avatar_mode == 'remote')
 	{
-		if ( empty($url_ary[4]) )
+		$remote_image = phpbb_fetch_remote_image($avatar_filename, isset($board_config['avatar_filesize']) ? $board_config['avatar_filesize'] : 0);
+		if ($remote_image === false)
 		{
 			$error = true;
-			$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['Incomplete_URL'] : $lang['Incomplete_URL'];
+			$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['File_no_data'] : $lang['File_no_data'];
 			return;
 		}
 
-		$base_get = '/' . $url_ary[4];
-		$port = ( !empty($url_ary[3]) ) ? $url_ary[3] : 80;
-
-		if ( !($fsock = @fsockopen($url_ary[2], $port, $errno, $errstr)) )
+		$avatar_data = $remote_image['body'];
+		$avatar_filesize = strlen($avatar_data);
+		$avatar_filetype = $remote_image['mime'];
+		$width = $remote_image['width'];
+		$height = $remote_image['height'];
+		$type = $remote_image['type'];
+		$tmp_path = (!@$ini_val('safe_mode') && !@$ini_val('open_basedir')) ? sys_get_temp_dir() : './' . $board_config['avatar_path'] . '/tmp';
+		$tmp_filename = @tempnam($tmp_path, 'avatar-');
+		if (!$tmp_filename || !($fptr = @fopen($tmp_filename, 'wb')))
 		{
-			$error = true;
-			$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['No_connection_URL'] : $lang['No_connection_URL'];
-			return;
-		}
-
-		@fputs($fsock, "GET $base_get HTTP/1.1\r\n");
-		@fputs($fsock, "HOST: " . $url_ary[2] . "\r\n");
-		@fputs($fsock, "Connection: close\r\n\r\n");
-
-		unset($avatar_data);
-		while( !@feof($fsock) )
-		{
-			$avatar_data .= @fread($fsock, $board_config['avatar_filesize']);
-		}
-		@fclose($fsock);
-
-		if (!preg_match('#Content-Length\: ([0-9]+)[^ /][\s]+#i', $avatar_data, $file_data1) || !preg_match('#Content-Type\: image/[x\-]*([a-z]+)[\s]+#i', $avatar_data, $file_data2))
-		{
-			$error = true;
-			$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['File_no_data'] : $lang['File_no_data'];
-			return;
-		}
-
-		$avatar_filesize = $file_data1[1]; 
-		$avatar_filetype = $file_data2[1]; 
-
-		if ( !$error && $avatar_filesize > 0 && $avatar_filesize < $board_config['avatar_filesize'] )
-		{
-			$avatar_data = substr($avatar_data, strlen($avatar_data) - $avatar_filesize, $avatar_filesize);
-
-			$tmp_path = ( !@$ini_val('safe_mode') && !@$ini_val('open_basedir') ) ? '/tmp' : './' . $board_config['avatar_path'] . '/tmp';
-			$tmp_filename = tempnam($tmp_path, uniqid(rand()) . '-');
-
-			$fptr = @fopen($tmp_filename, 'wb');
-			$bytes_written = @fwrite($fptr, $avatar_data, $avatar_filesize);
-			@fclose($fptr);
-
-			if ( $bytes_written != $avatar_filesize )
+			if ($tmp_filename)
 			{
 				@unlink($tmp_filename);
-				message_die(GENERAL_ERROR, 'Could not write avatar file to local storage. Please contact the board administrator with this message', '', __LINE__, __FILE__);
 			}
-
-			list($width, $height, $type) = @getimagesize($tmp_filename);
-		}
-		else
-		{
-			$l_avatar_size = sprintf($lang['Avatar_filesize'], round($board_config['avatar_filesize'] / 1024));
-
 			$error = true;
-			$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $l_avatar_size : $l_avatar_size;
+			$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['File_no_data'] : $lang['File_no_data'];
+			return;
+		}
+		$bytes_written = @fwrite($fptr, $avatar_data);
+		@fclose($fptr);
+		if ($bytes_written !== $avatar_filesize)
+		{
+			@unlink($tmp_filename);
+			$error = true;
+			$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['File_no_data'] : $lang['File_no_data'];
+			return;
 		}
 	}
 	else if ( ( file_exists(@phpbb_realpath($avatar_filename)) ) && preg_match('/\.(jpg|jpeg|gif|png)$/i', $avatar_realname) )

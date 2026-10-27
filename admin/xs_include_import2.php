@@ -66,7 +66,11 @@ if($header === false)
 	{
 		@unlink($tmp_filename);
 	}
-	xs_error($lang['xs_style_header_error_reason'] . $xs_header_error . '<br /><br />' . $lang['xs_import_back']);
+	xs_error($lang['xs_style_header_error_reason'] . xhtmlspecialchars($xs_header_error) . '<br /><br />' . $lang['xs_import_back']);
+}
+if (filesize($file) > 20971520)
+{
+	xs_error($lang['xs_style_header_error_invalid'] . '<br /><br />' . $lang['xs_import_back']);
 }
 if($header['filesize'] != filesize($file))
 {
@@ -92,7 +96,7 @@ if($write_local)
 fseek($f, $header['offset'], 0);
 $str = fread($f, filesize($file) - $header['offset']);
 fclose($f);
-$str = @gzuncompress($str);
+$str = @gzuncompress($str, 52428800);
 if($str === false || !strlen($str))
 {
 	if(defined('XS_CLONING'))
@@ -111,14 +115,57 @@ $files = array();	// complete list of files
 $list_data = array();	// result for list
 $dirs = array();	// complete list of directories
 $items = array();	// data
+$archive_entries = 0;
 while($pos < strlen($str))
 {
-	$data = unpack(TAR_HEADER_UNPACK, substr($str, $pos, 512));
+	if (strlen($str) - $pos < 512 || ++$archive_entries > 4096)
+	{
+		xs_error($lang['xs_style_header_error_invalid'] . '<br /><br />' . $lang['xs_import_back']);
+	}
+	$header_block = substr($str, $pos, 512);
+	if ($header_block === str_repeat(chr(0), 512))
+	{
+		break;
+	}
+	$data = @unpack(TAR_HEADER_UNPACK, $header_block);
+	if (!is_array($data))
+	{
+		xs_error($lang['xs_style_header_error_invalid'] . '<br /><br />' . $lang['xs_import_back']);
+	}
 	$pos += 512;
-	$data['filename'] = trim($data['prefix']) . trim($data['filename']);
-	if(substr($data['filename'], 0, 2) === './')
+	$raw_size = trim($data['size']);
+	if ($raw_size === '' || !preg_match('/^[0-7]+$/D', $raw_size))
+	{
+		xs_error($lang['xs_style_header_error_invalid'] . '<br /><br />' . $lang['xs_import_back']);
+	}
+	$data['size'] = octdec($raw_size);
+	$data['mtime'] = octdec(trim($data['mtime']));
+	$typeflag = trim($data['typeflag']);
+	if ($typeflag !== '' && $typeflag !== '0' && $typeflag !== '5')
+	{
+		xs_error($lang['xs_style_header_error_invalid'] . '<br /><br />' . $lang['xs_import_back']);
+	}
+	$data['typeflag'] = ($typeflag === '5') ? 5 : 0;
+	$member_name = trim($data['filename']);
+	$member_prefix = trim($data['prefix']);
+	$data['filename'] = ($member_prefix !== '') ? $member_prefix . '/' . $member_name : $member_name;
+	while (substr($data['filename'], 0, 2) === './')
 	{
 		$data['filename'] = substr($data['filename'], 2);
+	}
+	$root_directory_entry = ($member_prefix === '' && $data['typeflag'] === 5 && preg_match('#^(?:\./)+$#D', $member_name));
+	if (!$root_directory_entry && !xs_safe_archive_path($data['filename']))
+	{
+		xs_error($lang['xs_style_header_error_invalid'] . '<br /><br />' . $lang['xs_import_back']);
+	}
+	if ($root_directory_entry)
+	{
+		$data['filename'] = '';
+	}
+	if ($data['size'] > 52428800 || $pos + $data['size'] > strlen($str)
+		|| ($data['typeflag'] === 5 && $data['size'] > 0))
+	{
+		xs_error($lang['xs_style_header_error_invalid'] . '<br /><br />' . $lang['xs_import_back']);
 	}
 	$data['ext'] = strrchr($data['filename'], '.');
 	if($write_local)
@@ -139,16 +186,9 @@ while($pos < strlen($str))
 			$data['file'] = $data['filename'];
 		}
 	}
-	$data['size'] = octdec(trim($data['size']));
-	$data['mtime'] = octdec(trim($data['mtime']));
-	$data['typeflag'] = octdec(trim($data['typeflag']));
-	if($data['typeflag'] === '5')
+	if($data['typeflag'] === 5 && $write_local && $data['filename'] !== '')
 	{
-		$data['size'] = 0;
-		if($write_local)
-		{
-			xs_create_dir($save_filename);
-		}
+		xs_create_dir($save_filename);
 	}
 	$data['offset'] = $pos;
 	$contents = $data['size'] > 0 ? substr($str, $pos, $data['size']) : '';
@@ -180,7 +220,7 @@ while($pos < strlen($str))
 							{
 								@unlink($tmp_filename);
 							}
-							xs_error(str_replace('{FILE}', $save_filename, $lang['xs_error_cannot_create_file']) . '<br /><br />' . $lang['xs_import_back']);
+							xs_error(str_replace('{FILE}', xhtmlspecialchars($save_filename), $lang['xs_error_cannot_create_file']) . '<br /><br />' . $lang['xs_import_back']);
 						}
 					}
 					else
@@ -210,7 +250,7 @@ while($pos < strlen($str))
 				if(empty($HTTP_GET_VARS['get_content']) && xs_in_array($ext, $text_types))
 				{
 					// show as text
-					$str = '<div align="left">' . $lang['xs_import_list_contents'] . $f . ' [<a href="' . append_sid('xs_import.' . $phpEx . '?list=1&import=' . urlencode($filename) . '&get_file=' . urlencode($f) . '&get_content=1') . '">' . $lang['xs_import_download_lc'] . '</a>]<br /><br />';
+					$str = '<div align="left">' . $lang['xs_import_list_contents'] . xhtmlspecialchars($f) . ' [<a href="' . append_sid('xs_import.' . $phpEx . '?list=1&import=' . urlencode($filename) . '&get_file=' . urlencode($f) . '&get_content=1') . '">' . $lang['xs_import_download_lc'] . '</a>]<br /><br />';
 					$str .= '<textarea cols="120" rows="30" style="width: 100%">' . xhtmlspecialchars($contents) . '</textarea>';
 					$str .= '</div>';
 					xs_message($lang['Information'], $str);
@@ -272,9 +312,9 @@ if($list_only)
 	$str = '<div align="left">';
 	// main data
 	$str .= $lang['xs_import_list_filename'] . $header['filename'] . '<br />';
-	$str .= $lang['xs_import_list_template'] . $header['template'] . '<br />';
-	$str .= $lang['xs_import_list_comment'] . $header['comment'] . '<br />';
-	$str .= $lang['xs_import_list_styles'] . implode(', ', $header['styles']) . '<br />';
+	$str .= $lang['xs_import_list_template'] . xhtmlspecialchars($header['template']) . '<br />';
+	$str .= $lang['xs_import_list_comment'] . xhtmlspecialchars($header['comment']) . '<br />';
+	$str .= $lang['xs_import_list_styles'] . implode(', ', array_map('xhtmlspecialchars', $header['styles'])) . '<br />';
 	ksort($list_data);
 	$str .= '<br />' . str_replace('{NUM}', count($list_data), $lang['xs_import_list_files']) . '<br />';
 	$str .= '<table border="0" cellspacing="0" cellpadding="1" align="left">';
@@ -354,8 +394,8 @@ if(!$write_local)
 //
 // Check if we need to install style
 //
-$total = intval($HTTP_POST_VARS['total']);
-$default = isset($HTTP_POST_VARS['import_default']) && strlen($HTTP_POST_VARS['import_default']) ? intval($HTTP_POST_VARS['import_default']) : -1;
+$total = (isset($HTTP_POST_VARS['total']) && is_scalar($HTTP_POST_VARS['total'])) ? max(0, min(XS_MAX_ITEMS_PER_STYLE, intval($HTTP_POST_VARS['total']))) : 0;
+$default = (isset($HTTP_POST_VARS['import_default']) && is_scalar($HTTP_POST_VARS['import_default']) && strlen((string) $HTTP_POST_VARS['import_default'])) ? intval($HTTP_POST_VARS['import_default']) : -1;
 $install = array();
 $default_name = '';
 for($i=0; $i<$total; $i++)

@@ -60,8 +60,8 @@ if ( isset($HTTP_GET_VARS['limit_time']) || isset($HTTP_POST_VARS['limit_time'])
 }
 else $limit_time = 120;
 
-$mode = $HTTP_GET_VARS['mode'];
-$start = intval($HTTP_GET_VARS['start']);
+$mode = isset($HTTP_GET_VARS['mode']) ? $HTTP_GET_VARS['mode'] : '';
+$start = isset($HTTP_GET_VARS['start']) ? max(0, intval($HTTP_GET_VARS['start'])) : 0;
 $page_title = $lang['Page_title'];
 
 if ( $mode == 'clear' )
@@ -71,6 +71,7 @@ if ( $mode == 'clear' )
 
 $sql = "SELECT * FROM " . CONFIG_TABLE . "
 	WHERE config_name = 'rebuild_search'"; 
+$value = '';
 if ( !($result = $db->sql_query($sql)))
 {
 	message_die(CRITICAL_ERROR, 'Could not query config table for data previous rebuilding! If you dont want resume previous session just clear config table where config name = rebuild_search', '', __LINE__, __FILE__, $sql);
@@ -83,7 +84,7 @@ else
 	}
 }
 
-if ( $value != '' && !$HTTP_GET_VARS['total_num_rows'] )
+if ( $value != '' && empty($HTTP_GET_VARS['total_num_rows']) )
 {
 	include('./page_header_admin.'.$phpEx);
 
@@ -150,31 +151,51 @@ else
 			// Text		
 			$sql = "SELECT COUNT(post_id) as total FROM ". POSTS_TEXT_TABLE;
 			$result = $db->sql_query($sql);
-			$total_num_rows = $row['total'];
+			if (!$result)
+			{
+				message_die(GENERAL_ERROR, 'Could not count posts for search index rebuild', '', __LINE__, __FILE__, $sql);
+			}
+			$row = $db->sql_fetchrow($result);
+			$total_num_rows = isset($row['total']) ? intval($row['total']) : 0;
+			$db->sql_freeresult($result);
 		}
 		// Let's make the new tables.
-		$total_num_rows = (isset($HTTP_GET_VARS['total_num_rows'])) ? intval($HTTP_GET_VARS['total_num_rows']) : $total_num_rows;
+		$total_num_rows = (isset($HTTP_GET_VARS['total_num_rows'])) ? intval($HTTP_GET_VARS['total_num_rows']) : (isset($total_num_rows) ? $total_num_rows : 0);
+		$post_limit = isset($HTTP_GET_VARS['post_limit']) ? max(1, intval($HTTP_GET_VARS['post_limit'])) : 100;
 		
 		$sql = "SELECT post_id, post_subject, post_text FROM " . POSTS_TEXT_TABLE . "
-			LIMIT $start, " . intval($HTTP_GET_VARS['post_limit']);
+			LIMIT $start, " . $post_limit;
 		$result = $db->sql_query ($sql);
+		if (!$result)
+		{
+			message_die(GENERAL_ERROR, 'Could not read posts for search index rebuild', '', __LINE__, __FILE__, $sql);
+		}
 		
 		$num_rows = 0;
 		while (($row = $db->sql_fetchrow ($result)) && (onTime () == true))
 		{
+			$topic_explain = '';
 			if ( $row['post_subject'] )
 			{
 				$sql_e = "SELECT topic_title_e
 					FROM " . TOPICS_TABLE . "
 						WHERE topic_first_post_id = " . $row['post_id'];
 				$result_e = $db->sql_query ($sql_e);
-				$row_e = $db->sql_fetchrow($result_e);
+				$row_e = ($result_e) ? $db->sql_fetchrow($result_e) : false;
+				if (is_array($row_e) && isset($row_e['topic_title_e']))
+				{
+					$topic_explain = $row_e['topic_title_e'];
+				}
+				if ($result_e)
+				{
+					$db->sql_freeresult($result_e);
+				}
 			}
-			$topic_explain = $row_e['topic_title_e'];
 
 			add_search_words('single', $row['post_id'], stripslashes($row['post_text']), stripslashes($row['post_subject']), stripslashes($topic_explain));
 			$num_rows++;
 		}
+		$db->sql_freeresult($result);
 	
 		// Show the template work.
 		$template->set_filenames(array(

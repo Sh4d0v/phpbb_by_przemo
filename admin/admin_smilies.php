@@ -169,12 +169,12 @@ else
 	}
 }
 
-$smiley_id = ( !empty($HTTP_POST_VARS['id']) ) ? $HTTP_POST_VARS['id'] : $HTTP_GET_VARS['id'];
+$smiley_id = ( !empty($HTTP_POST_VARS['id']) ) ? $HTTP_POST_VARS['id'] : (isset($HTTP_GET_VARS['id']) ? $HTTP_GET_VARS['id'] : 0);
 $smiley_id = intval($smiley_id);
 
 $delimeter = '=+:';
 
-if ( $HTTP_GET_VARS['move'] && $smiley_id )
+if ( !empty($HTTP_GET_VARS['move']) && $smiley_id )
 {
 	move_smile($HTTP_GET_VARS['move'], $smiley_id);
 }
@@ -182,9 +182,11 @@ if ( $HTTP_GET_VARS['move'] && $smiley_id )
 //
 // Read a listing of uploaded smilies for use in the add or edit smliey code...
 //
+$smiley_images = array();
+$smiley_paks = array();
 $dir = @opendir($phpbb_root_path . $board_config['smilies_path']);
 
-while($file = @readdir($dir))
+while($dir && ($file = @readdir($dir)))
 {
 	if( !@is_dir(phpbb_realpath($phpbb_root_path . $board_config['smilies_path'] . '/' . $file)) )
 	{
@@ -204,7 +206,10 @@ while($file = @readdir($dir))
 if (isset($smiley_images)) sort ($smiley_images);
 if (isset($smiley_paks)) sort ($smiley_paks);
 
-@closedir($dir);
+if ($dir)
+{
+	@closedir($dir);
+}
 
 //
 // Select main mode
@@ -503,7 +508,7 @@ else if( isset($HTTP_POST_VARS['add']) || isset($HTTP_GET_VARS['add']) )
 		"L_SUBMIT" => $lang['Submit'],
 		"L_RESET" => $lang['Reset'],
 
-		"SMILEY_IMG" => $phpbb_root_path . $board_config['smilies_path'] . '/' . $smiley_images[0],
+		"SMILEY_IMG" => !empty($smiley_images[0]) ? $phpbb_root_path . $board_config['smilies_path'] . '/' . $smiley_images[0] : '',
 
 		"S_SMILEY_ACTION" => append_sid("admin_smilies.$phpEx"),
 		"S_HIDDEN_FIELDS" => $s_hidden_fields,
@@ -574,6 +579,11 @@ else if ( $mode != "" )
 				message_die(GENERAL_ERROR, 'Could not obtain emoticon information', "", __LINE__, __FILE__, $sql);
 			}
 			$smile_data = $db->sql_fetchrow($result);
+			if (!is_array($smile_data))
+			{
+				message_die(GENERAL_MESSAGE, 'Smiley not found');
+			}
+			$smiley_edit_img = isset($smile_data['smile_url']) ? $smile_data['smile_url'] : '';
 
 			$filename_list = "";
 			for( $i = 0; $i < count($smiley_images); $i++ )

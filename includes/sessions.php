@@ -230,7 +230,11 @@ function make_over_userdata($userdata)
 	$_cookie_config = md5('_cookie_config' . $userdata['user_id']);
 
     $_uconf      = get_vars($unique_cookie_name.$_cookie_config, false, 'COOKIE');
-	$user_config = ($_uconf) ? unserialize(stripslashes($_uconf)) : '';
+	$user_config = ($_uconf) ? phpbb_safe_unserialize(stripslashes($_uconf)) : array();
+	if (!is_array($user_config))
+	{
+		$user_config = array();
+	}
 	$default_enable = array('user_allow_signature', 'user_allow_sig_image', 'user_showavatars', 'page_avatar', 'view_ignore_topics', 'overlib', 'topic_start_date', 'ctop', 'onmouse', 'custom_color_use', 'custom_rank', 'cload', 'u_o_t_d', 'cagent', 'level', 'cignore', 'cquick', 'show_smiles', 'shoutbox', 'post_icon');
 	$default_board_config = array('user_hot_threshold', 'user_sub_forum', 'user_split_cat', 'user_last_topic_title', 'user_sub_level_links', 'user_display_viewonline');
 	$user_config_vars = array_merge(array('user_dateformat', 'user_topics_per_page', 'user_posts_per_page', 'simple_head', 'advertising'), $default_enable, $default_board_config);
@@ -333,7 +337,11 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
 	if ( isset($HTTP_COOKIE_VARS[$cookiename . '_sid']) || isset($HTTP_COOKIE_VARS[$cookiename . '_data']) )
 	{
 		$session_id = isset($HTTP_COOKIE_VARS[$cookiename . '_sid']) ? $HTTP_COOKIE_VARS[$cookiename . '_sid'] : '';
-		$sessiondata = isset($HTTP_COOKIE_VARS[$cookiename . '_data']) ? unserialize(stripslashes($HTTP_COOKIE_VARS[$cookiename . '_data'])) : array();
+		$sessiondata = isset($HTTP_COOKIE_VARS[$cookiename . '_data']) ? phpbb_safe_unserialize(stripslashes($HTTP_COOKIE_VARS[$cookiename . '_data'])) : array();
+		if (!is_array($sessiondata))
+		{
+			$sessiondata = array();
+		}
 		$sessionmethod = SESSION_METHOD_COOKIE;
 		$sessiondata['userid'] = intval($sessiondata['userid']);
 	}
@@ -629,7 +637,11 @@ function session_pagestart($user_ip, $thispage_id)
 
 	if ( isset($HTTP_COOKIE_VARS[$cookiename . '_sid']) || isset($HTTP_COOKIE_VARS[$cookiename . '_data']) )
 	{
-		$sessiondata = isset( $HTTP_COOKIE_VARS[$cookiename . '_data'] ) ? unserialize(stripslashes($HTTP_COOKIE_VARS[$cookiename . '_data'])) : array();
+		$sessiondata = isset( $HTTP_COOKIE_VARS[$cookiename . '_data'] ) ? phpbb_safe_unserialize(stripslashes($HTTP_COOKIE_VARS[$cookiename . '_data'])) : array();
+		if (!is_array($sessiondata))
+		{
+			$sessiondata = array();
+		}
 		$session_id = isset( $HTTP_COOKIE_VARS[$cookiename . '_sid'] ) ? $HTTP_COOKIE_VARS[$cookiename . '_sid'] : '';
 		$sessionmethod = SESSION_METHOD_COOKIE;
 	}
