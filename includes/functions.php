@@ -1116,19 +1116,24 @@ function setup_style($style)
 	$template_path = 'templates/';
 	$template_name = $row['template_name'] ;
 
-	$template = new Template($phpbb_root_path . $template_path . $template_name);
+	$template_root = realpath(dirname(__FILE__) . '/../' . $template_path . $template_name);
+	if ($template_root === false)
+	{
+		$template_root = dirname(__FILE__) . '/../' . $template_path . $template_name;
+	}
+	$template = new Template($template_root);
 
 	if ( $template )
 	{
 		$current_template_path = $template_path . $template_name;
-		@include($phpbb_root_path . $template_path . $template_name . '/' . $template_name . '.cfg');
+		@include($template_root . '/' . $template_name . '.cfg');
 
 		if ( !defined('TEMPLATE_CONFIG') )
 		{
 			message_die(CRITICAL_ERROR, 'Could not open ' . $template_name . ' template config file', '', __LINE__, __FILE__);
 		}
 
-		$img_lang = ( file_exists(@phpbb_realpath($phpbb_root_path . $current_template_path . '/images/lang_' . $board_config['default_lang'])) ) ? $board_config['default_lang'] : 'english';
+		$img_lang = ( file_exists($template_root . '/images/lang_' . $board_config['default_lang']) ) ? $board_config['default_lang'] : 'english';
 
 		foreach ($images as $key => $value)
 		{
