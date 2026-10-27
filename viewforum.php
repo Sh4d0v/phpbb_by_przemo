@@ -349,7 +349,7 @@ $select_topic_days .= '</select>';
 if( $userdata['user_id'] != ANONYMOUS )
 {
 	$userdata = user_unread_posts();
-	if ( $forum_row['forum_sort'] != 'SORT_FPDATE' && count($userdata['unread_data'][$forum_id]) )
+	if ( $forum_row['forum_sort'] != 'SORT_FPDATE' && !empty($userdata['unread_data'][$forum_id]) )
 	{
 		$unread_topics_list = implode(',', array_keys($userdata['unread_data'][$forum_id]));
 		$sort_unread = ($unread_topics_list) ? "t.topic_id IN($unread_topics_list) DESC, " : '';
@@ -851,7 +851,7 @@ if( $total_topics )
 		$get_unread_posts = '';
 		if ( $userdata['session_logged_in'] && $board_config['newest'] && $topic_rowset[$i]['topic_status'] != TOPIC_MOVED )
 		{
-			$view_topic_url = (count($userdata['unread_data'][$topic_rowset[$i]['forum_id']][$topic_id])) ? append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"' : append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id");
+			$view_topic_url = (!empty($userdata['unread_data'][$topic_rowset[$i]['forum_id']][$topic_id])) ? append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"' : append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id");
 		} 
 		else
 		{
@@ -924,7 +924,8 @@ if( $total_topics )
 					$overlib_title = $lang['not_poster_post'];
 				}
 
-				$count_unread_posts = count($userdata['unread_data'][$forum_id][$topic_id]);
+				$unread_posts = (isset($userdata['unread_data'][$forum_id][$topic_id]) && is_array($userdata['unread_data'][$forum_id][$topic_id])) ? $userdata['unread_data'][$forum_id][$topic_id] : array();
+				$count_unread_posts = count($unread_posts);
 				$overlib_unread_posts = (($count_unread_posts) ? '&raquo; ' . $lang['unread_posts'] . ': <b>' . $count_unread_posts . '</b><br />' : '');
 			}
 			else if ( $overlib_post_text )
