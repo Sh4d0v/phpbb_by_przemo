@@ -55,6 +55,11 @@ class attach_parent
 	//
 	// Constructor
 	//
+	function __construct()
+	{
+		$this->attach_parent();
+	}
+
 	function attach_parent()
 	{
 		global $HTTP_POST_VARS, $HTTP_POST_FILES;
@@ -1570,10 +1575,15 @@ class attach_posting extends attach_parent
 	//
 	// Constructor
 	//
+	function __construct()
+	{
+		parent::__construct();
+		$this->page = 0;
+	}
+
 	function attach_posting()
 	{
-		$this->attach_parent();
-		$this->page = 0;
+		$this->__construct();
 	}
 	
 	//

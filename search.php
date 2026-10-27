@@ -446,7 +446,7 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 						if ( $current_match_type == 'and' && $word_count )
 						{
 							@reset($result_list);
-							while( list($post_id, $match_count) = @each($result_list) )
+							foreach ((array) ($result_list) as $post_id => $match_count)
 							{
 								if ( !$row[$post_id] )
 								{
@@ -464,7 +464,7 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 			@reset($result_list);
 
 			$search_ids = array();
-			while( list($post_id, $matches) = each($result_list) )
+			foreach ((array) ($result_list) as $post_id => $matches)
 			{
 				if ( $matches )
 				{

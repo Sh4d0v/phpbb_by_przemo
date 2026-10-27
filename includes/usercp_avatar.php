@@ -397,7 +397,7 @@ function display_avatar_gallery($mode, &$category, &$user_id, $email1, &$current
 	$dir = @opendir($board_config['avatar_gallery_path']);
 
 	$avatar_images = array();
-	while( $file = @readdir($dir) )
+	while( is_resource($dir) && ($file = @readdir($dir)) !== false )
 	{
 		if( $file != '.' && $file != '..' && !is_file($board_config['avatar_gallery_path'] . '/' . $file) && !is_link($board_config['avatar_gallery_path'] . '/' . $file) )
 		{
@@ -405,7 +405,7 @@ function display_avatar_gallery($mode, &$category, &$user_id, $email1, &$current
 
 			$avatar_row_count = 0;
 			$avatar_col_count = 0;
-			while( $sub_file = @readdir($sub_dir) )
+			while( is_resource($sub_dir) && ($sub_file = @readdir($sub_dir)) !== false )
 			{
 				$my_checker = 0;
 				for ($i = 1; $i<= $my_counter; $i++ )
@@ -430,22 +430,34 @@ function display_avatar_gallery($mode, &$category, &$user_id, $email1, &$current
 					}
 				}
 			}
+			if (is_resource($sub_dir))
+			{
+				closedir($sub_dir);
+			}
 		}
 	}
 
-	@closedir($dir);
+	if (is_resource($dir))
+	{
+		closedir($dir);
+	}
 
 	@ksort($avatar_images);
 	@reset($avatar_images);
 
 	if( empty($category) )
 	{
-		list($category, ) = each($avatar_images);
+		$category = array_key_first($avatar_images);
+	}
+	if ($category === null || !isset($avatar_images[$category]) || !is_array($avatar_images[$category]))
+	{
+		$category = '';
+		$avatar_images[$category] = array();
 	}
 	@reset($avatar_images);
 
 	$s_categories = '<select name="avatarcategory">';
-	while( list($key) = each($avatar_images) )
+	foreach ((array) ($avatar_images) as $key => $_php8_each_unused_value)
 	{
 		$selected = ( $key == $category ) ? ' selected="selected"' : '';
 		if( count($avatar_images[$key]) )

@@ -226,7 +226,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 		if ( !empty($poll_options) )
 		{
 			$temp_option_text = array();
-			while( list($option_id, $option_text) = @each($poll_options) )
+			foreach ((array) ($poll_options) as $option_id => $option_text)
 			{
 				$option_text = trim($option_text);
 				if ( !empty($option_text) )
@@ -592,7 +592,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		@reset($poll_options);
 
 		$poll_option_id = 1;
-		while ( list($option_id, $option_text) = each($poll_options) )
+		foreach ((array) ($poll_options) as $option_id => $option_text)
 		{
 			if ( !empty($option_text) )
 			{
@@ -784,7 +784,7 @@ function user_notification($mode, &$post_data, &$forum_id, &$topic_id, &$post_id
 					$emailer->replyto($board_config['email_return_path']);
 
 					@reset($bcc_list_ary);
-					while (list($user_lang, $bcc_list) = each($bcc_list_ary))
+					foreach ((array) ($bcc_list_ary) as $user_lang => $bcc_list)
 					{
 						$emailer->use_template('topic_notify', $user_lang);
 				
@@ -874,7 +874,7 @@ function disallow_forums($userdata, $forum_id)
 	{
 		$fids = explode(',', $userdata['disallow_forums']);
 
-		while( list($foo, $id) = each($fids) )
+		foreach ((array) ($fids) as $foo => $id)
 		{
 			$fid[] = intval( trim($id) );
 		}

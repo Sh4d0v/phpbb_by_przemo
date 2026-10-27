@@ -186,7 +186,7 @@ if ( $mode == 'makeconfig' )
 	);
 
 	$dbms_options = '';
-	while (list($var, $param) = each($available_dbms))
+	foreach ((array) ($available_dbms) as $var => $param)
 	{
 		$selected = ($dbms == $var) ? ' selected="selected"' : '';
 		$dbms_options .= '<option value="' . $var . '"' . $selected . '>' . $param . '</option>';

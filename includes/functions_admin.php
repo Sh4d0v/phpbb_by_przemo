@@ -503,7 +503,7 @@ function db_backup($do_now = false)
 			$index[$kname][] = $row['Column_name'];
 		}
 
-		while(list($x, $columns) = @each($index))
+		foreach ((array) ($index) as $x => $columns)
 		{
 			$schema_create .= ", $crlf";
 
@@ -617,7 +617,7 @@ function db_backup($do_now = false)
 		if ( count($files) > ($board_config['db_backup_copies'] + $countadmin) )
 		{
 			$i = 0;
-			while (list($key, $val) = each($files))
+			foreach ((array) ($files) as $key => $val)
 			{
 				$i++;
 				if ( $i > ($board_config['db_backup_copies'] + $countadmin) )

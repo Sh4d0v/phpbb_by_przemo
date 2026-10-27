@@ -58,7 +58,7 @@ if ( !($result = $stat_db->sql_query($sql)) )
 
 $row = $stat_db->sql_fetchrow($result);
 //$total_posts = get_db_stat('postcount');
-$total_posts = $row['total_posts'];
+$total_posts = (is_array($row) && isset($row['total_posts'])) ? (int) $row['total_posts'] : 0;
 
 $sql = 'SELECT user_id, username, user_posts 
 FROM ' . USERS_TABLE . ' 
@@ -71,10 +71,12 @@ if ( !($result = $stat_db->sql_query($sql)) )
 	message_die(GENERAL_ERROR, 'Couldn\'t retrieve users data', '', __LINE__, get_module_fd_name(__FILE__), $sql);
 }
 
-$user_count = $stat_db->sql_numrows($result);
+$user_count = max(0, (int) $stat_db->sql_numrows($result));
 $user_data = $stat_db->sql_fetchrowset($result);
+$user_data = is_array($user_data) ? $user_data : array();
+$user_count = min($user_count, count($user_data));
 
-$firstcount = $user_data[0]['user_posts'];
+$firstcount = isset($user_data[0]['user_posts']) ? (int) $user_data[0]['user_posts'] : 0;
 
 for ($i = 0; $i < $user_count; $i++)
 {

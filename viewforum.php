@@ -46,6 +46,8 @@ else
 
 $start     = get_vars('start', 0, 'GET,POST', true);
 $mark_read = get_vars('mark', '', 'POST,GET');
+$show_ignore = false;
+$show_ignore_link = '';
 
 if ( isset($HTTP_GET_VARS['show_ignore']) || isset($HTTP_POST_VARS['show_ignore']) )
 {
@@ -794,7 +796,8 @@ if( $total_topics )
 			$newest_post_img = '';
 			if( $userdata['session_logged_in'] )
 			{
-				if ( is_array($userdata['unread_data'][$topic_rowset[$i]['forum_id']]) && array_key_exists($topic_id, $userdata['unread_data'][$topic_rowset[$i]['forum_id']]) )
+				$topic_unread_data = (isset($userdata['unread_data'][$topic_rowset[$i]['forum_id']]) && is_array($userdata['unread_data'][$topic_rowset[$i]['forum_id']])) ? $userdata['unread_data'][$topic_rowset[$i]['forum_id']] : array();
+				if (isset($topic_unread_data[$topic_id]))
 				{
 					$folder_image = $folder_new;
 					$folder_alt = $lang['New_posts'];
@@ -851,7 +854,8 @@ if( $total_topics )
 		$get_unread_posts = '';
 		if ( $userdata['session_logged_in'] && $board_config['newest'] && $topic_rowset[$i]['topic_status'] != TOPIC_MOVED )
 		{
-			$view_topic_url = (!empty($userdata['unread_data'][$topic_rowset[$i]['forum_id']][$topic_id])) ? append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"' : append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id");
+			$topic_unread_data = (isset($userdata['unread_data'][$topic_rowset[$i]['forum_id']]) && is_array($userdata['unread_data'][$topic_rowset[$i]['forum_id']])) ? $userdata['unread_data'][$topic_rowset[$i]['forum_id']] : array();
+			$view_topic_url = (!empty($topic_unread_data[$topic_id])) ? append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"' : append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id");
 		} 
 		else
 		{

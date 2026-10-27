@@ -38,7 +38,7 @@ include($phpbb_root_path . 'includes/functions_log.'.$phpEx);
 // Check and set various parameters
 //
 $params = array('submit' => 'post', 'preview' => 'preview', 'delete' => 'delete', 'poll_delete' => 'poll_delete', 'poll_add' => 'add_poll_option', 'poll_edit' => 'edit_poll_option', 'mode' => 'mode');
-while( list($var, $param) = @each($params) )
+foreach ($params as $var => $param)
 {
 	if ( !empty($HTTP_POST_VARS[$param]) || !empty($HTTP_GET_VARS[$param]) )
 	{
@@ -53,7 +53,7 @@ while( list($var, $param) = @each($params) )
 $confirm = isset($HTTP_POST_VARS['confirm']) ? true : false;
 
 $params = array('forum_id' => POST_FORUM_URL, 'topic_id' => POST_TOPIC_URL, 'post_id' => POST_POST_URL, 'back' => 'back');
-while( list($var, $param) = @each($params) )
+foreach ($params as $var => $param)
 {
 	if ( !empty($HTTP_POST_VARS[$param]) || !empty($HTTP_GET_VARS[$param]) )
 	{
@@ -66,7 +66,7 @@ while( list($var, $param) = @each($params) )
 }
 
 $post_parent = (($mode == 'quote' || $mode == 'reply') && $post_id) ? $post_id : 0;
-$post_parent = ($HTTP_POST_VARS['post_parent']) ? intval($HTTP_POST_VARS['post_parent']) : $post_parent;
+$post_parent = (!empty($HTTP_POST_VARS['post_parent'])) ? intval($HTTP_POST_VARS['post_parent']) : $post_parent;
 $refresh = $preview || $poll_add || $poll_edit || $poll_delete;
 
 $msg_icon_checked = get_vars('msg_icon', 0, 'POST', true);
@@ -470,10 +470,10 @@ else
 	message_die(GENERAL_MESSAGE, $lang['No_such_post']);
 }
 
-$topic_color = ($HTTP_POST_VARS['topic_color'] && $board_config['topic_color'] && $userdata['can_topic_color'] && ($board_config['topic_color_all'] || $userdata['user_level'] == ADMIN || ($is_auth['auth_mod'] && $board_config['topic_color_mod']))) ? xhtmlspecialchars($HTTP_POST_VARS['topic_color']) : '';
+$topic_color = (!empty($HTTP_POST_VARS['topic_color']) && $board_config['topic_color'] && $userdata['can_topic_color'] && ($board_config['topic_color_all'] || $userdata['user_level'] == ADMIN || ($is_auth['auth_mod'] && $board_config['topic_color_mod']))) ? xhtmlspecialchars($HTTP_POST_VARS['topic_color']) : '';
 
 $submit_topic_tag = '';
-if ( $HTTP_POST_VARS['topic_tag'] && strpos($post_info['topic_tags'], ',') )
+if ( !empty($HTTP_POST_VARS['topic_tag']) && !empty($post_info['topic_tags']) && strpos($post_info['topic_tags'], ',') )
 {
 	$topic_tags_ary = @explode(',', $post_info['topic_tags']);
 	for($i = 0; $i < count($topic_tags_ary); $i++)
@@ -649,7 +649,7 @@ if ( ($submit || $refresh) && $is_auth['auth_read'])
 }
 else
 {
-	$userdata['user_notify'] = ($post_info['poster_id'] != $userdata['user_id'] && $mode == 'editpost' ) ? 0 : $userdata['user_notify'];
+	$userdata['user_notify'] = ($mode == 'editpost' && isset($post_info['poster_id']) && $post_info['poster_id'] != $userdata['user_id']) ? 0 : $userdata['user_notify'];
 	if ( $mode != 'newtopic' && $userdata['session_logged_in'] && $is_auth['auth_read'] )
 	{
 		$sql = "SELECT topic_id 
@@ -1459,7 +1459,7 @@ if ( $refresh || isset($HTTP_POST_VARS['del_poll_option']) || $error_msg != '' )
 	$poll_options = array();
 	if ( !empty($HTTP_POST_VARS['poll_option_text']) )
 	{
-		while( list($option_id, $option_text) = @each($HTTP_POST_VARS['poll_option_text']) )
+		foreach ((array) ($HTTP_POST_VARS['poll_option_text']) as $option_id => $option_text)
 		{
 			if( isset($HTTP_POST_VARS['del_poll_option'][$option_id]) )
 			{
@@ -2391,7 +2391,7 @@ if( ( $mode == 'newtopic' || ( $mode == 'editpost' && $post_data['edit_poll']) )
 
 	if( !empty($poll_options) && !$comment )
 	{
-		while( list($option_id, $option_text) = each($poll_options) )
+		foreach ((array) ($poll_options) as $option_id => $option_text)
 		{
 			$template->assign_block_vars('poll_option_rows', array(
 				'POLL_OPTION' => str_replace('"', '&quot;', $option_text),

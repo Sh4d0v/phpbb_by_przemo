@@ -49,7 +49,7 @@ class Report_post_class {
 		}
 		$auth = auth(AUTH_MOD, AUTH_LIST_ALL, $userdata);
 		$forums_auth = array('yes' => '', 'yes_count' => 0, 'no' => '', 'no_count' => 0);
-		while ( list($forum) = each($auth) )
+		foreach ((array) ($auth) as $forum => $_php8_each_unused_value)
 		{
 			if ( $auth[$forum]['auth_mod'] )
 			{

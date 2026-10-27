@@ -928,9 +928,14 @@ function get_var($var_name, $default, $multibyte = false)
 	}
 	else
 	{
-		list($key_type, $type) = each($default);
-		$type = gettype($type);
-		$key_type = gettype($key_type);
+		$key_type = 'integer';
+		$type = 'string';
+		foreach ($default as $default_key => $default_value)
+		{
+			$key_type = gettype($default_key);
+			$type = gettype($default_value);
+			break;
+		}
 	}
 
 	if (is_array($var))

@@ -36,6 +36,11 @@ class Template
 	var $compiled_code = array();
 	var $uncompiled_code = array();
 
+	function __construct($root = ".")
+	{
+		$this->Template($root);
+	}
+
 	function Template($root = ".")
 	{
 		$this->set_rootdir($root);
@@ -65,7 +70,7 @@ class Template
 		}
 
 		reset($filename_array);
-		while(list($handle, $filename) = each($filename_array))
+		foreach ((array) ($filename_array) as $handle => $filename)
 		{
 			$this->files[$handle] = $this->make_filename($filename);
 		}
@@ -133,7 +138,7 @@ class Template
 	function assign_vars($vararray)
 	{
 		reset ($vararray);
-		while (list($key, $val) = each($vararray))
+		foreach ((array) ($vararray) as $key => $val)
 		{
 			$this->_tpldata['.'][0][$key] = $val;
 		}

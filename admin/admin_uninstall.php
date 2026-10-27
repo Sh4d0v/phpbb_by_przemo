@@ -38,7 +38,7 @@ include($phpbb_root_path . 'includes/functions_selects.'.$phpEx);
 if( strstr($board_config['main_admin_id'], ',') )
 {
 	$fids = explode(',', $board_config['main_admin_id']);
-	while( list($foo, $id) = each($fids) )
+	foreach ((array) ($fids) as $foo => $id)
 	{
 		$fid[] = intval( trim($id) );
 	}

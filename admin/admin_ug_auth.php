@@ -53,7 +53,7 @@ include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
 
 $params = array('mode' => 'mode', 'user_id' => POST_USERS_URL, 'group_id' => POST_GROUPS_URL, 'adv' => 'adv');
 
-while( list($var, $param) = @each($params) )
+foreach ((array) ($params) as $var => $param)
 {
 	if ( !empty($HTTP_POST_VARS[$param]) || !empty($HTTP_GET_VARS[$param]) )
 	{
@@ -326,7 +326,7 @@ if ( isset($HTTP_POST_VARS['submit']) && ( ( $mode == 'user' && $user_id ) || ( 
 			// Checks complete, make updates to DB
 			//
 			$delete_sql = '';
-			while( list($forum_id, $action) = @each($forum_auth_action) )
+			foreach ((array) ($forum_auth_action) as $forum_id => $action)
 			{
 				if ( $action == 'delete' )
 				{
@@ -338,7 +338,7 @@ if ( isset($HTTP_POST_VARS['submit']) && ( ( $mode == 'user' && $user_id ) || ( 
 					{
 						$sql_field = '';
 						$sql_value = '';
-						while ( list($auth_type, $value) = @each($update_acl_status[$forum_id]) )
+						foreach ((array) ($update_acl_status[$forum_id]) as $auth_type => $value)
 						{
 							$sql_field .= ( ( $sql_field != '' ) ? ', ' : '' ) . $auth_type;
 							$sql_value .= ( ( $sql_value != '' ) ? ', ' : '' ) . $value;
@@ -352,7 +352,7 @@ if ( isset($HTTP_POST_VARS['submit']) && ( ( $mode == 'user' && $user_id ) || ( 
 					else
 					{
 						$sql_values = '';
-						while ( list($auth_type, $value) = @each($update_acl_status[$forum_id]) )
+						foreach ((array) ($update_acl_status[$forum_id]) as $auth_type => $value)
 						{
 							$sql_values .= ( ( $sql_values != '' ) ? ', ' : '' ) . $auth_type . ' = ' . $value;
 						}

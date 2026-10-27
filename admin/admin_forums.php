@@ -139,7 +139,7 @@ if ( !(function_exists('admin_check_cat')) )
 
 		// push each cat
 		reset($mains);
-		while (list($id, $main) = each($mains) )
+		foreach ((array) ($mains) as $id => $main)
 		{
 			$root		= false;
 			$cur		= $id;
@@ -479,7 +479,11 @@ if( isset($HTTP_POST_VARS['addforum']) || isset($HTTP_POST_VARS['addcategory']) 
 
 	if( $mode == "addforum" )
 	{
-		list($cat_id) = each($HTTP_POST_VARS['addforum']);
+		$cat_id = (isset($HTTP_POST_VARS['addforum']) && is_array($HTTP_POST_VARS['addforum'])) ? array_key_first($HTTP_POST_VARS['addforum']) : null;
+		if ($cat_id === null || !isset($HTTP_POST_VARS['name'][$cat_id]))
+		{
+			message_die(GENERAL_MESSAGE, 'Invalid category selection');
+		}
 		$cat_id = intval($cat_id);
 		// 
 		// stripslashes needs to be run on this because slashes are added when the forum name is posted
@@ -489,7 +493,11 @@ if( isset($HTTP_POST_VARS['addforum']) || isset($HTTP_POST_VARS['addcategory']) 
 	
 	if( $mode == "addcat" )
 	{
-		list($cat_id) = each($HTTP_POST_VARS['addcategory']);
+		$cat_id = (isset($HTTP_POST_VARS['addcategory']) && is_array($HTTP_POST_VARS['addcategory'])) ? array_key_first($HTTP_POST_VARS['addcategory']) : null;
+		if ($cat_id === null || !isset($HTTP_POST_VARS['name'][$cat_id]))
+		{
+			message_die(GENERAL_MESSAGE, 'Invalid category selection');
+		}
 		$cat_title = stripslashes($HTTP_POST_VARS['name'][$cat_id]);
 		$cat_main = $cat_id;
 		$cat_id = -1;
@@ -794,7 +802,7 @@ if( !empty($mode) )
 			//
 			$field_sql = "";
 			$value_sql = "";
-			while( list($field, $value) = each($forum_auth_ary) )
+			foreach ((array) ($forum_auth_ary) as $field => $value)
 			{
 				$field_sql .= ", $field";
 				$value_sql .= ", $value";

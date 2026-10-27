@@ -147,7 +147,7 @@ if (
 	// doing the job but can still break HTML output ... have no choice, have
 	// to use xhtmlspecialchars ... be prepared to be moaned at.
 
-	while( list($var, $param) = @each($strip_var_list) )
+	foreach ((array) ($strip_var_list) as $var => $param)
 	{
 		if ( !empty($HTTP_POST_VARS[$param]) )
 		{
@@ -159,7 +159,7 @@ if (
 
 	$trim_var_list = array('cur_password' => 'cur_password', 'new_password' => 'new_password', 'password_confirm' => 'password_confirm', 'signature' => 'signature');
 
-	while( list($var, $param) = @each($trim_var_list) )
+	foreach ((array) ($trim_var_list) as $var => $param)
 	{
 		if ( !empty($HTTP_POST_VARS[$param]) )
 		{

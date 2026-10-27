@@ -50,7 +50,7 @@ function language_select($default, $select_name = "language", $dirname="language
 	@reset($lang);
 
 	$lang_select = '<select name="' . $select_name . '">' . ((is_array($empty_field)) ? '<option value="' . $empty_field[0] . '"' . (($default == $empty_field[0]) ? ' selected="selected"' : '') . '>' . $empty_field[1] . '</option>' : '');
-	while ( list($displayname, $filename) = @each($lang) )
+	foreach ((array) ($lang) as $displayname => $filename)
 	{
 		$selected = ( strtolower($default) == strtolower($filename) ) ? ' selected="selected"' : '';
 		$lang_select .= '<option value="' . $filename . '"' . $selected . '>' . ucwords($displayname) . '</option>';
@@ -121,7 +121,7 @@ function tz_select($default, $select_name = 'timezone')
 	$default == ( !isset($default) ) ? $sys_timezone : $default;
 	$tz_select = '<select name="' . $select_name . '">';
 
-	while( list($offset, $zone) = @each($lang['tz']) )
+	foreach ((array) ($lang['tz']) as $offset => $zone)
 	{
 		$selected = ( $offset == $default ) ? ' selected="selected"' : '';
 		$tz_select .= '<option value="' . $offset . '"' . $selected . '>' . $zone . '</option>';
@@ -175,7 +175,7 @@ function date_format_select($default, $timezone, $select_name = 'dateformat')
 		'd-m-y, H:i'
 	);
 	@reset($lang['datetime']);
-	while ( list($match, $replace) = @each($lang['datetime']) )
+	foreach ((array) ($lang['datetime']) as $match => $replace)
 	{
 		$translate[$match] = $replace;
 	}
@@ -237,7 +237,7 @@ function admin_date_format_select($default, $timezone, $select_name = 'default_d
 	);
 
 	@reset($lang['datetime']);
-	while ( list($match, $replace) = @each($lang['datetime']) )
+	foreach ((array) ($lang['datetime']) as $match => $replace)
 	{
 		$translate[$match] = $replace;
 	}

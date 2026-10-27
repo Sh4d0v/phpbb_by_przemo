@@ -26,6 +26,11 @@ class SQLReader
 	 */
 	var $pma_maxqsize;
 
+	function __construct(&$reader, $method = SQL_READER_FAST, $pma_maxqsize = 524288)
+	{
+		$this->SQLReader($reader, $method, $pma_maxqsize);
+	}
+
 	function SQLReader(&$reader, $method = SQL_READER_FAST, $pma_maxqsize = 524288)
 	{
 		$this->fr = &$reader;

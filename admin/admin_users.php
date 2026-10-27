@@ -1106,7 +1106,7 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 			$dir = @opendir('../' . $board_config['avatar_gallery_path']);
 
 			$avatar_images = array();
-			while( $file = @readdir($dir) )
+			while( is_resource($dir) && ($file = @readdir($dir)) !== false )
 			{
 				if( $file != "." && $file != ".." && !is_file(phpbb_realpath("./../" . $board_config['avatar_gallery_path'] . "/" . $file)) && !is_link(phpbb_realpath("./../" . $board_config['avatar_gallery_path'] . "/" . $file)) )
 				{
@@ -1115,7 +1115,7 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 					$avatar_row_count = 0;
 					$avatar_col_count = 0;
 
-					while( $sub_file = @readdir($sub_dir) )
+					while( is_resource($sub_dir) && ($sub_file = @readdir($sub_dir)) !== false )
 					{
 						if ( preg_match("/(\.gif$|\.png$|\.jpg)$/is", $sub_file) )
 						{
@@ -1129,10 +1129,17 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 							}
 						}
 					}
+					if (is_resource($sub_dir))
+					{
+						closedir($sub_dir);
+					}
 				}
 			}
 	
-			@closedir($dir);
+			if (is_resource($dir))
+			{
+				closedir($dir);
+			}
 
 			if ( isset($HTTP_POST_VARS['avatarcategory']) )
 			{
@@ -1140,12 +1147,17 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 			}
 			else
 			{
-				list($category, ) = each($avatar_images);
+				$category = array_key_first($avatar_images);
+			}
+			if ($category === null || !isset($avatar_images[$category]) || !is_array($avatar_images[$category]))
+			{
+				$category = '';
+				$avatar_images[$category] = array();
 			}
 			@reset($avatar_images);
 
 			$s_categories = '';
-			while( list($key) = each($avatar_images) )
+			foreach ((array) ($avatar_images) as $key => $_php8_each_unused_value)
 			{
 				$selected = ( $key == $category ) ? 'selected="selected"' : '';
 				if ( count($avatar_images[$key]) )

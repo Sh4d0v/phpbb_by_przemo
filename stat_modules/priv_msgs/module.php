@@ -291,7 +291,7 @@ else
 $template->assign_vars(array(
 	'MODULE_NAME' => $lang['module_name'],
 	'L_WRITTEN_PM' => $lang['Written_pm'],
-	'L_NOTICE_PM' => $lang['Notice_pm'],
+	'L_NOTICE_PM' => isset($lang['Notice_pm']) ? $lang['Notice_pm'] : '',
 	'L_LAST_MONTH' => $lang['Last_month_pm'],
 	'L_TODAY' => $lang['todays_pm'],
 	'L_THIS_WEEK' => $lang['thisweeks_pm'],

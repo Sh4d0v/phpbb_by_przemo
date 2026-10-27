@@ -5,6 +5,11 @@ class Timer
 	var $_elapsed;
 	var $paused;
 
+	function __construct($autostart = true)
+	{
+		$this->Timer($autostart);
+	}
+
 	function Timer($autostart = true)
 	{
 		$this->start_time = 0;

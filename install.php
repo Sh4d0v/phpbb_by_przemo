@@ -139,10 +139,13 @@ function md5_checksum($file)
 {
 	if ( file_exists($file) )
 	{
-		$fd = @fopen($file, 'r');
+		$fd = @fopen($file, 'rb');
 		$fileContents = @fread($fd, @filesize($file));
 		@fclose($fd);
+		$fileContents = str_replace("\r\n", "\n", $fileContents);
+		$fileContents = str_replace("\r", "\n", $fileContents);
 		return md5($fileContents);
+
 	}
 	else
 	{
@@ -196,7 +199,7 @@ function guess_lang()
 		for ($i = 0; $i < sizeof($accept_lang_ary); $i++)
 		{
 			@reset($match_lang);
-			while (list($lang, $match) = each($match_lang))
+			foreach ((array) ($match_lang) as $lang => $match)
 			{
 				if (preg_match('#' . $match . '#i', trim($accept_lang_ary[$i])))
 				{
@@ -324,11 +327,11 @@ if (!get_magic_quotes_gpc())
 {
 	if (is_array($HTTP_GET_VARS))
 	{
-		while (list($k, $v) = each($HTTP_GET_VARS))
+		foreach ((array) ($HTTP_GET_VARS) as $k => $v)
 		{
 			if (is_array($HTTP_GET_VARS[$k]))
 			{
-				while (list($k2, $v2) = each($HTTP_GET_VARS[$k]))
+				foreach ((array) ($HTTP_GET_VARS[$k]) as $k2 => $v2)
 				{
 					$HTTP_GET_VARS[$k][$k2] = addslashes($v2);
 				}
@@ -344,11 +347,11 @@ if (!get_magic_quotes_gpc())
 
 	if (is_array($HTTP_POST_VARS))
 	{
-		while (list($k, $v) = each($HTTP_POST_VARS))
+		foreach ((array) ($HTTP_POST_VARS) as $k => $v)
 		{
 			if (is_array($HTTP_POST_VARS[$k]))
 			{
-				while (list($k2, $v2) = each($HTTP_POST_VARS[$k]))
+				foreach ((array) ($HTTP_POST_VARS[$k]) as $k2 => $v2)
 				{
 					$HTTP_POST_VARS[$k][$k2] = addslashes($v2);
 				}
@@ -364,11 +367,11 @@ if (!get_magic_quotes_gpc())
 
 	if (is_array($HTTP_COOKIE_VARS))
 	{
-		while (list($k, $v) = each($HTTP_COOKIE_VARS))
+		foreach ((array) ($HTTP_COOKIE_VARS) as $k => $v)
 		{
 			if (is_array($HTTP_COOKIE_VARS[$k]))
 			{
-				while (list($k2, $v2) = each($HTTP_COOKIE_VARS[$k]))
+				foreach ((array) ($HTTP_COOKIE_VARS[$k]) as $k2 => $v2)
 				{
 					$HTTP_COOKIE_VARS[$k][$k2] = addslashes($v2);
 				}
@@ -652,7 +655,7 @@ else if ((empty($install_step) || $admin_pass1 != $admin_pass2 || empty($admin_p
 	@reset($lang_options);
 
 	$lang_select = '<select name="lang" onchange="this.form.submit()">';
-	while (list($displayname, $filename) = @each($lang_options))
+	foreach ((array) ($lang_options) as $displayname => $filename)
 	{
 		$selected = ($language == $filename) ? ' selected="selected"' : '';
 		$lang_select .= '<option value="' . $filename . '"' . $selected . '>' . ucwords($displayname) . '</option>';
@@ -662,7 +665,7 @@ else if ((empty($install_step) || $admin_pass1 != $admin_pass2 || empty($admin_p
 	$mysql_selected = 'mysqli';
 
 	$dbms_select = '<select name="dbms" onchange="if(this.form.upgrade.options[this.form.upgrade.selectedIndex].value == 1){ this.selectedIndex = 0;}">';
-	while (list($dbms_name, $details) = @each($available_dbms))
+	foreach ((array) ($available_dbms) as $dbms_name => $details)
 	{
 		$selected = ($dbms_name == $dbms) ? ' selected="selected"' : '';
 		if ( !$dbms && $dbms_name == $mysql_selected )
@@ -935,7 +938,7 @@ else
 				'cookie_domain'	=> $server_name,
 			);
 
-			while (list($config_name, $config_value) = each($update_config))
+			foreach ((array) ($update_config) as $config_name => $config_value)
 			{
 				$sql = "UPDATE " . $table_prefix . "config
 					SET config_value = '$config_value' 

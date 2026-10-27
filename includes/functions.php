@@ -128,8 +128,6 @@ function get_object_lang($cur, $field)
 {
 	global $board_config, $lang, $tree;
 	$res	= '';
-	$athis	= $tree['keys'][$cur];
-	$type	= $tree['type'][$athis];
 	if ( $cur == 'Root' )
 	{
 		switch($field)
@@ -158,6 +156,12 @@ function get_object_lang($cur, $field)
 	}
 	else
 	{
+		if (!isset($tree['keys'][$cur]))
+		{
+			return '';
+		}
+		$athis = $tree['keys'][$cur];
+		$type = isset($tree['type'][$athis]) ? $tree['type'][$athis] : '';
 		switch($field)
 		{
 			case 'name':
@@ -167,7 +171,7 @@ function get_object_lang($cur, $field)
 				$field = ($type == POST_CAT_URL) ? 'cat_desc' : 'forum_desc';
 				break;
 		}
-		$res = ($tree['auth'][$cur]['auth_view'] || defined('IN_ADMIN')) ? $tree['data'][$athis][$field] : '';
+		$res = ((isset($tree['auth'][$cur]['auth_view']) && $tree['auth'][$cur]['auth_view']) || defined('IN_ADMIN')) ? (isset($tree['data'][$athis][$field]) ? $tree['data'][$athis][$field] : '') : '';
 		if ( isset($lang[$res]) )
 		{
 			$res = $lang[$res];
@@ -572,7 +576,12 @@ function get_tree_option($cur = '', $all = false, $admin_config = false, $admin_
 	{
 		if(!$admin_select_key)
 		{
-			$val_if = ( ($tree['type'][ $keys['idx'][$i] ] != POST_FORUM_URL) || empty($tree['data'][ $keys['idx'][$i] ]['forum_link']) )  ? true:false;
+			$tree_index = isset($keys['idx'][$i]) ? $keys['idx'][$i] : -1;
+			if (!isset($tree['type'][$tree_index]))
+			{
+				continue;
+			}
+			$val_if = ( ($tree['type'][$tree_index] != POST_FORUM_URL) || empty($tree['data'][$tree_index]['forum_link']) ) ? true : false;
 		}
 		else
 		{
@@ -1171,8 +1180,7 @@ function create_date($format, $gmepoch, $tz, $no_today = false)
 
 	if ( empty($translate) && $board_config['default_lang'] != 'english' )
 	{
-		@reset($lang['datetime']);
-		while ( list($match, $replace) = @each($lang['datetime']) )
+		foreach ((isset($lang['datetime']) && is_array($lang['datetime'])) ? $lang['datetime'] : array() as $match => $replace)
 		{
 			$translate[$match] = $replace;
 		}
@@ -2302,10 +2310,10 @@ function phpbb_ltrim($str, $charlist = false)
 
 function get_groups_color()
 {
-	$colors = $users = $groups = $style = array();
+	$colors = $users = $groups = $prefix = $style = array();
 	$user_groups = sql_cache('check', 'user_groups');
 	$groups_data = sql_cache('check', 'groups_data');
-	if (!empty($user_groups) && !empty($groups_data))
+	if (is_array($user_groups) && isset($user_groups[0], $user_groups[1]) && is_array($groups_data) && isset($groups_data[0], $groups_data[1], $groups_data[2]))
 	{
 		$users  = $user_groups[0];
 		$groups = $user_groups[1];
@@ -2314,7 +2322,7 @@ function get_groups_color()
 		$prefix = $groups_data[1];
 		$style  = $groups_data[2];
 	}
-	else if (!isset($user_groups) || !isset($groups_data))
+	else
 	{
 		global $db;
 		$sql = "SELECT ug.user_id, g.group_color, g.group_prefix, g.group_style, g.group_id
@@ -2480,7 +2488,9 @@ function groups_color_explain($block)
 
 	foreach($groups_desc as $key => $val)
 	{
-		if( $val['group_type'] != GROUP_HIDDEN || ( $val['group_type'] == GROUP_HIDDEN && $userdata['session_logged_in'] && ( $val['group_moderator'] == $userdata['user_id']  || $userdata['user_level'] == ADMIN ) ) )
+		$group_type = isset($val['group_type']) ? $val['group_type'] : GROUP_OPEN;
+		$group_moderator = isset($val['group_moderator']) ? $val['group_moderator'] : 0;
+		if( $group_type != GROUP_HIDDEN || ( $group_type == GROUP_HIDDEN && $userdata['session_logged_in'] && ( $group_moderator == $userdata['user_id']  || $userdata['user_level'] == ADMIN ) ) )
 		{
 			$template->assign_block_vars($block, array(
 				'GROUP_PREFIX' => $val['group_prefix'],
@@ -2578,7 +2588,7 @@ function generate_smilies($mode, $page_id)
 			$row = 0;
 			$col = 0;
 
-			while (list($smile_url, $data) = @each($rowset))
+			foreach ($rowset as $smile_url => $data)
 			{
 				if (!$col)
 				{
@@ -2586,7 +2596,7 @@ function generate_smilies($mode, $page_id)
 				}
 
 				$sizes = @getimagesize($board_config['smilies_path'] . '/' . $smile_url);
-				$width = (intval($sizes[0]) > 0 && intval($sizes[1]) > 0) ? '" width="' . $sizes[0] . '" height="' . $sizes[1] : '';
+				$width = (is_array($sizes) && isset($sizes[0], $sizes[1]) && intval($sizes[0]) > 0 && intval($sizes[1]) > 0) ? '" width="' . $sizes[0] . '" height="' . $sizes[1] : '';
 
 				$th_block = ($mode == 'quickreply') ? 'quick_reply' : 'smilies_row';
 

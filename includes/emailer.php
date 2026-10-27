@@ -34,6 +34,11 @@ class emailer
 
 	var $tpl_msg = array();
 
+	function __construct($use_smtp)
+	{
+		$this->emailer($use_smtp);
+	}
+
 	function emailer($use_smtp)
 	{
 		$this->reset();
@@ -155,7 +160,7 @@ class emailer
 
 		// Set vars
 		reset ($this->vars);
-		while (list($key, $val) = each($this->vars)) 
+		foreach ((array) ($this->vars) as $key => $val)
 		{
 			$$key = $val;
 		}
@@ -164,7 +169,7 @@ class emailer
 
 		// Clear vars
 		reset ($this->vars);
-		while (list($key, $val) = each($this->vars)) 
+		foreach ((array) ($this->vars) as $key => $val)
 		{
 			unset($$key);
 		}

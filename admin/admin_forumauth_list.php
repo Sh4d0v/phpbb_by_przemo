@@ -150,7 +150,7 @@ if ( !(function_exists('admin_check_cat')) )
 		// push each cat
 		reset($mains);
         $cache = false;
-		while (list($id, $main) = each($mains) )
+		foreach ((array) ($mains) as $id => $main)
 		{
 			$root		= false;
 			$cur		= $id;

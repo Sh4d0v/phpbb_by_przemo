@@ -31,6 +31,10 @@ include_once($phpbb_root_path . 'includes/bbcode.'.$phpEx);
 $mode = xhtmlspecialchars( get_vars('mode', '', 'POST') );
 $userdata = ($mode == 'add' || $mode == 'delete' || $mode == 'edit') ? session_pagestart($user_ip, PAGE_SHOUTBOX) : session_pagestart($user_ip, PAGE_INDEX);
 init_userprefs($userdata);
+$grupy = array();
+$fid = array();
+$shoutbox_banned_view = false;
+$shoutbox = get_vars('shoutbox', '', 'GET,POST');
 
 if ( $shoutbox_config['sb_group_sel'] != 'all')
 {
@@ -77,12 +81,12 @@ $is_auth_send = ((!$shoutbox_config['allow_guest'] && !$userdata['session_logged
 $message = (!empty($HTTP_POST_VARS['message'])) ? charset_utf_fix( addslashes( xhtmlspecialchars($_POST['message']) ), true ) : '';
 if( isset($HTTP_POST_VARS['message']) && empty($message) ) exit;
 
-$id         = intval($HTTP_POST_VARS['id']);
-$id_del     = intval($HTTP_POST_VARS['del']);
-$id_edit    = intval($HTTP_POST_VARS['edit_id']);
-$id_last    = intval($HTTP_POST_VARS['last']);
+$id         = isset($HTTP_POST_VARS['id']) ? intval($HTTP_POST_VARS['id']) : 0;
+$id_del     = isset($HTTP_POST_VARS['del']) ? intval($HTTP_POST_VARS['del']) : 0;
+$id_edit    = isset($HTTP_POST_VARS['edit_id']) ? intval($HTTP_POST_VARS['edit_id']) : 0;
+$id_last    = isset($HTTP_POST_VARS['last']) ? intval($HTTP_POST_VARS['last']) : 0;
 $sb_user_id = $userdata['user_id'];
-$request = ( addslashes(xhtmlspecialchars($_SERVER['HTTP_SHOUTBOX']) ) == 'shoutbox_js' ) ? true : false;
+$request = (isset($_SERVER['HTTP_SHOUTBOX']) && addslashes(xhtmlspecialchars($_SERVER['HTTP_SHOUTBOX'])) == 'shoutbox_js');
 
 if ( !function_exists('json_encode' ) )
 {
@@ -236,7 +240,7 @@ if( $mode == 'add' )
 	{
 		$fids = explode(',', $shoutbox_config['banned_user_id']);
 
-		while( list($foo, $id) = each($fids) )
+		foreach ($fids as $id)
 		{
 			$fid[] = intval( trim($id) );
 		}
@@ -354,7 +358,7 @@ if ( $request )
 	{
 		$fids = explode(',', $shoutbox_config['banned_user_id_view']);
 
-		while( list($foo, $id) = each($fids) )
+		foreach ($fids as $id)
 		{
 			$fid[] = intval( trim($id) );
 		}

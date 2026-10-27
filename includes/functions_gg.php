@@ -26,6 +26,11 @@ class GaduGadu
 	var $status_dostarczenia = array();
 	var $wyniki_szukania = array();
 
+	function __construct()
+	{
+		$this->GaduGadu();
+	}
+
 	function GaduGadu()
 	{
 		mt_srand((double)microtime() * 1000000);
@@ -249,6 +254,11 @@ class GaduGadu
 
 class www2gg extends GaduGadu
 {
+	function __construct($numer, $haslo)
+	{
+		$this->www2gg($numer, $haslo);
+	}
+
 	function www2gg($numer, $haslo)
 	{
 		$this->GaduGadu();

@@ -27,6 +27,11 @@ class attach_pm extends attach_parent
 	/**
 	* Constructor
 	*/
+	function __construct()
+	{
+		$this->attach_pm();
+	}
+
 	function attach_pm()
 	{
 		global $HTTP_POST_VARS;

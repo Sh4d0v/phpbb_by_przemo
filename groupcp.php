@@ -648,7 +648,7 @@ else if ( $group_id )
 								}
 								while ( $row = $db->sql_fetchrow($result) );
 
-								while( list($user_id, $group_list) = @each($group_check) )
+								foreach ((array) ($group_check) as $user_id => $group_list)
 								{
 									if ( count($group_list) == 1 )
 									{

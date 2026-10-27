@@ -31,6 +31,11 @@ class FileReader
 	 */
 	var $real_file_size = 0;
 
+	function __construct($fname, $real_size = 0)
+	{
+		$this->FileReader($fname, $real_size);
+	}
+
 	function FileReader($fname, $real_size = 0)
 	{
 		$real_size = intval($real_size);

@@ -68,7 +68,10 @@ function md5_checksum($file)
 		$fd = @fopen($file, 'rb');
 		$fileContents = @fread($fd, @filesize($file));
 		@fclose($fd);
+		$fileContents = str_replace("\r\n", "\n", $fileContents);
+		$fileContents = str_replace("\r", "\n", $fileContents);
 		return md5($fileContents);
+
 	}
 	else
 	{

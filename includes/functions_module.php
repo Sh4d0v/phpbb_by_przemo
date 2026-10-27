@@ -43,11 +43,16 @@ class Statistics
 	var $result_cache_used = FALSE;
 	var $db_cache_used = FALSE;
 	
-	function Statistics()
+	function __construct()
 	{
 		$this->loaded_bar_images['left'] = 'images/vote_lcap.gif';
 		$this->loaded_bar_images['right'] = 'images/vote_rcap.gif';
 		$this->loaded_bar_images['bar'] = 'images/voting_bar.gif';
+	}
+
+	function Statistics()
+	{
+		$this->__construct();
 	}
 
 	//
@@ -59,9 +64,13 @@ class Statistics
 		
 		if (is_array($bars))
 		{
-			$this->loaded_bar_images['left'] = $bars['left'];
-			$this->loaded_bar_images['right'] = $bars['right'];
-			$this->loaded_bar_images['bar'] = $bars['bar'];
+			foreach (array('left', 'right', 'bar') as $bar_image_key)
+			{
+				if (isset($bars[$bar_image_key]))
+				{
+					$this->loaded_bar_images[$bar_image_key] = $bars[$bar_image_key];
+				}
+			}
 		}
 
 		if ($this->bar_loaded)
@@ -201,11 +210,16 @@ class cached_db
 	var $fs = array();
 	var $f = array();
 
+	function __construct($numrows, $fetchrowset, $fetchrow)
+	{
+		$this->n = is_array($numrows) ? $numrows : array();
+		$this->fs = is_array($fetchrowset) ? $fetchrowset : array();
+		$this->f = is_array($fetchrow) ? $fetchrow : array();
+	}
+
 	function cached_db($numrows, $fetchrowset, $fetchrow)
 	{
-		$this->n = $numrows;
-		$this->fs = $fetchrowset;
-		$this->f = $fetchrow;
+		$this->__construct($numrows, $fetchrowset, $fetchrow);
 	}
 }
 
@@ -240,10 +254,10 @@ class StatisticsDB
 		{
 			$this->db_cached = TRUE;
 			$this->use_cache = TRUE;
-			$data = unserialize(stripslashes($cached_data));
-			$this->numrows_data = $data->n;
-			$this->fetchrowset_data = $data->fs;
-			$this->fetchrow_data = $data->f;
+			$data = @unserialize(stripslashes($cached_data));
+			$this->numrows_data = (is_object($data) && isset($data->n) && is_array($data->n)) ? $data->n : array();
+			$this->fetchrowset_data = (is_object($data) && isset($data->fs) && is_array($data->fs)) ? $data->fs : array();
+			$this->fetchrow_data = (is_object($data) && isset($data->f) && is_array($data->f)) ? $data->f : array();
 			$this->curr_n_row = 0;
 			$this->curr_fs_row = 0;
 			$this->curr_f_row = 0;
@@ -317,7 +331,8 @@ class StatisticsDB
 		}
 		else
 		{
-			$result = $this->numrows_data[$this->index][$this->curr_n_row++];
+			$result = isset($this->numrows_data[$this->index][$this->curr_n_row]) ? $this->numrows_data[$this->index][$this->curr_n_row] : 0;
+			$this->curr_n_row++;
 		}
 
 		return ($result);
@@ -334,7 +349,8 @@ class StatisticsDB
 		}
 		else
 		{
-			$result = $this->fetchrowset_data[$this->index][$this->curr_fs_row++];
+			$result = isset($this->fetchrowset_data[$this->index][$this->curr_fs_row]) ? $this->fetchrowset_data[$this->index][$this->curr_fs_row] : array();
+			$this->curr_fs_row++;
 		}
 
 		return ($result);
@@ -351,7 +367,8 @@ class StatisticsDB
 		}
 		else
 		{
-			$result = $this->fetchrow_data[$this->index][$this->curr_f_row++];
+			$result = isset($this->fetchrow_data[$this->index][$this->curr_f_row]) ? $this->fetchrow_data[$this->index][$this->curr_f_row] : false;
+			$this->curr_f_row++;
 		}
 
 		return ($result);
@@ -396,9 +413,14 @@ class cached_result
 {
 	var $var_data = array();
 
+	function __construct($var_data)
+	{
+		$this->var_data = is_array($var_data) ? $var_data : array();
+	}
+
 	function cached_result($var_data)
 	{
-		$this->var_data = $var_data;
+		$this->__construct($var_data);
 	}
 }
 
@@ -424,8 +446,8 @@ class Results
 		if ($cache_enabled)
 		{
 			$this->use_cache = TRUE;
-			$data = unserialize(stripslashes($cached_data));
-			$this->var_data = $data->var_data;
+			$data = @unserialize(stripslashes($cached_data));
+			$this->var_data = (is_object($data) && isset($data->var_data) && is_array($data->var_data)) ? $data->var_data : array();
 		}
 	}
 
@@ -484,7 +506,7 @@ class Results
 			return;
 		}
 	
-		return ($this->var_data['.'][0][$key]);
+		return (isset($this->var_data['.'][0][$key]) ? $this->var_data['.'][0][$key] : null);
 	}
 	
 	// Get number of Variables from cached Block
@@ -512,7 +534,7 @@ class Results
 			return;
 		}
 	
-		return ($this->var_data[$blockname . '.'][$count]);
+		return (isset($this->var_data[$blockname . '.'][$count]) && is_array($this->var_data[$blockname . '.'][$count]) ? $this->var_data[$blockname . '.'][$count] : array());
 	}
 
 	// Get Variable from Cached Block

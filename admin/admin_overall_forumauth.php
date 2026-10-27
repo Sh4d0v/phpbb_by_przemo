@@ -154,7 +154,7 @@ $forum_rows = array(
 );
 
 @reset($simple_auth_ary);
-while( list($key, $auth_levels) = each($simple_auth_ary))
+foreach ((array) ($simple_auth_ary) as $key => $auth_levels)
 {
 	$matched = 1;
 	for($k = 0; $k < count($auth_levels); $k++)

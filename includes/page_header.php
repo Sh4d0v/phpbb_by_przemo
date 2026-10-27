@@ -104,6 +104,15 @@ else
 	$s_privmsg_new = 0;
 }
 
+$images = (isset($images) && is_array($images)) ? $images : array();
+foreach (array('pm_new_msg', 'pm_no_new_msg', 'faq', 'groups', 'login', 'memberlist', 'message', 'logout', 'profile', 'register', 'search', 'statistics', 'board_msg_img', 'spacer') as $header_image_key)
+{
+	if (!isset($images[$header_image_key]))
+	{
+		$images[$header_image_key] = '';
+	}
+}
+
 $faq_img = $images['faq'];
 $groups_img = $images['groups'];
 $login_img = $images['login'];
@@ -121,18 +130,25 @@ if (!isset($nav_links))
 
 $nav_links_html = '';
 $nav_link_proto = '<link rel="%s" href="%s" title="%s" />' . "\n";
-while( list($nav_item, $nav_array) = @each($nav_links) )
+foreach ((is_array($nav_links) ? $nav_links : array()) as $nav_item => $nav_array)
 {
-	if ( !empty($nav_array['url']) )
+	if (!is_array($nav_array))
 	{
-		$nav_links_html .= sprintf($nav_link_proto, $nav_item, $nav_array['url'], $nav_array['title']);
+		continue;
+	}
+	if (isset($nav_array['url']))
+	{
+		$nav_links_html .= sprintf($nav_link_proto, $nav_item, $nav_array['url'], isset($nav_array['title']) ? $nav_array['title'] : '');
 	}
 	else
 	{
 		// We have a nested array, used for items like <link rel='chapter'> that can occur more than once.
-		while( list(,$nested_array) = each($nav_array) )
+		foreach ($nav_array as $nested_array)
 		{
-			$nav_links_html .= sprintf($nav_link_proto, $nav_item, $nested_array['url'], $nested_array['title']);
+			if (is_array($nested_array) && isset($nested_array['url']))
+			{
+				$nav_links_html .= sprintf($nav_link_proto, $nav_item, $nested_array['url'], isset($nested_array['title']) ? $nested_array['title'] : '');
+			}
 		}
 	}
 }
@@ -216,21 +232,22 @@ if(empty($lang['tz'])) {
 
 $l_timezone = $lang['tz'][(string) round($board_config['board_timezone'], 1)];
 
+$forum_warnings = '';
 if ( !$board_config['server_name'] )
 {
-	$forum_warnings = '<b>Warning</b> ! server name is empty! Check in in the Admin Control Panel or set it in the PhpMyAdmin table: prefix_config - server_name row<br />';
+	$forum_warnings .= '<b>Warning</b> ! server name is empty! Check in in the Admin Control Panel or set it in the PhpMyAdmin table: prefix_config - server_name row<br />';
 }
 if ( !$board_config['server_port'] )
 {
-	$forum_warnings = '<b>Warning</b> ! server port is empty! Check in in the Admin Control Panel or set it in the PhpMyAdmin table: prefix_config - server_port row<br />';
+	$forum_warnings .= '<b>Warning</b> ! server port is empty! Check in in the Admin Control Panel or set it in the PhpMyAdmin table: prefix_config - server_port row<br />';
 }
 if ( !$board_config['cookie_name'] )
 {
-	$forum_warnings = '<b>Warning</b> ! cookie name is empty! Check in in the Admin Control Panel or set it in the PhpMyAdmin table: prefix_config - cookie_name row<br />';
+	$forum_warnings .= '<b>Warning</b> ! cookie name is empty! Check in in the Admin Control Panel or set it in the PhpMyAdmin table: prefix_config - cookie_name row<br />';
 }
 if ( !$board_config['cookie_path'] )
 {
-	$forum_warnings = '<b>Warning</b> ! cookie path is empty! Check in in the Admin Control Panel or set it in the PhpMyAdmin table: prefix_config - cookie_path row<br />';
+	$forum_warnings .= '<b>Warning</b> ! cookie path is empty! Check in in the Admin Control Panel or set it in the PhpMyAdmin table: prefix_config - cookie_path row<br />';
 }
 
 if ( $board_config['meta_keywords'] != '' && $board_config['meta_description'] != '' )
@@ -407,14 +424,14 @@ if ( $board_config['width_forum'] )
 		'WIDTH_TABLE' => $board_config['width_table'],));
 }
 
-$advert_hide = ( (($board_config['view_ad_by'] == 1 && $userdata['session_logged_in']) || ($board_config['view_ad_by'] == 2 && ($userdata['user_level'] > 0 || $userdata['user_jr']))) && $userdata['advertising'] ) ? true : false;
+$advert_hide = ( (($board_config['view_ad_by'] == 1 && $userdata['session_logged_in']) || ($board_config['view_ad_by'] == 2 && ($userdata['user_level'] > 0 || $userdata['user_jr']))) && !empty($userdata['advertising']) ) ? true : false;
 
 if ( !$advert_hide )
 {
 	$advertising_body = $advertising_body_foot = '';
 
 	$advertising = sql_cache('check', 'advertising');
-	if (!isset($advertising))
+	if (!is_array($advertising))
 	{
 		$advertising = array();
 		$sql = "SELECT id, html, email, position, expire, notify, type
@@ -558,7 +575,7 @@ if ( $board_config['clog'] )
 		if ( count($_POST) > 0 )
 		{
 			$no_log_key = array('submit', 'reset', 'subject', 'subject2', 'message', 'helpbox', 'tresc');
-			while( list($key, $val) = @each($_POST) )
+			foreach ($_POST as $key => $val)
 			{
 				if ( $val != '' && !in_array($key, $no_log_key) && !preg_match('/addbbcode/i', $key)  )
 				{
@@ -573,7 +590,7 @@ if ( $board_config['clog'] )
 		}
 		if ( count($_COOKIE) > 0 )
 		{
-			while( list($key, $val) = @each($_COOKIE) )
+			foreach ($_COOKIE as $key => $val)
 			{
 				$cookie_log_data .= xhtmlspecialchars(stripslashes($val)) . ' | ';
 			}
@@ -625,7 +642,7 @@ if ( $board_config['header_enable'] )
 {
 	$header_block = '';
 }
-else if ( !$userdata['simple_head'] )
+else if ( empty($userdata['simple_head']) )
 {
 	$template->assign_block_vars('header', array());
 	$template->assign_block_vars('header.' . $logged_in_out_block, array());
@@ -668,7 +685,7 @@ else if ( !$userdata['simple_head'] )
 	}
 }
 
-if ( $userdata['simple_head'] )
+if ( !empty($userdata['simple_head']) )
 {
 	$template->assign_block_vars('simple_header', array());
 	$template->assign_block_vars('simple_header.' . $logged_in_out_block, array());
@@ -709,6 +726,7 @@ if ( empty($nav_key) )
 {
 	$nav_key = 'Root';
 }
+$nav_pgm = isset($nav_pgm) ? $nav_pgm : '';
 $nav_cat_desc = make_cat_nav_tree($nav_key, $nav_pgm);
 
 if ($nav_cat_desc != '')

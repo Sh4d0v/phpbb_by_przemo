@@ -285,7 +285,7 @@ if ( $is_auth['auth_mod'] )
     }
 }
 
-if ( $HTTP_GET_VARS['action'] == 'delete' && (($is_auth['auth_mod'] && $board_config['allow_mod_delete_actions']) || $user_level == ADMIN) )
+if ( !empty($HTTP_GET_VARS['action']) && $HTTP_GET_VARS['action'] == 'delete' && (($is_auth['auth_mod'] && $board_config['allow_mod_delete_actions']) || $user_level == ADMIN) )
 {
 	$sql = "UPDATE " . TOPICS_TABLE . "
 		SET topic_action = '', topic_action_user = '', topic_action_date = ''
@@ -297,7 +297,7 @@ if ( $HTTP_GET_VARS['action'] == 'delete' && (($is_auth['auth_mod'] && $board_co
 	redirect(append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id", true));
 }
 
-if ( $HTTP_GET_VARS['post_edit_by'] == 'delete' && (($is_auth['auth_mod'] && $board_config['allow_mod_delete_actions']) || $user_level == ADMIN) )
+if ( !empty($HTTP_GET_VARS['post_edit_by']) && $HTTP_GET_VARS['post_edit_by'] == 'delete' && (($is_auth['auth_mod'] && $board_config['allow_mod_delete_actions']) || $user_level == ADMIN) )
 {
 	$sql = "UPDATE " . POSTS_TABLE . "
 		SET post_edit_by = '0', post_edit_time = '0'
@@ -1056,7 +1056,7 @@ $nav_links['up'] = array(
 	'title' => $forum_name
 );
 
-if ( $HTTP_GET_VARS['cp'] && $HTTP_GET_VARS['ap'] )
+if ( !empty($HTTP_GET_VARS['cp']) && !empty($HTTP_GET_VARS['ap']) )
 {
 	$reply_topic_back_url = append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id&amp;postdays=0&amp;postorder=0&amp;start=" . (intval($HTTP_GET_VARS['cp']) * $user_posts_per_page));
 	message_die('GENERAL_MESSAGE', sprintf($lang['Loser_protect'], intval($HTTP_GET_VARS['cp']), intval($HTTP_GET_VARS['ap']), '<a href="' . $reply_topic_back_url . '">', '</a>', '<a href="' . $reply_topic_url . '">', '</a>'));
@@ -1178,6 +1178,7 @@ if ( $can_watch_topic )
 $base_url = "viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id&amp;postdays=$post_days&amp;postorder=$post_order" . (($highlight != '') ? "&amp;highlight=$highlight" : '');
 generate_pagination($base_url, $total_replies, $user_posts_per_page, $start);
 
+$topic_view_img = '';
 if ( $board_config['who_viewed'] && $session_logged_in )
 {
 	$topic_view_img = '<br /><a href="' . append_sid("topic_view_users.$phpEx?".POST_TOPIC_URL."=$topic_id") . '">' . $lang['Topic_view_users'] . '</a>';
@@ -1296,7 +1297,7 @@ $template->assign_vars(array(
 	'FORUM_NAME' => $forum_name,
 	'TOPIC_ID' => $topic_id,
 	'TOPIC_TITLE' => replace_encoded($topic_title),
-	'TOPIC_TITLE_B' => $b_topic_title,
+	'TOPIC_TITLE_B' => isset($b_topic_title) ? $b_topic_title : replace_encoded($topic_title),
 	'TOPIC_COLOR' => ($board_config['topic_color'] && $forum_topic_data['topic_color']) ? ' style="color: ' . $forum_topic_data['topic_color'] . '"' : '',
 
 	'POST_IMG' => $post_img,
@@ -1352,6 +1353,7 @@ $template->assign_vars(array(
 //
 // Does this topic contain a poll?
 //
+$voted_vote_nb = 0;
 if ( !empty($forum_topic_data['topic_vote']) && (!$forum_topic_data['forum_moderate'] || $forum_topic_data['topic_approve'] || $forum_topic_data['topic_poster'] == $userdata['user_id'] || $is_auth['auth_mod']) )
 {
 	$s_hidden_fields = '';
@@ -1614,9 +1616,11 @@ if ( mt_rand(1, 3) == 2 || $forum_topic_data['topic_views'] < 10 )
 $poster_ids = $check_for_mod_here = $userdata_reply_buffered = '';
 
 $mods_ids = moderarots_list($forum_id, 'mod');
+$show_reject_panel = false;
 
 for($i = 0; $i < $total_posts; $i++)
 {
+	$poster_age = '';
 	$poster_id = $postrow[$i]['user_id'];
 	$poster_username = ($poster_id == ANONYMOUS) ? (($postrow[$i]['post_username']) ? $postrow[$i]['post_username'] : $lang['Guest']) : $postrow[$i]['username'];
 	$poster = $poster_username;
@@ -1865,8 +1869,8 @@ for($i = 0; $i < $total_posts; $i++)
 			$poster_rank = $ranksrow[-1][$postrow[$i]['user_rank']]['rank_title'];
 			$rank_file = $images['rank_path'] . $ranksrow[-1][$postrow[$i]['user_rank']]['rank_image'];
 			$sizes = @getimagesize($rank_file);
-			$rank_sizes = (intval($sizes[0]) > 0 && intval($sizes[1]) > 0) ? '" width="' . $sizes[0] . '" height="' . $sizes[1] : '';
-			$rank_image = ($ranksrow[-1][$postrow[$i]['user_rank']]['rank_image']) ? '<img src="' . $rank_file . $width . '" alt="" title="' . str_replace('-#', '', $poster_rank) . '" border="0" /><br />' : '';
+			$rank_sizes = (is_array($sizes) && isset($sizes[0], $sizes[1]) && intval($sizes[0]) > 0 && intval($sizes[1]) > 0) ? '" width="' . $sizes[0] . '" height="' . $sizes[1] : '';
+			$rank_image = ($ranksrow[-1][$postrow[$i]['user_rank']]['rank_image']) ? '<img src="' . $rank_file . $rank_sizes . '" alt="" title="' . str_replace('-#', '', $poster_rank) . '" border="0" /><br />' : '';
 			$poster_rank = $poster_rank . '<br />';
 			if ( strstr($poster_rank,'-#') )
 			{
@@ -2029,10 +2033,10 @@ for($i = 0; $i < $total_posts; $i++)
 						$aim_img = '';
 					}
 					$temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$poster_id");
-					$msn_img = ($postrow[$i]['user_msnm'] && $board_config['cmsn']) ? '<a href="' . $temp_url . '"><img src="' . $images['icon_msnm'] . '" alt="" title="' . $lang['MSNM'] . '" border="0" /></a> ' : '';
-					$msn = ($postrow[$i]['user_msnm']) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
-					$yim_img = ( $postrow[$i]['user_yim'] && $board_config['cyahoo']) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $postrow[$i]['user_yim'] . '&amp;.src=pg"><img src="' . $images['icon_yim'] . '" alt="" title="' . $lang['YIM'] . '" border="0" /></a> ' : '';
-					$yim = ($postrow[$i]['user_yim']) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $postrow[$i]['user_yim'] . '&amp;.src=pg">' . $lang['YIM'] . '</a>' : '';
+					$msn_img = (!empty($postrow[$i]['user_msnm']) && $board_config['cmsn']) ? '<a href="' . $temp_url . '"><img src="' . $images['icon_msnm'] . '" alt="" title="' . $lang['MSNM'] . '" border="0" /></a> ' : '';
+					$msn = (!empty($postrow[$i]['user_msnm'])) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
+					$yim_img = ( !empty($postrow[$i]['user_yim']) && $board_config['cyahoo']) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $postrow[$i]['user_yim'] . '&amp;.src=pg"><img src="' . $images['icon_yim'] . '" alt="" title="' . $lang['YIM'] . '" border="0" /></a> ' : '';
+					$yim = (!empty($postrow[$i]['user_yim'])) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $postrow[$i]['user_yim'] . '&amp;.src=pg">' . $lang['YIM'] . '</a>' : '';
 				}
 				else
 				{
@@ -2085,10 +2089,10 @@ for($i = 0; $i < $total_posts; $i++)
 						$aim_img = '';
 					}
 					$temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$poster_id");
-					$msn_img = ($postrow[$i]['user_msnm'] && $board_config['cmsn']) ? '<a href="' . $temp_url . '" class="gen" " title="' . $lang['MSNM'] . '">[<b>MSNM</b>]</a> ' : '';
-					$msn = ($postrow[$i]['user_msnm']) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
-					$yim_img = ($postrow[$i]['user_yim'] && $board_config['cyahoo']) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $postrow[$i]['user_yim'] . '&amp;.src=pg" class="gen" title="' . $lang['YIM'] . '>[<b>YIM</a></b>] ' : '';
-					$yim = ($postrow[$i]['user_yim'] ) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $postrow[$i]['user_yim'] . '&amp;.src=pg">' . $lang['YIM'] . '</a>' : '';
+					$msn_img = (!empty($postrow[$i]['user_msnm']) && $board_config['cmsn']) ? '<a href="' . $temp_url . '" class="gen" " title="' . $lang['MSNM'] . '">[<b>MSNM</b>]</a> ' : '';
+					$msn = (!empty($postrow[$i]['user_msnm'])) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
+					$yim_img = (!empty($postrow[$i]['user_yim']) && $board_config['cyahoo']) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $postrow[$i]['user_yim'] . '&amp;.src=pg" class="gen" title="' . $lang['YIM'] . '>[<b>YIM</a></b>] ' : '';
+					$yim = (!empty($postrow[$i]['user_yim']) ) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $postrow[$i]['user_yim'] . '&amp;.src=pg">' . $lang['YIM'] . '</a>' : '';
 				}
 			}
 			else
@@ -2115,7 +2119,7 @@ for($i = 0; $i < $total_posts; $i++)
 			$poster_color_username = $colored_username[0];
 			$username_color = $colored_username[1];
 
-			if ( $postrow[$i]['user_custom_color'] && $postrow[$i]['can_custom_color'] && $userdata['custom_color_use'] )
+			if ( !empty($postrow[$i]['user_custom_color']) && !empty($postrow[$i]['can_custom_color']) && !empty($userdata['custom_color_use']) )
 			{
 				if (( (($board_config['custom_color_use'] || $board_config['custom_color_view']) && $poster_posts >= $board_config['allow_custom_color'] ))
 					|| ( ($poster_is_mod || $poster_level == ADMIN || $poster_is_jr_admin) && $board_config['custom_color_mod'] ))
@@ -2911,9 +2915,10 @@ if ( $is_auth['auth_delete'] )
 	$template->assign_block_vars('switch_auth_delete', array());
 }
 
+$unread_posts_exist = 0;
 if ( $session_logged_in )
 {
-	if ( is_array($userdata['unread_data'][$forum_id][$topic_id]) && is_array($new_posts_to_delete) )
+	if ( isset($userdata['unread_data'][$forum_id][$topic_id]) && is_array($userdata['unread_data'][$forum_id][$topic_id]) && is_array($new_posts_to_delete) )
 	{
 		$unread_posts_diff = array_diff($userdata['unread_data'][$forum_id][$topic_id], $new_posts_to_delete);
 		$unread_posts_exist = count($unread_posts_diff);
@@ -2946,7 +2951,7 @@ if ( $show_reject_panel && $forum_topic_data['forum_moderate'] && $is_auth['auth
 	);
 }
 
-if ( $session_logged_in && count($new_posts_to_delete) && !$HTTP_GET_VARS['mark_topic'] )
+if ( $session_logged_in && is_array($new_posts_to_delete) && count($new_posts_to_delete) && empty($HTTP_GET_VARS['mark_topic']) )
 {
 	$del_posts_ids = '';
 

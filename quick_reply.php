@@ -32,6 +32,7 @@ $template->set_filenames(array(
 
 $lock = (isset($HTTP_POST_VARS['lock'])) ? true : false;
 $unlock = (isset($HTTP_POST_VARS['unlock'])) ? true : false;
+$notify_user = isset($notify_user) ? $notify_user : (!empty($userdata['user_notify']) ? $userdata['user_notify'] : 0);
 
 $template->assign_block_vars('quick_reply', array(
 	'POST_ACTION' => append_sid("posting.$phpEx"),
