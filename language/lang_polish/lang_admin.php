@@ -804,7 +804,6 @@ $lang['Statistics_management'] = 'Modu³y statystyk';
 $lang['Statistics_config'] = 'Konfiguracja statystyk';
 $lang['Acces_menu_denied'] = 'Nie masz dostêpu do tego menu';
 $lang['Check-files'] = 'Kontrola Systemu';
-$lang['New_info'] = 'Proszê czekaæ, trwa pobieranie informacji o aktualizacjach ...';
 $lang['forum_compress'] = 'przez skrypt';
 $lang['server_compress'] = 'przez serwer';
 $lang['Name'] = 'Nazwa';
@@ -837,13 +836,6 @@ $lang['Forum_auth_list_explain_auth_pollcreate'] = '%s mog± tworzyæ ankiety w ty
 $lang['Cancel'] = 'Anuluj';
 $lang['Edit_permissions'] = 'Edycja zezwoleñ';
 
-$lang['Forum_out_of_date'] = 'Twoje forum jest NIEAKTUALNE! <a href="http://przemo.org/phpBB2/index.php?cid=0">Pobierz</a> najnowsz± wersjê!';
-$lang['Forum_up_to_date'] = 'Twoje forum jest aktualne.';
-$lang['Forum_search_for_updates'] = 'Sprawd¼ teraz';
-$lang['Forum_last_update_check'] = 'Ostatnio sprawdzano %s';
-$lang['Forum_last_update_check_minutes_ago'] = '%d minut temu';
-$lang['Forum_last_update_check_hours_ago'] = '%d godzin temu';
-$lang['Forum_last_update_check_days_ago'] = '%d dni temu';
 //
 // That's all Folks!
 // -------------------------------------------------

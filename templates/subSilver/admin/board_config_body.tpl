@@ -113,10 +113,6 @@
 					<td class="row2" width="50%"><input type="text" class="post" onFocus="Active(this)" onBlur="NotActive(this)" maxlength="5" size="5" name="session_length" value="{SESSION_LENGTH}"></td>
 				</tr>
 				<tr>
-					<td class="row1"><span class="gensmall">{L_PUBLIC_DIRECTORY}</span></td>
-					<td class="row2" width="50%"><select name="public_category" size="4">{PUBLIC_DIRECTORIES}</select></td>
-				</tr>
-				<tr>
 					<th class="thHead" colspan="2">{L_COOKIE_SETTINGS}</th>
 				</tr>
 				<tr>

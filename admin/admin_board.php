@@ -165,13 +165,6 @@ if ( $mode == 'config' || $mode == '' )
 		'body' => 'admin/board_config_body.tpl')
 	);
 
-	$public_directories = '<option value="0">--</option>';
-	array_unshift($lang['Public_categories'], '');
-	for($i = 1; $i < count($lang['Public_categories']); $i++)
-	{
-		$public_directories .= '<option value="' . $i . '"' . (($new['public_category'] == $i) ? ' selected="selected"' : '') . '>' . $lang['Public_categories'][$i] . '</option>';
-	}
-
 	$template->assign_vars(array(
 		'L_SERVER_NAME' => $lang['Server_name'],
 		'L_SERVER_PORT' => $lang['Server_port'],
@@ -244,9 +237,6 @@ if ( $mode == 'config' || $mode == '' )
 		'L_DISABLE_FORUM' => $lang['Forum'],
 		'L_DISABLE_POSTING' => $lang['Posting'],
 		'L_DISABLE_REGISTERING' => $lang['Registering'],
-		'L_PUBLIC_DIRECTORY' => $lang['Public_category'],
-
-		'PUBLIC_DIRECTORIES' => $public_directories,
 		'SERVER_PORT' => $new['server_port'],
 		'SCRIPT_PATH' => $new['script_path'],
 		'SERVER_NAME' => $new['server_name'],

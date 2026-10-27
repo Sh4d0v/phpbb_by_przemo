@@ -20,7 +20,5 @@ ALTER TABLE `phpbb_users` DROP `user_next_birthday_greeting`;
 ALTER TABLE `phpbb_users` MODIFY `user_password` varchar(255) NOT NULL default '';
 ALTER TABLE `phpbb_users` MODIFY `user_newpasswd` varchar(255) default '';
 UPDATE `phpbb_config` SET `config_value` = '1.13.0' WHERE `config_name` = 'version';
-DELETE FROM `phpbb_config` WHERE `config_name` IN ('birthday_greeting', 'max_user_age', 'min_user_age', 'birthday_check_day', 'cchat', 'cchat2', 'cbirth', 'cage', 'album_gallery', 'birthday_data', 'portal_link');
-INSERT INTO `phpbb_config` (config_name, config_value) VALUES ('ri_data', '');
-INSERT INTO `phpbb_config` (config_name, config_value) VALUES ('ri_time', '');
+DELETE FROM `phpbb_config` WHERE `config_name` IN ('birthday_greeting', 'max_user_age', 'min_user_age', 'birthday_check_day', 'cchat', 'cchat2', 'cbirth', 'cage', 'album_gallery', 'birthday_data', 'portal_link', 'ri_data', 'ri_time', 'public_category');
 DELETE FROM `phpbb_stats_modules` WHERE `module_id` = 11;

@@ -64,108 +64,6 @@ if ($row['username'] != 'Anonymous')
 	message_die(GENERAL_ERROR, 'Anonymous user not exist in database or not ID -1 or not username Anonymous<br />Check your mysql_basic.sql file and add correctly anonymous user');
 }
 
-if ( !(function_exists('get_ri')) )
-{
-	function get_ri()
-	{
-		global $db, $board_config, $public_description, $lang, $phpEx;
-
-		$anonymous = 0;
-		// Set to 1 if you want be anonymous. I collect adress forums data for statistics and it still private of course.
-		// If set to 1 checking update verson will be available for you.
-
-		if(array_key_exists('checkupdates', $_GET) || intval($board_config['ri_time']) < CR_TIME - 172800 || intval($board_config['ri_time']) > CR_TIME) {
-			
-			update_config('ri_time', $board_config['ri_time'] = CR_TIME);
-			
-			$fp = @fsockopen('www.przemo.org', 80, $erstr, $errno, 2);
-			
-			if($fp) {
-			
-				if($anonymous) {
-				
-					$forum_addr = 'anonymous';
-				}
-				else
-				{
-					$server_name = trim($board_config['server_name']);
-					$server_port = phpbb_get_server_port();
-					$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($board_config['script_path']));
-					$script_name = ($script_name == '') ? $script_name : '/' . $script_name;
-			
-					// Jezeli zostanie wykryta proba zafalszowania wysylanych danych, bedzie na stale zablokowana komunikacja
-					// Spowoduje to utrate informacji o aktualizacjach oraz mozliwosc prezentacji w katalogu for.
-					$forum_addr = $server_name . $server_port . $script_name . '&tc=' . get_db_stat('topiccount');
-			
-					if ( $board_config['public_category'] )
-					{
-						$public_description = '&pc=' . $board_config['public_category'] . '&pd=' . base64_encode($board_config['site_desc']);
-					}
-				}
-			
-				$path = "/phpBB2/phpBB_data.php?version=" . $board_config['version'] . "&lang=" . $board_config['default_lang'] . "&addr=" . $forum_addr . $public_description;
-			
-				@fputs($fp, "GET $path HTTP/1.0\r\nHost: www.przemo.org\r\nUser-Agent: phpBB\r\n");
-				@fputs($fp, "Connection: close\r\n\r\n");
-				$data = '';
-				
-				while(!@feof($fp)) {
-					
-					$data .= @fgets($fp, 1024);
-				}
-				
-				@fclose($fp);
-				
-				$status = 1;
-				
-				if(stripos($data, 'przemo.org/phpBB2')) {
-					
-					$status = 2;
-				}
-				
-				update_config('ri_data', $status);
-			}
-			
-			//return sprintf('<div style="padding:12px 0 15px;border-bottom:3px solid #d1d7dc;text-align:center;font-size:13px;font-family:Verdana,Arial,Helvetica,sans-serif">%s</div>', $lang['Forum_up_to_date']);
-		}
-		
-		$time_elapsed = time() - $board_config['ri_time'];
-		$time_ago = sprintf($lang['Forum_last_update_check_minutes_ago'], floor($time_elapsed / 60));
-		
-		if($time_elapsed > 3600) {
-			
-			$time_ago = sprintf($lang['Forum_last_update_check_hours_ago'], floor($time_elapsed / 3600));
-		}
-		
-		if($time_elapsed > 86400) {
-			
-			$time_ago = sprintf($lang['Forum_last_update_check_days_ago'], floor($time_elapsed / 86400));
-		}
-		
-		if($board_config['ri_data'] > 1) {
-			
-			return sprintf(
-				'<div style="padding:20px 0 22px;background:#ffa34f;border-bottom:3px solid #fff;text-align:center;font-size:13px;font-weight:bold;font-family:Verdana,Arial,Helvetica,sans-serif">%s</div>',
-				$lang['Forum_out_of_date']
-			);
-		}
-				
-		return sprintf(
-			'<div style="padding:12px 0 15px;background:#efefef;border-bottom:3px solid #d1d7dc;text-align:center;font-size:13px;font-family:Verdana,Arial,Helvetica,sans-serif">%s<div style="font-size:10px;padding-top:2px">%s</div></div>',
-			$lang['Forum_up_to_date'],
-			sprintf(
-				'%s <a href="%s">%s</a>',
-				sprintf(
-					$lang['Forum_last_update_check'],
-					$time_ago
-				), 
-				append_sid("index.$phpEx?pane=right&amp;checkupdates=1"),
-				$lang['Forum_search_for_updates']
-			)
-		);
-	}
-}
-
 //
 // Generate relevant output
 //
@@ -235,22 +133,11 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
 elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 {
 
-	$get_new_version_info = (intval($board_config['ri_time']) < CR_TIME - (24 * 3600 * 2) || intval($board_config['ri_time']) > CR_TIME) ? true : false;
-
-	if ( $get_new_version_info && !isset($HTTP_GET_VARS['new_info']) )
-	{
-		$url = append_sid("index.$phpEx?pane=right&new_info=1", true);
-		print'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><meta http-equiv="Content-Type" content="text/html; charset=' . $lang['ENCODING'] . '"><meta http-equiv="refresh" content="0; url=' . $url . '"><title>Redirect</title></head><body bgcolor="#E5E5E5" style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 14px;"><br /><br /><br /><br /><div align="center"><b>' . $lang['New_info'] . '</b><br /><br /><img src="../images/loading.gif" border="0"></div></body></html>';
-		exit;
-	}
-
 	include('./page_header_admin.'.$phpEx);
 
 	$template->set_filenames(array(
 		"body" => "admin/index_body.tpl")
 	);
-
-	print get_ri();
 
 	define('NOTES_TABLE', $table_prefix . 'admin_notes');
 

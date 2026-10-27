@@ -804,7 +804,6 @@ $lang['Statistics_management'] = 'Statistics Modules';
 $lang['Statistics_config'] = 'Statistics Configuration';
 $lang['Acces_menu_denied'] = 'You have not access to this menu';
 $lang['Check-files'] = 'System Check';
-$lang['New_info'] = 'Please wait while getting new update information ...';
 $lang['forum_compress'] = 'script side';
 $lang['server_compress'] = 'server side';
 $lang['Name'] = 'Name';
@@ -837,13 +836,6 @@ $lang['Forum_auth_list_explain_auth_pollcreate'] = '%s can create polls in this 
 $lang['Cancel'] = 'Cancel';
 $lang['Edit_permissions'] = 'Edit forum permissions';
 
-$lang['Forum_out_of_date'] = 'Your forum is OUT OF DATE! <a href="http://przemo.org/phpBB2/index.php?cid=0">Download</a> latest version now!';
-$lang['Forum_up_to_date'] = 'Your forum is up to date.';
-$lang['Forum_search_for_updates'] = 'Check now';
-$lang['Forum_last_update_check'] = 'Last updates check %s';
-$lang['Forum_last_update_check_minutes_ago'] = '%d minutes ago';
-$lang['Forum_last_update_check_hours_ago'] = '%d hours ago';
-$lang['Forum_last_update_check_days_ago'] = '%d days ago';
 //
 // That's all Folks!
 // -------------------------------------------------

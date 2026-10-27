@@ -398,26 +398,5 @@ $lang['Registering'] = 'Rejestracjê';
 $lang['AA_no_limit'] = 'Bez ograniczeñ';
 $lang['AA_with_IP'] = 'Ze sprawdzaniem ostatniego adresu IP';
 $lang['AA_with_staff_IP'] = 'Ze sprawdzaniem ostatniego adresu IP dla Admina i Moderatora';
-$lang['Public_category'] = 'Je¿eli chcesz aby forum by³o prezentowane w <a href="http://www.przemo.org/phpBB2/forums.php" target="_blank">Katalogu Forów Dyskusyjnych</a> wybierz jedn± z kategorii. W katalogu pojawi siê adres forum pobrany z Nazwy Domeny i ¦cie¿ki Skryptu oraz opis pobrany z Opisu Strony. Uwaga, opis bêdzie skrócony do 100 znaków. Aktualizacja danych jest dokonywana raz na dwa dni podczas wej¶cia do Panelu Admina, podobnie jak pobieranie informacji o aktualizacjach';
-$lang['Public_categories'][] = 'Zdrowie i Uroda';
-$lang['Public_categories'][] = 'Dzieci i Rodzina';
-$lang['Public_categories'][] = '¦wiat, Ludzie i Polityka';
-$lang['Public_categories'][] = 'Ekonomia i Biznes';
-$lang['Public_categories'][] = 'Jêzyki, Narody i Edukacja';
-$lang['Public_categories'][] = 'Nauka i Technika';
-$lang['Public_categories'][] = 'Kultura i Sztuka';
-$lang['Public_categories'][] = 'Muzyka';
-$lang['Public_categories'][] = 'Zwierzêta i Ro¶liny';
-$lang['Public_categories'][] = 'Gry';
-$lang['Public_categories'][] = 'Sport';
-$lang['Public_categories'][] = 'Internet i Komputery';
-$lang['Public_categories'][] = 'Motoryzacja';
-$lang['Public_categories'][] = 'Hobbystyczne';
-$lang['Public_categories'][] = 'Rozrywka';
-$lang['Public_categories'][] = 'Towarzyskie, Erotyka i Sex';
-$lang['Public_categories'][] = 'Regionalne';
-$lang['Public_categories'][] = 'Wielotematyczne';
-$lang['Public_categories'][] = 'Ekstremalne';
-$lang['Public_categories'][] = 'Inne';
 
 ?>

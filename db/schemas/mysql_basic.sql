@@ -286,8 +286,6 @@ INSERT INTO phpbb_config (config_name, config_value) VALUES ('topic_preview', '0
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('not_anonymous_posting', '0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('not_anonymous_quickreply', '0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('max_smilies', '24');
-INSERT INTO phpbb_config (config_name, config_value) VALUES ('ri_data', '');
-INSERT INTO phpbb_config (config_name, config_value) VALUES ('ri_time', '');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('search_enable', '1');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('overlib',	'1');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('notify_gg', '1');
@@ -347,7 +345,6 @@ INSERT INTO phpbb_config (config_name, config_value) VALUES ('group_rank_hack_ve
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('disable_type', '');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('rh_without_days', '3');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('rh_max_posts', '1000');
-INSERT INTO phpbb_config (config_name, config_value) VALUES ('public_category', '');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('last_visitors_time_count', '0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('search_keywords_max', '5');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('protection_get', '1');
