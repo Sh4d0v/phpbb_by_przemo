@@ -336,7 +336,12 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 
 	function get_folder_size($target)
 	{
+		$totalsize = 0;
 		$sourcedir = @opendir($target);
+		if (!is_resource($sourcedir))
+		{
+			return $totalsize;
+		}
 		while(false !== ($filename = @readdir($sourcedir)))
 		{
 			if($filename != "." && $filename != "..")
@@ -358,7 +363,12 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 
 	function get_folder_count($target)
 	{
+		$totalcount = 0;
 		$sourcedir = @opendir($target);
+		if (!is_resource($sourcedir))
+		{
+			return $totalcount;
+		}
 		while(false !== ($filename = @readdir($sourcedir)))
 		{
 			if($filename != "." && $filename != "..")
@@ -563,7 +573,7 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 		$template->assign_block_vars('details', array());
 		$target = '../';
 		$sourcedir = @opendir($target);
-		while(false !== ($filename = @readdir($sourcedir)))
+		while (is_resource($sourcedir) && false !== ($filename = @readdir($sourcedir)))
 		{
 			$files_count = $size = 0;
 			if($filename != ".." && @is_dir($target."/".$filename) )
@@ -576,7 +586,7 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 				else
 				{
 					$sourcedir2 = @opendir($target."/".$filename);
-					while(false !== ($filename2 = @readdir($sourcedir2)))
+					while (is_resource($sourcedir2) && false !== ($filename2 = @readdir($sourcedir2)))
 					{
 						if($filename2 != "." && $filename2 != "..")
 						{
@@ -587,7 +597,10 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 							}
 						}
 					}
-					@closedir($sourcedir2);
+					if (is_resource($sourcedir2))
+					{
+						@closedir($sourcedir2);
+					}
 					$filename = '~/';
 				}
 				if($size >= 1024000)
@@ -612,7 +625,10 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 			}
 		}
 	}
-	@closedir($sourcedir);
+	if (isset($sourcedir) && is_resource($sourcedir))
+	{
+		@closedir($sourcedir);
+	}
 
 	$script_server_side = '';
 

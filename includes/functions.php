@@ -744,9 +744,11 @@ function get_tree_option($cur = '', $all = false, $admin_config = false, $admin_
 	$keys = array();
 	$keys = get_auth_keys('Root', $all);
 	$res = '';
-	if ( $admin_ids )
+	if (!is_array($admin_ids))
 	{
-		$admin_ids = explode(',', $admin_ids);
+		$admin_ids = (is_scalar($admin_ids) && trim((string) $admin_ids) !== '')
+			? explode(',', (string) $admin_ids)
+			: array();
 	}
 
 	for($i=0; $i < count($keys['id']); $i++)
