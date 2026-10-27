@@ -474,9 +474,9 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	if ( ($mode == 'newtopic' || ($board_config['admin_notify_reply'] && $mode == 'reply')) && !empty($board_config['numer_gg']) && !empty($board_config['haslo_gg']) && !empty($admin_notify_gg) )
 	{
 
-		$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
+		$server_protocol = phpbb_get_server_protocol();
 		$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['server_name']));
-		$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '';
+		$server_port = phpbb_get_server_port();
 		$script_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['script_path']));
 		$script_name = ($script_name == '') ? $script_name . '/viewtopic.'.$phpEx : '/' . $script_name . '/viewtopic.'.$phpEx;
 
@@ -755,9 +755,9 @@ function user_notification($mode, &$post_data, &$forum_id, &$topic_id, &$post_id
 				obtain_word_list($orig_word, $replacement_word, $replacement_word_html);
 				$topic_title = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, unprepare_message($topic_title)) : unprepare_message($topic_title);
 
-				$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
+				$server_protocol = phpbb_get_server_protocol();
 				$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['server_name']));
-				$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '';
+				$server_port = phpbb_get_server_port();
 				$script_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['script_path']));
 				$script_name = ($script_name == '') ? $script_name . '/viewtopic.'.$phpEx : '/' . $script_name . '/viewtopic.'.$phpEx;
 

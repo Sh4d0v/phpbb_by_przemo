@@ -1818,6 +1818,62 @@ function phpbb_realpath($path)
 	return (!@function_exists('realpath') || !@realpath($phpbb_root_path . 'includes/functions.'.$phpEx)) ? $path : @realpath($path);
 }
 
+function phpbb_is_https()
+{
+	global $board_config, $HTTP_SERVER_VARS;
+
+	$https = !empty($board_config['cookie_secure']);
+	$https_value = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : (isset($HTTP_SERVER_VARS['HTTPS']) ? $HTTP_SERVER_VARS['HTTPS'] : '');
+	if ($https_value !== '' && strtolower((string) $https_value) !== 'off' && $https_value !== '0')
+	{
+		$https = true;
+	}
+
+	$request_scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : (isset($HTTP_SERVER_VARS['REQUEST_SCHEME']) ? $HTTP_SERVER_VARS['REQUEST_SCHEME'] : '');
+	$forwarded_proto = isset($_SERVER['HTTP_X_FORWARDED_PROTO']) ? $_SERVER['HTTP_X_FORWARDED_PROTO'] : (isset($HTTP_SERVER_VARS['HTTP_X_FORWARDED_PROTO']) ? $HTTP_SERVER_VARS['HTTP_X_FORWARDED_PROTO'] : '');
+	$forwarded_proto = strtolower(trim(explode(',', (string) $forwarded_proto)[0]));
+	if (strtolower((string) $request_scheme) === 'https' || $forwarded_proto === 'https')
+	{
+		$https = true;
+	}
+
+	$server_port = isset($board_config['server_port']) ? (int) $board_config['server_port'] : 0;
+	$request_port = isset($_SERVER['SERVER_PORT']) ? (int) $_SERVER['SERVER_PORT'] : (isset($HTTP_SERVER_VARS['SERVER_PORT']) ? (int) $HTTP_SERVER_VARS['SERVER_PORT'] : 0);
+	if ($server_port === 443 || $request_port === 443)
+	{
+		$https = true;
+	}
+
+	return $https;
+}
+
+function phpbb_get_server_protocol()
+{
+	return phpbb_is_https() ? 'https://' : 'http://';
+}
+
+function phpbb_get_server_port()
+{
+	global $board_config, $HTTP_SERVER_VARS;
+
+	$https = phpbb_is_https();
+	$port = isset($board_config['server_port']) ? (int) $board_config['server_port'] : 0;
+	if ($port <= 0)
+	{
+		$port = isset($_SERVER['SERVER_PORT']) ? (int) $_SERVER['SERVER_PORT'] : (isset($HTTP_SERVER_VARS['SERVER_PORT']) ? (int) $HTTP_SERVER_VARS['SERVER_PORT'] : 0);
+	}
+	if ($https && $port === 80)
+	{
+		$port = 443;
+	}
+
+	if ($port <= 0 || ($https && $port === 443) || (!$https && $port === 80))
+	{
+		return '';
+	}
+
+	return ':' . $port;
+}
 function redirect($url)
 {
 	global $db, $board_config;
@@ -1832,9 +1888,9 @@ function redirect($url)
 		message_die(GENERAL_ERROR, 'Tried to redirect to potentially insecure url.');
 	}
 
-	$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
+	$server_protocol = phpbb_get_server_protocol();
 	$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['server_name']));
-	$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '';
+	$server_port = phpbb_get_server_port();
 	$script_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['script_path']));
 	$script_name = ($script_name == '') ? $script_name : '/' . $script_name;
 	$url = preg_replace('#^\/?(.*?)\/?$#', '/\1', trim($url));

@@ -390,9 +390,9 @@ if (!$thumbnail)
 //
 if ($download_mode == PHYSICAL_LINK)
 {
-	$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
+	$server_protocol = phpbb_get_server_protocol();
 	$server_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['server_name']));
-	$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '';
+	$server_port = phpbb_get_server_port();
 	$script_name = preg_replace('/^\/?(.*?)\/?$/', '/\1', trim($board_config['script_path']));
 
 	if ($script_name[strlen($script_name)] != '/')

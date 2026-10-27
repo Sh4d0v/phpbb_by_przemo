@@ -54,8 +54,8 @@ $sid = get_vars('sid', '', 'POST,GET');
 $script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
 $script_name = ( $script_name != '' ) ? $script_name . '/profile.'.$phpEx : 'profile.'.$phpEx;
 $server_name = trim($board_config['server_name']);
-$server_protocol = ( $board_config['cookie_secure'] ) ? 'https://' : 'http://';
-$server_port = ( $board_config['server_port'] <> 80 ) ? ':' . trim($board_config['server_port']) . '/' : '/';
+$server_protocol = phpbb_get_server_protocol();
+$server_port = phpbb_get_server_port() . '/';
 
 $server_url = $server_protocol . $server_name . $server_port . $script_name;
 

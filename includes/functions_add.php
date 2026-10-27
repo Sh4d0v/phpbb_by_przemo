@@ -115,9 +115,9 @@ function notify_delete($post_id, $topic_id, $user_id, $notify_user, $reason, $in
 	$reason_out = ($reason == '0' || empty($reason_out) || is_numeric($reason_out)) ? '.' : ". \n\r" . $user_lang['Reason'] . ': ' . $reason_out;
 	$l_post_topic = ($row['topic_first_post_id'] == $post_id || $in_modcp) ? $user_lang['Topic'] : $user_lang['Post'];
 
-	$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
+	$server_protocol = phpbb_get_server_protocol();
 	$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['server_name']));
-	$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '';
+	$server_port = phpbb_get_server_port();
 	$script_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['script_path']));
 	$script_name = ($script_name == '') ? $script_name . '/viewtopic.'.$phpEx : '/' . $script_name . '/viewtopic.'.$phpEx;
 

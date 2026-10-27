@@ -943,9 +943,9 @@ if ( $viewing_user_id == $user_id && $custom_fields_exists )
 	}
 	if ( $adv_person_field )
 	{
-		$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
+		$server_protocol = phpbb_get_server_protocol();
 		$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['server_name']));
-		$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '';
+		$server_port = phpbb_get_server_port();
 		$script_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['script_path']));
 		$script_name = ($script_name == '') ? $script_name : '/' . $script_name;
 		$link = $server_protocol . $server_name . $server_port . $script_name . '/index.' . $phpEx . '?ap=' . $user_id;
