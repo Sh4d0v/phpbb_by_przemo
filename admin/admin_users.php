@@ -908,7 +908,7 @@ if ( empty($HTTP_POST_VARS['authuser']) && $mode == 'edit' || $mode == 'save' &&
 				{
 					for($i = 0; $i < count($disallow_forums); $i++)
 					{
-						if ( $disallow_forums[$i]{0} == POST_FORUM_URL )
+						if ( $disallow_forums[$i][0] == POST_FORUM_URL )
 						{
 							$disallow_forums_sql .= (($disallow_forums_sql) ? ', ' : '') . substr($disallow_forums[$i], 1);
 						}

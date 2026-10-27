@@ -56,14 +56,9 @@ if( $config_size_ok ) // config w porz±dku, po³±cz z baz± danych
     switch($dbms)
     {
         case 'mysql':
-            include($phpbb_root_path . 'db/mysql.'.$phpEx);
-            break;
-
         case 'mysql4':
-            include($phpbb_root_path . 'db/mysql4.'.$phpEx);
-            break;
-
         case 'mysqli':
+            $dbms = 'mysqli';
             include($phpbb_root_path . 'db/mysqli.'.$phpEx);
             break;
     }

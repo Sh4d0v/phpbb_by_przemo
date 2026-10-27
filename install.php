@@ -20,6 +20,23 @@
  ***************************************************************************/
 
 header('Content-type: text/html; charset=iso-8859-2');
+require_once(dirname(__FILE__) . '/includes/legacy_compat.php');
+
+if (session_status() !== PHP_SESSION_ACTIVE) {
+	ini_set('session.use_strict_mode', '1');
+	ini_set('session.cookie_httponly', '1');
+	ini_set('session.cookie_samesite', 'Lax');
+	ini_set('session.cookie_secure', (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') ? '1' : '0');
+	session_start();
+}
+if (empty($_SESSION['install_csrf_token'])) {
+	$_SESSION['install_csrf_token'] = bin2hex(random_bytes(32));
+}
+if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST' &&
+	(!isset($_POST['install_csrf_token']) || !hash_equals($_SESSION['install_csrf_token'], (string) $_POST['install_csrf_token']))) {
+	http_response_code(403);
+	exit('Invalid installer request. Reload the installer and try again.');
+}
  @set_time_limit(0);
 // ---------
 // FUNCTIONS
@@ -97,6 +114,7 @@ function NotActive(what)
 					<td width="100%">
 						<table width="100%" cellpadding="2" cellspacing="1" border="0" class="forumline">
 						<form action="<?php echo ($form_action) ? $form_action : 'install.'.$phpEx; ?>" name="install" method="post">
+<input type="hidden" name="install_csrf_token" value="<?php echo htmlspecialchars($_SESSION['install_csrf_token'], ENT_QUOTES, 'ISO-8859-2'); ?>" />
 <?php
 
 }
@@ -382,26 +400,12 @@ include($phpbb_root_path.'includes/sessions.'.$phpEx);
 
 // Define schema info
 $available_dbms = array(
-	'mysql'=> array(
-		'LABEL'			=> 'MySQL 3.x',
-		'SCHEMA'		=> 'mysql', 
-		'DELIM'			=> ';',
-		'DELIM_BASIC'	=> ';',
-		'COMMENTS'		=> 'remove_remarks'
-	), 
-	'mysql4' => array(
-		'LABEL'			=> 'MySQL 4.x/5.x',
-		'SCHEMA'		=> 'mysql', 
-		'DELIM'			=> ';', 
-		'DELIM_BASIC'		=> ';',
-		'COMMENTS'		=> 'remove_remarks'
-	),
 	'mysqli' => array(
-		'LABEL'			=> 'MySQLi',
-		'SCHEMA'		=> 'mysql', 
-		'DELIM'			=> ';', 
-		'DELIM_BASIC'		=> ';',
-		'COMMENTS'		=> 'remove_remarks'
+		'LABEL' => 'MySQLi',
+		'SCHEMA' => 'mysql',
+		'DELIM' => ';',
+		'DELIM_BASIC' => ';',
+		'COMMENTS' => 'remove_remarks'
 	)
 );
 $dir = 'cache/';
@@ -439,6 +443,10 @@ $dbpasswd = (!empty($HTTP_POST_VARS['dbpasswd'])) ? $HTTP_POST_VARS['dbpasswd'] 
 $dbname = (!empty($HTTP_POST_VARS['dbname'])) ? $HTTP_POST_VARS['dbname'] : '';
 
 $table_prefix = (!empty($HTTP_POST_VARS['prefix'])) ? $HTTP_POST_VARS['prefix'] : '';
+if (!preg_match('/^[A-Za-z0-9_]{0,32}$/D', $table_prefix)) {
+	http_response_code(400);
+	exit('Invalid table prefix. Use up to 32 letters, digits, or underscores.');
+}
 
 $admin_name = (!empty($HTTP_POST_VARS['admin_name'])) ? $HTTP_POST_VARS['admin_name'] : '';
 $admin_pass1 = (!empty($HTTP_POST_VARS['admin_pass1'])) ? $HTTP_POST_VARS['admin_pass1'] : '';
@@ -455,10 +463,18 @@ else
 $PHP_SELF = ($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_ENV['PHP_SELF'];
 $board_email = (!empty($HTTP_POST_VARS['board_email'])) ? $HTTP_POST_VARS['board_email'] : '';
 $script_path = (!empty($HTTP_POST_VARS['script_path'])) ? $HTTP_POST_VARS['script_path'] : str_replace('install', '', dirname($PHP_SELF));
+if ($script_path !== '' && (!preg_match('#^/[A-Za-z0-9._~/-]*$#D', $script_path) || strpos($script_path, '..') !== false)) {
+	http_response_code(400);
+	exit('Invalid forum path.');
+}
 
 if (!empty($HTTP_POST_VARS['server_name']))
 {
 	$server_name = $HTTP_POST_VARS['server_name'];
+	if (!preg_match('/^[A-Za-z0-9.-]{1,253}$/D', $server_name)) {
+		http_response_code(400);
+		exit('Invalid server name.');
+	}
 }
 else
 {
@@ -476,10 +492,18 @@ else
 		$server_name = '';
 	}
 }
+if ($server_name !== '' && !preg_match('/^[A-Za-z0-9.-]{1,253}$/D', $server_name)) {
+	http_response_code(400);
+	exit('Invalid server name.');
+}
 
 if (!empty($HTTP_POST_VARS['server_port']))
 {
-	$server_port = $HTTP_POST_VARS['server_port'];
+	$server_port = (string) (int) $HTTP_POST_VARS['server_port'];
+	if ((int) $server_port < 1 || (int) $server_port > 65535) {
+		http_response_code(400);
+		exit('Invalid server port.');
+	}
 }
 else
 {
@@ -635,7 +659,7 @@ else if ((empty($install_step) || $admin_pass1 != $admin_pass2 || empty($admin_p
 	}
 	$lang_select .= '</select>';
 
-	$mysql_selected = (@extension_loaded('mysqli')) ? 'mysqli' : 'mysql4';
+	$mysql_selected = 'mysqli';
 
 	$dbms_select = '<select name="dbms" onchange="if(this.form.upgrade.options[this.form.upgrade.selectedIndex].value == 1){ this.selectedIndex = 0;}">';
 	while (list($dbms_name, $details) = @each($available_dbms))
@@ -760,15 +784,15 @@ else
 	{
 		switch($dbms)
 		{
-			case 'mysql':
-			case 'mysql4':
-				$check_exts  = 'mysql';
-				$check_func = 'mysql_query';
-				break;
-		    case 'mysqli':
+			case 'mysqli':
 				$check_exts = 'mysqli';
 				$check_func = 'mysqli_query';
 				break;
+			default:
+				page_header($lang['Install'], '');
+				page_error($lang['Installer_Error'], 'Unsupported database driver. Use MySQLi.');
+				page_footer();
+				exit;
 		}
 
 		if ( !extension_loaded($check_exts) || !function_exists($check_func) )
@@ -831,7 +855,7 @@ else
 						{
 							$error = $db->sql_error();
 							page_header($lang['Install'], '');
-							page_error($lang['Installer_Error'], $lang['Install_db_error'] . ':<br /><br /><span class="gensmall">' . $sql_query[$i] . '</span><br /><br /><b>' . $error['message'] . '<b><br /><br />');
+							page_error($lang['Installer_Error'], $lang['Install_db_error'] . ':<br /><br /><span class="gensmall">' . htmlspecialchars($sql_query[$i], ENT_QUOTES, 'ISO-8859-2') . '</span><br /><br /><b>' . htmlspecialchars($error['message'], ENT_QUOTES, 'ISO-8859-2') . '</b><br /><br />');
 							check_sql_error('check');
 							page_footer();
 							exit;
@@ -854,7 +878,7 @@ else
 						{
 							$error = $db->sql_error();
 							page_header($lang['Install'], '');
-							page_error($lang['Installer_Error'], $lang['Install_db_error'] . ':<br /><br /><span class="gensmall">' . $sql_query[$i] . '</span><br /><br /><b>' . $error['message'] . '<b><br /><br />');
+							page_error($lang['Installer_Error'], $lang['Install_db_error'] . ':<br /><br /><span class="gensmall">' . htmlspecialchars($sql_query[$i], ENT_QUOTES, 'ISO-8859-2') . '</span><br /><br /><b>' . htmlspecialchars($error['message'], ENT_QUOTES, 'ISO-8859-2') . '</b><br /><br />');
 							check_sql_error('check', 2);
 							page_footer();
 							exit;
@@ -930,7 +954,7 @@ else
 				}
 			}
 			
-			$admin_pass_md5 = ($confirm && $userdata['user_level'] == ADMIN) ? $admin_pass1 : md5($admin_pass1);
+			$admin_pass_md5 = ($confirm && $userdata['user_level'] == ADMIN) ? $admin_pass1 : phpbb_hash($admin_pass1);
 
 			$sql = "UPDATE " . $table_prefix . "users 
 				SET username = '" . str_replace("\'", "''", $admin_name) . "', user_password='" . str_replace("\'", "''", $admin_pass_md5) . "', user_lang = '" . str_replace("\'", "''", $language) . "', user_email='" . str_replace("\'", "''", $board_email) . "'
@@ -1022,16 +1046,16 @@ else
 			// Write out the config file.
 			$config_data = '<?php'."\n\n";
 			$config_data .= "\n// phpBB 2.x auto-generated config file\n// Do not change anything in this file!\n\n";
-			$config_data .= '$dbms = \'' . $dbms . '\';' . "\n\n";
-			$config_data .= '$dbhost = \'' . $dbhost . '\';' . "\n";
-			$config_data .= '$dbname = \'' . $dbname . '\';' . "\n";
-			$config_data .= '$dbuser = \'' . $dbuser . '\';' . "\n";
-			$config_data .= '$dbpasswd = \'' . $dbpasswd . '\';' . "\n\n";
-			$config_data .= '$table_prefix = \'' . $table_prefix . '\';' . "\n\n";
+			$config_data .= '$dbms = ' . var_export(stripslashes($dbms), true) . ";\n";
+			$config_data .= '$dbhost = ' . var_export(stripslashes($dbhost), true) . ";\n";
+			$config_data .= '$dbname = ' . var_export(stripslashes($dbname), true) . ";\n";
+			$config_data .= '$dbuser = ' . var_export(stripslashes($dbuser), true) . ";\n";
+			$config_data .= '$dbpasswd = ' . var_export(stripslashes($dbpasswd), true) . ";\n";
+			$config_data .= '$table_prefix = ' . var_export(stripslashes($table_prefix), true) . ";\n";
 			$config_data .= 'define(\'PHPBB_INSTALLED\', true);'."\n\n";	
 			$config_data .= '?' . '>'; // Done this to prevent highlighting editors getting confused!
 
-			@umask(0111);
+			@umask(0177);
 			$no_open = FALSE;
 
 			// Unable to open the file writeable do something here as an attempt
@@ -1044,12 +1068,12 @@ else
 				$s_hidden_fields .= '<input type="hidden" name="send_file" value="1" />';
 
 				$short_data = '<?php'."\n";
-				$short_data .= '$dbms = \'' . $dbms . '\';' . "\n";
-				$short_data .= '$dbhost = \'' . $dbhost . '\';' . "\n";
-				$short_data .= '$dbname = \'' . $dbname . '\';' . "\n";
-				$short_data .= '$dbuser = \'' . $dbuser . '\';' . "\n";
-				$short_data .= '$dbpasswd = \'' . $dbpasswd . '\';' . "\n";
-				$short_data .= '$table_prefix = \'' . $table_prefix . '\';' . "\n";
+				$short_data .= '$dbms = ' . var_export(stripslashes($dbms), true) . ";\n";
+				$short_data .= '$dbhost = ' . var_export(stripslashes($dbhost), true) . ";\n";
+				$short_data .= '$dbname = ' . var_export(stripslashes($dbname), true) . ";\n";
+				$short_data .= '$dbuser = ' . var_export(stripslashes($dbuser), true) . ";\n";
+				$short_data .= '$dbpasswd = ' . var_export(stripslashes($dbpasswd), true) . ";\n";
+				$short_data .= '$table_prefix = ' . var_export(stripslashes($table_prefix), true) . ";\n";
 				$short_data .= 'define(\'PHPBB_INSTALLED\', true);'."\n";	
 				$short_data .= '?' . '>'; // Done this to prevent highlighting editors getting confused!
 
@@ -1097,8 +1121,8 @@ else
 			}
 
 			$result = @fputs($fp, $config_data, strlen($config_data));
-
 			@fclose($fp);
+			@chmod($phpbb_root_path . 'config.' . $phpEx, 0600);
 		}
 
 		// Ok we are basically done with the install process let's go on 

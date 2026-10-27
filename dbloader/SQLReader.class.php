@@ -71,7 +71,7 @@ if( $method == SQL_READER_PMA && $this->fr->mime() == 'application/x-bzip' ) ech
 			if( !$in_query )
 			{
 				$buff = substr(ltrim($line), 0, 3);
-				if( $buff{0} == '#' || $buff == '-- ' || $buff == '' )
+				if( $buff[0] == '#' || $buff == '-- ' || $buff == '' )
 				{
 					continue;
 				}
@@ -129,7 +129,7 @@ if( $method == SQL_READER_PMA && $this->fr->mime() == 'application/x-bzip' ) ech
 			{
 				$lines[$i] = trim($lines[$i]);
 				$test = substr($lines[$i], 0, 3);
-				if( $test{0} == '#' || $test == '-- ' )
+				if( $test[0] == '#' || $test == '-- ' )
 				{
 					continue;
 				}

@@ -29,6 +29,8 @@ if ( !defined('IN_PHPBB') )
 	die('Hacking attempt');
 }
 
+require_once(dirname(__FILE__) . '/includes/legacy_compat.php');
+
 function microtime_float()
 {
    list($usec, $sec) = explode(" ", microtime());

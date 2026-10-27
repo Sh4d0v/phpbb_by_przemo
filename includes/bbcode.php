@@ -889,7 +889,7 @@ function word_wrap_pass($message)
 
 	for ($num = 0; $num < strlen($message); $num++)
 	{
-		$curChar = $message{$num};
+		$curChar = $message[$num];
 		if ( $curChar == '<' )
 		{
 			$tempText .= '<';

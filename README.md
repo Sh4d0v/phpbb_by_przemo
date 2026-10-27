@@ -1,6 +1,8 @@
 # phpBB modified by Przemo
 
-Polska modyfikacja forum **phpBB 2**, znana jako *phpBB by Przemo*. Projekt rozszerzał phpBB 2 o rozbudowany zestaw funkcji administracyjnych i użytkowych. Ta kopia repozytorium zawiera wersję **1.12.9**.
+Polska modyfikacja forum **phpBB 2**, znana jako *phpBB by Przemo*. Projekt rozszerzał phpBB 2 o rozbudowany zestaw funkcji administracyjnych i użytkowych. Ta kopia repozytorium zawiera wersję **1.13.0**.
+
+Projekt 1.13.0 wspiera **Plague Studio** ([plagues.pl](https://plagues.pl)).
 
 > **Uwaga:** to archiwalne oprogramowanie. Wymagania podane w oryginalnych materiałach (PHP 4+ i MySQL 3.2+) pochodzą z czasów jego powstania i nie są rekomendacją dla współczesnego serwera. Projekt używa przestarzałych interfejsów PHP i nie był tu zweryfikowany pod kątem bezpieczeństwa ani zgodności ze współczesnymi wersjami PHP/MySQL. Nie wystawiaj niezabezpieczonej, nieaktualizowanej instalacji do publicznego Internetu.
 

@@ -320,7 +320,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 
 	if ( $width > 0 && $height > 0 && $width <= $board_config['avatar_max_width'] && $height <= $board_config['avatar_max_height'] )
 	{
-		$new_filename = uniqid(rand()) . $imgtype;
+		$new_filename = bin2hex(random_bytes(16)) . $imgtype;
 
 		if ( $mode == 'editprofile' && $current_type == USER_AVATAR_UPLOAD && $current_avatar != '' )
 		{
@@ -355,7 +355,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 			$move_file($avatar_filename, './' . $board_config['avatar_path'] . "/$new_filename");
 		}
 
-		@chmod('./' . $board_config['avatar_path'] . "/$new_filename", 0777);
+		@chmod('./' . $board_config['avatar_path'] . "/$new_filename", 0644);
 
 		$avatar_sql = ( $mode == 'editprofile' ) ? ", user_avatar = '$new_filename', user_avatar_type = " . USER_AVATAR_UPLOAD : "'$new_filename', " . USER_AVATAR_UPLOAD;
 	}
@@ -370,7 +370,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 	return $avatar_sql;
 }
 
-function display_avatar_gallery($mode, &$category, &$user_id, $email1, &$current_email, &$coppa, &$username, &$email, &$new_password, &$cur_password, &$password_confirm, &$icq, &$aim, &$msn, &$yim, &$website, &$location, &$optional_fields, &$optional_values, &$occupation, &$interests, &$gender, &$allowpm, &$user_ip_login_check, &$b_day, &$b_md, &$b_year, &$signature, &$user_sig_image, &$viewemail, &$viewaim, &$notifypm, &$user_notify_gg, &$popup_pm, &$icq, &$notifyreply, &$attachsig, &$allowhtml, &$allowbbcode, &$allowsmilies, &$hideonline, &$style, &$language, &$timezone, &$custom_color, &$custom_rank, &$session_id, $verify_user)
+function display_avatar_gallery($mode, &$category, &$user_id, $email1, &$current_email, &$coppa, &$username, &$email, &$new_password, &$cur_password, &$password_confirm, &$icq, &$aim, &$msn, &$yim, &$website, &$location, &$optional_fields, &$optional_values, &$occupation, &$interests, &$gender, &$allowpm, &$user_ip_login_check, &$b_day, &$b_md, &$b_year, &$signature, &$user_sig_image, &$viewemail, &$viewaim, &$notifypm, &$user_notify_gg, &$popup_pm, &$notifyreply, &$attachsig, &$allowhtml, &$allowbbcode, &$allowsmilies, &$hideonline, &$style, &$language, &$timezone, &$custom_color, &$custom_rank, &$session_id, $verify_user)
 {
 	global $board_config, $db, $template, $lang, $images, $theme;
 	global $phpbb_root_path, $phpEx;

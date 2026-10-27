@@ -223,9 +223,14 @@ if( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) || isset($
 			{
 				if ( phpbb_check_hash($password, $row['user_password']) )
 				{
+					if (password_needs_rehash($row['user_password'], PASSWORD_DEFAULT))
+					{
+						$upgraded_hash = phpbb_hash($password);
+						$db->sql_query('UPDATE ' . USERS_TABLE . " SET user_password = '" . $upgraded_hash . "' WHERE user_id = " . (int) $row['user_id']);
+					}
 					$password_true = true;
 				}
-				else if( @md5($password) === $row['user_password'] && !is_array($password) )
+				else if( @md5(stripslashes($password)) === $row['user_password'] && !is_array($password) )
 				{
 					$sql = 'UPDATE ' . USERS_TABLE . ' SET user_password = "'. phpbb_hash($password) .'"
 						WHERE user_id = ' . $row['user_id'];

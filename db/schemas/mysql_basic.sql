@@ -1,5 +1,5 @@
 #
-# Basic DB data for phpBB2 modified v1.12.9 by Przemo
+# Basic DB data for phpBB2 modified v1.13.0 by Przemo
 #
 
 # -- attachments_config
@@ -96,7 +96,7 @@ INSERT INTO phpbb_config (config_name, config_value) VALUES ('coppa_fax', '');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('coppa_mail', '');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('record_online_users', '0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('record_online_date', '0');
-INSERT INTO phpbb_config (config_name, config_value) VALUES ('version', '1.12.9');
+INSERT INTO phpbb_config (config_name, config_value) VALUES ('version', '1.13.0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('allow_autologin', '1');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('allow_photo_remote', '0');
 INSERT INTO phpbb_config (config_name, config_value) VALUES ('allow_photo_upload', '0');

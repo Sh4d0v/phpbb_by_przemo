@@ -63,7 +63,7 @@ if ( is_array($no_forum) )
 {
 	for($i = 0; $i < count($no_forum); $i++)
 	{
-		if ( $no_forum[$i] && @$no_forum[$i]{0} == POST_FORUM_URL )
+		if ( $no_forum[$i] && @$no_forum[$i][0] == POST_FORUM_URL )
 		{
 			$no_forum_sql .= (($no_forum_sql) ? ', ' : '') . '[' . substr($no_forum[$i], 1) . ']';
 		}

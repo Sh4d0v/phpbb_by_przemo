@@ -870,7 +870,7 @@ function phpbb_rtrim($str, $charlist = false)
 	// php version < 4.1.0
 	if ((int) $php_version[0] < 4 || ((int) $php_version[0] == 4 && (int) $php_version[1] < 1))
 	{
-		while ($str{strlen($str)-1} == $charlist)
+		while ($str[strlen($str)-1] == $charlist)
 		{
 			$str = substr($str, 0, strlen($str)-1);
 		}
@@ -2231,7 +2231,7 @@ function phpbb_ltrim($str, $charlist = false)
 	// php version < 4.1.0
 	if ((int) $php_version[0] < 4 || ((int) $php_version[0] == 4 && (int) $php_version[1] < 1))
 	{
-		while ($str{0} == $charlist)
+		while ($str[0] == $charlist)
 		{
 			$str = substr($str, 1);
 		}
@@ -2797,51 +2797,30 @@ function _hash_gensalt_private($input, &$itoa64, $iteration_count_log2 = 6)
 
 function phpbb_hash($password)
 {
-	$itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-
-	$random_state = unique_id();
-	$random = '';
-	$count = 6;
-
-	if (($fh = @fopen('/dev/urandom', 'rb')))
-	{
-		$random = fread($fh, $count);
-		fclose($fh);
-	}
-
-	if (strlen($random) < $count)
-	{
-		$random = '';
-
-		for ($i = 0; $i < $count; $i += 16)
-		{
-			$random_state = md5(unique_id() . $random_state);
-			$random .= pack('H*', md5($random_state));
-		}
-		$random = substr($random, 0, $count);
-	}
-
-	$hash = _hash_crypt_private($password, _hash_gensalt_private($random, $itoa64), $itoa64);
-
-	if (strlen($hash) == 34)
-	{
-		return $hash;
-	}
-
-	return md5($password);
+	// Request values are escaped by the legacy bootstrap; hash the original value.
+	$password = stripslashes($password);
+	$hash = password_hash($password, PASSWORD_DEFAULT);
+	return ($hash !== false) ? $hash : false;
 }
 
 function phpbb_check_hash($password, $hash)
 {
-	$itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-	if($password == '' || is_array($password)) { return false; }
-
-	if (strlen($hash) == 34)
+	if (!is_string($password) || !is_string($hash) || $password === '')
 	{
-		return (_hash_crypt_private($password, $hash, $itoa64) === $hash) ? true : false;
+		return false;
 	}
 
-	return false;
+	$password = stripslashes($password);
+	$itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
+	// Verify historical phpBB phpass hashes so accounts can migrate on login.
+	if (strlen($hash) == 34 && (substr($hash, 0, 3) == '$H$' || substr($hash, 0, 3) == '$P$'))
+	{
+		return (_hash_crypt_private($password, $hash, $itoa64) === $hash);
+	}
+
+	// password_verify recognizes hashes created by PHP's password_hash API.
+	return password_verify($password, $hash);
 }
 
 ?>

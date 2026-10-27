@@ -11,3 +11,16 @@
 	AddOutputFilterByType DEFLATE application/javascript
 	AddOutputFilterByType DEFLATE application/x-javascript
 </IfModule>
+
+# Keep credentials and source-oriented files inaccessible when PHP is misconfigured.
+<IfModule mod_authz_core.c>
+	<FilesMatch "(^config\.php$|\.sql$|\.inc\.php$)">
+		Require all denied
+	</FilesMatch>
+</IfModule>
+<IfModule !mod_authz_core.c>
+	<FilesMatch "(^config\.php$|\.sql$|\.inc\.php$)">
+		Order allow,deny
+		Deny from all
+	</FilesMatch>
+</IfModule>

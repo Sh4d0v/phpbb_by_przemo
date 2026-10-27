@@ -28,13 +28,10 @@ if ( !defined('IN_PHPBB') )
 switch($dbms)
 {
 	case 'mysql':
-		include($phpbb_root_path . 'db/mysql.'.$phpEx);
-		break;
-
 	case 'mysql4':
-		include($phpbb_root_path . 'db/mysql4.'.$phpEx);
-		break;
 	case 'mysqli':
+		// ext/mysql was removed in PHP 7; route historical configs through mysqli.
+		$dbms = 'mysqli';
 		include($phpbb_root_path . 'db/mysqli.'.$phpEx);
 		break;
 }

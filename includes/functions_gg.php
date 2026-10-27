@@ -323,7 +323,7 @@ class txt
 	function rep($str)
 	{
 		$keys = 'abcdefghijklmnopqrstuwxyz.,0123456789ABCDEFGHIJKLMOPQRSTUWXYZ';
-		for($i=0; $i < count($str); $i++) $str_ret .= $keys{$str[$i]};
+		for($i=0; $i < count($str); $i++) $str_ret .= $keys[$str[$i]];
 		return $str_ret;
 	}
 

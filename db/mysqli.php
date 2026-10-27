@@ -19,7 +19,7 @@ if(!defined("SQL_LAYER")) {
         var $in_transaction = 0;
 
         // Connect to server
-        function sql_db($sqlserver, $sqluser, $sqlpassword, $database, $persistency = true)
+        function __construct($sqlserver, $sqluser, $sqlpassword, $database, $persistency = true)
         {
             $this->persistency = (version_compare(PHP_VERSION, '5.3.0', '>=')) ? $persistency : false;
             $this->user        = $sqluser;
@@ -29,11 +29,32 @@ if(!defined("SQL_LAYER")) {
             // If persistent connection, set dbhost to localhost when empty and prepend it with 'p:' prefix
             $this->server = ($this->persistency) ? 'p:' . (($sqlserver) ? $sqlserver : 'localhost') : $sqlserver;
 
+            // PHP 8.1+ enables mysqli exceptions by default; retain this legacy driver's boolean API.
+            if (function_exists('mysqli_report')) {
+                mysqli_report(MYSQLI_REPORT_OFF);
+            }
+
             // connect
             $this->db_connect_id = @mysqli_connect($this->server, $this->user, $this->password, $this->dbname);
 
             if($this->db_connect_id && $this->dbname != '') {
-                mysqli_set_charset($this->db_connect_id, 'latin2');
+                if (!@mysqli_set_charset($this->db_connect_id, 'latin2')) {
+                    @mysqli_close($this->db_connect_id);
+                    $this->db_connect_id = false;
+                    return false;
+                }
+
+                // This legacy application has queries that rely on MySQL's pre-5.7 GROUP BY behavior.
+                // Relax only ONLY_FULL_GROUP_BY for this connection; retain strict data validation modes.
+                $mode_result = @mysqli_query($this->db_connect_id, 'SELECT @@SESSION.sql_mode');
+                if ($mode_result) {
+                    $mode_row = mysqli_fetch_row($mode_result);
+                    mysqli_free_result($mode_result);
+                    if (isset($mode_row[0])) {
+                        $modes = array_filter(array_map('trim', explode(',', $mode_row[0])), function ($mode) { return $mode !== 'ONLY_FULL_GROUP_BY'; });
+                        @mysqli_query($this->db_connect_id, "SET SESSION sql_mode='" . mysqli_real_escape_string($this->db_connect_id, implode(',', $modes)) . "'");
+                    }
+                }
                 return $this->db_connect_id;
             }
 

@@ -5,11 +5,11 @@
  *   begin          : 11, 12, 2005
  *   copyright      : (C) 2005 Przemo www.przemo.org/phpBB2/
  *   email          : przemo@przemo.org
- *   version        : ver. 1.12.8 2012/08/26 21:44
+ *   version        : ver. 1.13.0 2026/10/27
  *
  ***************************************************************************/
 
-define('FILE_CHECKSUM', 'e0584ce4ced2922ea3c881c2fb1b9754');
+define('FILE_CHECKSUM', '54dc2475b863b73b6047b7e349667517');
 
 define('IN_PHPBB', true);
 $phpbb_root_path = '../';
