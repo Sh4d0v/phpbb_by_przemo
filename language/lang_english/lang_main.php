@@ -93,7 +93,6 @@ $lang['Select_forum'] = 'Select a forum';
 $lang['View_newest_post'] = 'View newest post';
 $lang['Page_of'] = 'Page <b>%d</b> of <b>%d</b>'; // Replaces with: Page 1 of 2 for example
 
-$lang['MSNM'] = 'MSN Messenger';
 
 $lang['Forum_Index'] = '%s Forum Index'; // eg. sitename Forum Index, %s can be removed if you prefer
 

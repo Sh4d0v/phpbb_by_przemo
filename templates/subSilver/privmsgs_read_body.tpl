@@ -56,7 +56,7 @@
          <table cellspacing="0" cellpadding="0" border="0" height="18">
             <tr> 
                <td valign="middle" nowrap="nowrap">
-                  {PROFILE_IMG} {PM_IMG} {EMAIL_IMG} {WWW_IMG} {MSN_IMG}
+                  {PROFILE_IMG} {PM_IMG} {EMAIL_IMG} {WWW_IMG}
                </td>               <td colspan="3" height="28" align="right">
                   {S_HIDDEN_FIELDS}
                   <input type="submit" name="save" value="{L_SAVE_MSG}" class="liteoption">&nbsp; 

@@ -779,7 +779,6 @@ $sgv .= ($board_config['allow_sig_image']) ? ', u.user_sig_image' : '';
 $sgv .= ($board_config['cfrom']) ? ', u.user_from' : '';
 $sgv .= ($board_config['clevell'] || $board_config['cleveld'] || $board_config['cjoin']) ? ', u.user_regdate' : '';
 $sgv .= ($board_config['gender']) ? ', u.user_gender' : '';
-$sgv .= ($board_config['cmsn']) ? ', u.user_msnm' : '';
 $sgv .= (!$forum_topic_data['forum_no_helped'] && $board_config['helped']) ? ', u.special_rank, u.user_allow_helped' : '';
 
 $sgv .= ($board_config['custom_color_use'] || $board_config['custom_color_mod'] || $board_config['custom_color_view']) ? ', u.can_custom_color, u.user_custom_color' : '';
@@ -1742,8 +1741,6 @@ for($i = 0; $i < $total_posts; $i++)
 		$level_exp_percent = '';
 		$level_level = '';
 		$max_warn = '';
-		$msn_img = '';
-		$msn = '';
 		$new_post = '';
 		$pm_img = '';
 		$pm = '';
@@ -1992,8 +1989,6 @@ for($i = 0; $i < $total_posts; $i++)
 					$www = ($postrow[$i]['user_website']) ? '<a href="' . $postrow[$i]['user_website'] . '" target="_userwww" rel="nofollow">' . $lang['Visit_website'] . '</a>' : '';
 
 					$temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$poster_id");
-					$msn_img = (!empty($postrow[$i]['user_msnm']) && $board_config['cmsn']) ? '<a href="' . $temp_url . '"><img src="' . $images['icon_msnm'] . '" alt="" title="' . $lang['MSNM'] . '" border="0" /></a> ' : '';
-					$msn = (!empty($postrow[$i]['user_msnm'])) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
 				}
 				else
 				{
@@ -2019,8 +2014,6 @@ for($i = 0; $i < $total_posts; $i++)
 
 
 					$temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$poster_id");
-					$msn_img = (!empty($postrow[$i]['user_msnm']) && $board_config['cmsn']) ? '<a href="' . $temp_url . '" class="gen" " title="' . $lang['MSNM'] . '">[<b>MSNM</b>]</a> ' : '';
-					$msn = (!empty($postrow[$i]['user_msnm'])) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
 				}
 			}
 			else
@@ -2033,8 +2026,6 @@ for($i = 0; $i < $total_posts; $i++)
 				$email = '';
 				$www_img = '';
 				$www = '';
-				$msn_img = '';
-				$msn = '';
 			}
 
 			$colored_username = color_username($postrow[$i]['user_level'], $postrow[$i]['user_jr'], $postrow[$i]['user_id'], $postrow[$i]['username'], false, 'font-size: 12');
@@ -2076,8 +2067,6 @@ for($i = 0; $i < $total_posts; $i++)
 			$email = '';
 			$www_img = '';
 			$www = '';
-			$msn_img = '';
-			$msn = '';
 			$gender_image = '';
 		}
 
@@ -2475,8 +2464,6 @@ for($i = 0; $i < $total_posts; $i++)
 		'EMAIL' => $email,
 		'WWW_IMG' => $www_img,
 		'WWW' => $www,
-		'MSN_IMG' => $msn_img,
-		'MSN' => $msn,
 		'EDIT_IMG' => $edit_img,
 		'EDIT' => $edit,
 		'QUOTE_IMG' => $quote_img,

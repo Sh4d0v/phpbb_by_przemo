@@ -81,13 +81,6 @@
         </tr>
 <tr>
 
-	  <td class="row1"><span class="gen">{L_MESSENGER}</span></td>
-	  <td class="row2"> 
-		<input type="text" class="post" name="msn" size="20" maxlength="255" value="{MSN}">
-	  </td>
-	</tr>
-<tr>
-
 	  <td class="row1"><span class="gen">{L_WEBSITE}</span></td>
 	  <td class="row2"> 
 		<input type="text" class="post" name="website" size="35" maxlength="255" value="{WEBSITE}">

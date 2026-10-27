@@ -226,8 +226,6 @@ $www_img = ( $profiledata['user_website'] ) ? '<a href="' . $profiledata['user_w
 $www = ( $profiledata['user_website'] ) ? '<a href="' . $profiledata['user_website'] . '" target="_userwww" rel="nofollow">' . $profiledata['user_website'] . '</a>' : '&nbsp;';
 
 
-$msn_img = ( $profiledata['user_msnm'] ) ? $profiledata['user_msnm'] : '&nbsp;';
-$msn = $msn_img;
 
 
 $temp_url = append_sid("search.$phpEx?search_author=" . urlencode($username) . "&amp;showresults=posts");
@@ -657,8 +655,6 @@ $template->assign_vars(array(
 	'EMAIL' => $email,
 	'WWW_IMG' => $www_img,
 	'WWW' => $www,
-	'MSN_IMG' => $msn_img,
-	'MSN' => ($board_config['cmsn']) ? $msn : '',
 	'U_ADMIN_EDIT' => append_sid("admin/admin_users.$phpEx?mode=edit&amp;u=$user_id&amp;sid=" . $userdata['session_id']),
 	'U_ADMIN_PERMISSION' => append_sid("admin/admin_ug_auth.$phpEx?mode=user&amp;u=$user_id&amp;sid=" . $userdata['session_id']),
 	'U_ADD_WARNING' => append_sid("warnings.$phpEx?mode=add&amp;userid=$user_id"),
@@ -698,7 +694,6 @@ $template->assign_vars(array(
 	'L_EMAIL_ADDRESS' => $lang['Email_address'],
 	'L_EMAIL' => $lang['Email'],
 	'L_PM' => $lang['Private_Message'],
-	'L_MESSENGER' => $lang['MSNM'],
 	'L_WEBSITE' => $lang['Website'],
 	'L_LOCATION' => $lang['Location'],
 	'L_OCCUPATION' => $lang['Occupation'],
@@ -742,11 +737,6 @@ if ( $board_config['cinter'] && $profiledata['user_interests'] )
 {
 	$template->assign_block_vars('interests', array());
 }
-if ( $board_config['cmsn'] && $profiledata['user_msnm'] )
-{
-	$template->assign_block_vars('msn', array());
-}
-
 
 if ( $board_config['clevelp'] )
 {

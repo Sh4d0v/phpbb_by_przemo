@@ -177,12 +177,6 @@
 					<td valign="middle" nowrap="nowrap" align="right"><span class="gen">{L_PM}:</span></td>
 					<td class="row1" valign="middle"><b><span class="gen">{PM_IMG}</span></b></td>
 				</tr>
-				<!-- BEGIN msn -->
-				<tr> 
-					<td valign="middle" nowrap="nowrap" align="right"><span class="gen">{L_MESSENGER}:</span></td>
-					<td class="row1" valign="middle"><span class="gen">{MSN}</span></td>
-				</tr>
-				<!-- END msn -->
 				<!-- BEGIN list -->
 				<tr>
 					<td valign="middle" nowrap="nowrap" align="right"><span class="gen">{L_USERGROUPS}:</span></td>

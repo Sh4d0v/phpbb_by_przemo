@@ -312,7 +312,6 @@ else
 			'user_email' => array('Type' => 'varchar(255)', 'Default' => "''"),
 			'user_website' => array('Type' => 'varchar(255)', 'Default' => "''"),
 			'user_from' => array('Type' => 'varchar(64)', 'Default' => "''"),
-			'user_msnm' => array('Type' => 'varchar(255)', 'Default' => "''"),
 			'user_occ' => array('Type' => 'varchar(100)', 'Default' => "''"),
 			'user_interests' => array('Type' => 'varchar(255)', 'Default' => "''"),
 			'user_actkey' => array('Type' => 'varchar(32)', 'Default' => "''"),

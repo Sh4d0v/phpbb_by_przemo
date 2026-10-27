@@ -29,7 +29,7 @@ include($phpbb_root_path . 'common.'.$phpEx);
 
 // -------------------------
 //
-function generate_user_info(&$row, $date_format, $group_mod, &$from, &$posts, &$joined, &$poster_avatar, &$profile_img, &$profile, &$search_img, &$search, &$pm_img, &$pm, &$email_img, &$email, &$www_img, &$www, &$msn_img, &$msn)
+function generate_user_info(&$row, $date_format, $group_mod, &$from, &$posts, &$joined, &$poster_avatar, &$profile_img, &$profile, &$search_img, &$search, &$pm_img, &$pm, &$email_img, &$email, &$www_img, &$www)
 {
 	global $lang, $images, $board_config, $phpEx;
 
@@ -77,13 +77,6 @@ function generate_user_info(&$row, $date_format, $group_mod, &$from, &$posts, &$
 
 	$www_img = ( $row['user_website'] ) ? '<a href="' . $row['user_website'] . '" target="_userwww" rel="nofollow"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" border="0" /></a>' : '';
 	$www = ( $row['user_website'] ) ? '<a href="' . $row['user_website'] . '" target="_userwww" rel="nofollow">' . $lang['Visit_website'] . '</a>' : '';
-
-
-
-	$temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=" . $row['user_id']);
-	$msn_img = ( $row['user_msnm'] ) ? '<a href="' . $temp_url . '"><img src="' . $images['icon_msnm'] . '" alt="' . $lang['MSNM'] . '" title="' . $lang['MSNM'] . '" border="0" /></a>' : '';
-	$msn = ( $row['user_msnm'] ) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
-
 
 	$temp_url = append_sid("search.$phpEx?search_author=" . urlencode($row['username']) . "&amp;showresults=posts");
 	$search_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_search'] . '" alt="' . sprintf($lang['Search_user_posts'], $row['username']) . '" title="' . sprintf($lang['Search_user_posts'], $row['username']) . '" border="0" /></a>';
@@ -757,7 +750,7 @@ else if ( $group_id )
 	//
 	// Get moderator details for this group
 	//
-	$sql = "SELECT username, user_id, user_viewemail, user_posts, user_regdate, user_from, user_website, user_email, user_msnm, user_jr, user_level
+	$sql = "SELECT username, user_id, user_viewemail, user_posts, user_regdate, user_from, user_website, user_email, user_jr, user_level
 		FROM " . USERS_TABLE . " 
 		WHERE user_id = " . $group_info['group_moderator'];
 	if ( !($result = $db->sql_query($sql)) )
@@ -814,7 +807,7 @@ else if ( $group_id )
 
     $is_autogroup_enable = ($group_info['group_count'] <= $userdata['user_posts']) ? true : false;
 
-    $sql = "SELECT u.username, u.user_id, u.user_level, u.user_jr, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_msnm,ug.user_pending
+    $sql = "SELECT u.username, u.user_id, u.user_level, u.user_jr, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email,ug.user_pending
 		FROM (" . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug, " . USERS_TABLE . " u)
 		WHERE ug.group_id = $group_id
 			AND g.group_id = ug.group_id
@@ -934,7 +927,7 @@ else if ( $group_id )
 	$username = $group_moderator['username'];
 	$user_id = $group_moderator['user_id'];
 
-	generate_user_info($group_moderator, $board_config['default_dateformat'], $is_moderator, $from, $posts, $joined, $poster_avatar, $profile_img, $profile, $search_img, $search, $pm_img, $pm, $email_img, $email, $www_img, $www, $msn_img, $msn);
+	generate_user_info($group_moderator, $board_config['default_dateformat'], $is_moderator, $from, $posts, $joined, $poster_avatar, $profile_img, $profile, $search_img, $search, $pm_img, $pm, $email_img, $email, $www_img, $www);
 
 	$s_hidden_fields .= '';
 
@@ -964,7 +957,6 @@ else if ( $group_id )
 		'L_FROM' => $lang['Location'],
 		'L_SORT' => $lang['Sort'],
 		'L_SUBMIT' => $lang['Sort'],
-		'L_MSNM' => $lang['MSNM'],
 		'L_SELECT' => $lang['Select'],
 		'L_REMOVE_SELECTED' => $lang['Remove_selected'],
 		'L_ADD_MEMBER' => $lang['Add_member'],
@@ -994,8 +986,6 @@ else if ( $group_id )
 		'MOD_EMAIL' => $email,
 		'MOD_WWW_IMG' => $www_img,
 		'MOD_WWW' => $www,
-		'MOD_MSN_IMG' => $msn_img,
-		'MOD_MSN' => $msn,
 
 		'U_MOD_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id"), 
 		'U_SEARCH_USER' => append_sid("search.$phpEx?mode=searchuser"), 
@@ -1021,7 +1011,7 @@ else if ( $group_id )
 		$user_id = $group_members[$i]['user_id'];
 		$member_row = $group_members[$i];
 
-		generate_user_info($member_row, $board_config['default_dateformat'], $is_moderator, $from, $posts, $joined, $poster_avatar, $profile_img, $profile, $search_img, $search, $pm_img, $pm, $email_img, $email, $www_img, $www, $msn_img, $msn);
+		generate_user_info($member_row, $board_config['default_dateformat'], $is_moderator, $from, $posts, $joined, $poster_avatar, $profile_img, $profile, $search_img, $search, $pm_img, $pm, $email_img, $email, $www_img, $www);
 
 		if ( $group_info['group_type'] != GROUP_HIDDEN || $is_group_member || $is_moderator )
 		{
@@ -1049,8 +1039,6 @@ else if ( $group_id )
 				'EMAIL' => $email,
 				'WWW_IMG' => $www_img,
 				'WWW' => $www,
-				'MSN_IMG' => $msn_img,
-				'MSN' => $msn,
 				
 				'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id"))
 			);
@@ -1107,7 +1095,7 @@ else if ( $group_id )
 				$user_id = $modgroup_pending_list[$i]['user_id'];
 				$modgroup_row = $modgroup_pending_list[$i];
 
-				generate_user_info($modgroup_row, $board_config['default_dateformat'], $is_moderator, $from, $posts, $joined, $poster_avatar, $profile_img, $profile, $search_img, $search, $pm_img, $pm, $email_img, $email, $www_img, $www, $msn_img, $msn);
+				generate_user_info($modgroup_row, $board_config['default_dateformat'], $is_moderator, $from, $posts, $joined, $poster_avatar, $profile_img, $profile, $search_img, $search, $pm_img, $pm, $email_img, $email, $www_img, $www);
 
 				$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 				$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
@@ -1135,8 +1123,6 @@ else if ( $group_id )
 					'EMAIL' => $email,
 					'WWW_IMG' => $www_img,
 					'WWW' => $www,
-					'MSN_IMG' => $msn_img,
-					'MSN' => $msn,
 					
 					'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id"))
 				);

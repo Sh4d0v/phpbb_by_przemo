@@ -170,9 +170,9 @@ function validate_email($email)
 // Does supplementary validation of optional profile fields. This expects common stuff like trim() and strip_tags()
 // to have already been run. Params are passed by-ref, so we can set them to the empty string if they fail.
 //
-function validate_optional_fields(&$msnm, &$website, &$location, &$occupation, &$interests, &$custom_color, &$sig)
+function validate_optional_fields(&$website, &$location, &$occupation, &$interests, &$custom_color, &$sig)
 {
-	$check_var_length = array('msnm', 'location', 'occupation', 'interests', 'sig');
+	$check_var_length = array('location', 'occupation', 'interests', 'sig');
 
 	for($i = 0; $i < count($check_var_length); $i++)
 	{

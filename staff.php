@@ -173,7 +173,6 @@ while($staff = $db->sql_fetchrow($results))
 		$pmto = append_sid("privmsg.$phpEx?mode=post&amp;" . POST_USERS_URL . "=$staff[user_id]");
 		$pm = '<a href="' . $pmto . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" border="0" /></a>';
 
-		$msn = ($staff['user_msnm']) ? '<a href="mailto: '.$staff['user_msnm'].'"><img src="' . $images['icon_msnm'] . '" alt="' . $lang['MSNM'] . '" title="' . $lang['MSNM'] . '" border="0" /></a>' : '';
 		$www = ($staff['user_website']) ? '<a href="' . $staff['user_website'] . '" target="_userwww" rel="nofollow"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" border="0" /></a>' : '';
 
 		$rank_image = '';
@@ -226,7 +225,6 @@ while($staff = $db->sql_fetchrow($results))
 			'POST_PERCENT' => sprintf($lang['User_post_pct_stats'], $percentage), 
 			'MAIL' => $mail,
 			'PM' => $pm,
-			'MSN' => $msn,
 			'WWW' => $www)
 		);
 
@@ -247,7 +245,6 @@ $template->assign_vars(array(
 	'L_JOINED' => $lang['Joined'], 
 	'L_EMAIL' => $lang['Email'],
 	'L_PM' => $lang['Private_Message'],
-	'L_MESSENGER' => 'Messenger',
 	'L_WWW' => $lang['Website'])
 );
 

@@ -301,7 +301,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 	return $avatar_sql;
 }
 
-function display_avatar_gallery($mode, &$category, &$user_id, $email1, &$current_email, &$coppa, &$username, &$email, &$new_password, &$cur_password, &$password_confirm, &$msn, &$website, &$location, &$optional_fields, &$optional_values, &$occupation, &$interests, &$gender, &$allowpm, &$user_ip_login_check, &$b_day, &$b_md, &$b_year, &$signature, &$user_sig_image, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$allowhtml, &$allowbbcode, &$allowsmilies, &$hideonline, &$style, &$language, &$timezone, &$custom_color, &$custom_rank, &$session_id, $verify_user)
+function display_avatar_gallery($mode, &$category, &$user_id, $email1, &$current_email, &$coppa, &$username, &$email, &$new_password, &$cur_password, &$password_confirm, &$website, &$location, &$optional_fields, &$optional_values, &$occupation, &$interests, &$gender, &$allowpm, &$user_ip_login_check, &$b_day, &$b_md, &$b_year, &$signature, &$user_sig_image, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$allowhtml, &$allowbbcode, &$allowsmilies, &$hideonline, &$style, &$language, &$timezone, &$custom_color, &$custom_rank, &$session_id, $verify_user)
 {
 	global $board_config, $db, $template, $lang, $images, $theme;
 	global $phpbb_root_path, $phpEx;
@@ -417,7 +417,7 @@ function display_avatar_gallery($mode, &$category, &$user_id, $email1, &$current
 		}
 	}
 
-	$params = array('coppa', 'user_id', 'username', 'email1', 'current_email', 'cur_password', 'new_password', 'password_confirm', 'msn', 'website', 'location', 'occupation', 'interests', 'gender', 'allowpm', 'user_ip_login_check', 'b_day', 'b_md', 'b_year', 'signature', 'user_sig_image', 'viewemail', 'notifypm', 'popup_pm', 'notifyreply', 'attachsig', 'allowhtml', 'allowbbcode', 'allowsmilies', 'hideonline', 'style', 'language', 'timezone', 'custom_color', 'custom_rank');
+	$params = array('coppa', 'user_id', 'username', 'email1', 'current_email', 'cur_password', 'new_password', 'password_confirm', 'website', 'location', 'occupation', 'interests', 'gender', 'allowpm', 'user_ip_login_check', 'b_day', 'b_md', 'b_year', 'signature', 'user_sig_image', 'viewemail', 'notifypm', 'popup_pm', 'notifyreply', 'attachsig', 'allowhtml', 'allowbbcode', 'allowsmilies', 'hideonline', 'style', 'language', 'timezone', 'custom_color', 'custom_rank');
 
 	$s_hidden_vars = '<input type="hidden" name="sid" value="' . $session_id . '" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="avatarcatname" value="' . $category . '" /><input type="hidden" name="verify_user" value="' . $verify_user . '" />';
 

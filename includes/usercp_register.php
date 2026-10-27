@@ -141,7 +141,7 @@ if (
         }
 	}
 
-	$strip_var_list = array('email1' => 'email1', 'email2' => 'email2', 'msn' => 'msn', 'website' => 'website', 'location' => 'location', 'occupation' => 'occupation', 'interests' => 'interests', 'custom_color' => 'custom_color', 'custom_rank' => 'custom_rank', 'b_day' => 'b_day', 'b_md' => 'b_md', 'b_year' => 'b_year');
+	$strip_var_list = array('email1' => 'email1', 'email2' => 'email2', 'website' => 'website', 'location' => 'location', 'occupation' => 'occupation', 'interests' => 'interests', 'custom_color' => 'custom_color', 'custom_rank' => 'custom_rank', 'b_day' => 'b_day', 'b_md' => 'b_md', 'b_year' => 'b_year');
 
 	// Strip all tags from data ... may p**s some people off, bah, strip_tags is
 	// doing the job but can still break HTML output ... have no choice, have
@@ -199,7 +199,7 @@ if (
 	// Run some validation on the optional fields. These are pass-by-ref, so they'll be changed to
 	// empty strings if they fail.
 
-	validate_optional_fields($msn, $website, $location, $occupation, $interests, $custom_color, $signature);
+	validate_optional_fields($website, $location, $occupation, $interests, $custom_color, $signature);
 
 	$viewemail = ( isset($HTTP_POST_VARS['viewemail']) ) ? ( ($HTTP_POST_VARS['viewemail']) ? TRUE : 0 ) : 1;
 
@@ -278,7 +278,6 @@ if (
 		$new_password = xhtmlspecialchars(stripslashes($new_password));
 		$password_confirm = xhtmlspecialchars(stripslashes($password_confirm));
 
-		$msn = stripslashes($msn);
 		$website = stripslashes($website);
 		$location = stripslashes($location);
 		$occupation = stripslashes($occupation);
@@ -694,7 +693,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
 			}
 
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET " . $username_sql . $passwd_sql . "user_email = '" . str_replace("\'", "''", $email) ."', user_website = '" . str_replace("\'", "''", $website) . "', user_occ = '" . str_replace("\'", "''", $occupation) . "', user_interests = '" . str_replace("\'", "''", $interests) . "', user_from = '" . str_replace("\'", "''", $location) . "', $sql_custom_fields user_sig = '" . str_replace("\'", "''", $signature) . "', user_custom_color = '" . str_replace("\'", "''", $custom_color) . "', user_custom_rank = '" . str_replace("\'", "''", $custom_rank) . "', user_sig_bbcode_uid = '$signature_bbcode_uid', user_viewemail = $viewemail, user_msnm = '" . str_replace("\'", "''", $msn) . "', user_attachsig = $attachsig, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowbbcode = $allowbbcode, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_notify_pm = $notifypm, user_popup_pm = $popuppm, user_timezone = $user_timezone, user_lang = '" . str_replace("\'", "''", $user_lang) . "', user_style = $user_style, user_active = $user_active, user_actkey = '" . str_replace("\'", "''", $user_actkey) . "'" . $avatar_sql . $signature_sql . ", user_gender = $gender, allowpm = $allowpm, user_ip_login_check = $user_ip_login_check
+				SET " . $username_sql . $passwd_sql . "user_email = '" . str_replace("\'", "''", $email) ."', user_website = '" . str_replace("\'", "''", $website) . "', user_occ = '" . str_replace("\'", "''", $occupation) . "', user_interests = '" . str_replace("\'", "''", $interests) . "', user_from = '" . str_replace("\'", "''", $location) . "', $sql_custom_fields user_sig = '" . str_replace("\'", "''", $signature) . "', user_custom_color = '" . str_replace("\'", "''", $custom_color) . "', user_custom_rank = '" . str_replace("\'", "''", $custom_rank) . "', user_sig_bbcode_uid = '$signature_bbcode_uid', user_viewemail = $viewemail, user_attachsig = $attachsig, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowbbcode = $allowbbcode, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_notify_pm = $notifypm, user_popup_pm = $popuppm, user_timezone = $user_timezone, user_lang = '" . str_replace("\'", "''", $user_lang) . "', user_style = $user_style, user_active = $user_active, user_actkey = '" . str_replace("\'", "''", $user_actkey) . "'" . $avatar_sql . $signature_sql . ", user_gender = $gender, allowpm = $allowpm, user_ip_login_check = $user_ip_login_check
 				WHERE user_id = $user_id";
 			if ( !($result = $db->sql_query($sql)) )
 			{
@@ -855,8 +854,8 @@ if ( isset($HTTP_POST_VARS['submit']) )
 				}
 			}
 
-			$sql = "INSERT INTO " . USERS_TABLE . " (username, user_regdate, user_password, user_email, user_website, user_occ, user_interests, user_from, " . $sql_custom_fields . " user_sig, user_sig_bbcode_uid, user_sig_image, user_avatar, user_avatar_type, user_viewemail, user_msnm, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_viewonline, user_notify, user_notify_pm, user_popup_pm, user_timezone, user_lang, user_custom_color, user_custom_rank, user_style, user_gender, allowpm, user_level, user_allow_pm, user_ip, user_ip_login_check, user_active, user_actkey)
-				VALUES ('" . str_replace("\'", "''", $username) . "', " . CR_TIME . ", '" . str_replace("\'", "''", $new_password) . "', '" . str_replace("\'", "''", $email) . "', '" . str_replace("\'", "''", $website) . "', '" . str_replace("\'", "''", $occupation) . "', '" . str_replace("\'", "''", $interests) . "', '" . str_replace("\'", "''", $location) . "', " . $sql_custom_values . " '" . str_replace("\'", "''", $signature) . "', '$signature_bbcode_uid', $signature_sql, $avatar_sql, $viewemail, '" . str_replace("\'", "''", $msn) . "', $attachsig, $allowsmilies, $allowhtml, $allowbbcode, $allowviewonline, $notifyreply, $notifypm, $popuppm, $user_timezone, '" . str_replace("\'", "''", $user_lang) . "', '" . str_replace("\'", "''", $custom_color) . "', '" . str_replace("\'", "''", $custom_rank) . "', $user_style, '$gender', $allowpm, 0, 1, '$user_ip', $user_ip_login_check, ";
+			$sql = "INSERT INTO " . USERS_TABLE . " (username, user_regdate, user_password, user_email, user_website, user_occ, user_interests, user_from, " . $sql_custom_fields . " user_sig, user_sig_bbcode_uid, user_sig_image, user_avatar, user_avatar_type, user_viewemail, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_viewonline, user_notify, user_notify_pm, user_popup_pm, user_timezone, user_lang, user_custom_color, user_custom_rank, user_style, user_gender, allowpm, user_level, user_allow_pm, user_ip, user_ip_login_check, user_active, user_actkey)
+				VALUES ('" . str_replace("\'", "''", $username) . "', " . CR_TIME . ", '" . str_replace("\'", "''", $new_password) . "', '" . str_replace("\'", "''", $email) . "', '" . str_replace("\'", "''", $website) . "', '" . str_replace("\'", "''", $occupation) . "', '" . str_replace("\'", "''", $interests) . "', '" . str_replace("\'", "''", $location) . "', " . $sql_custom_values . " '" . str_replace("\'", "''", $signature) . "', '$signature_bbcode_uid', $signature_sql, $avatar_sql, $viewemail, $attachsig, $allowsmilies, $allowhtml, $allowbbcode, $allowviewonline, $notifyreply, $notifypm, $popuppm, $user_timezone, '" . str_replace("\'", "''", $user_lang) . "', '" . str_replace("\'", "''", $custom_color) . "', '" . str_replace("\'", "''", $custom_rank) . "', $user_style, '$gender', $allowpm, 0, 1, '$user_ip', $user_ip_login_check, ";
 
 			if ( $board_config['require_activation'] == USER_ACTIVATION_SELF || $board_config['require_activation'] == USER_ACTIVATION_ADMIN || $coppa )
 			{
@@ -978,7 +977,6 @@ if ( isset($HTTP_POST_VARS['submit']) )
 					'FAX_INFO' => $board_config['coppa_fax'],
 					'MAIL_INFO' => $board_config['coppa_mail'],
 					'EMAIL_ADDRESS' => $email,
-					'MSN' => $msn,
 					'WEB_SITE' => $website,
 					'FROM' => $location,
 					'OCC' => $occupation,
@@ -1055,7 +1053,6 @@ if ( $error )
 	$new_password = '';
 	$password_confirm = '';
 
-	$msn = stripslashes($msn);
 	$website = stripslashes($website);
 	$location = stripslashes($location);
 	$occupation = stripslashes($occupation);
@@ -1081,7 +1078,6 @@ else if ( $mode == 'editprofile' && !isset($HTTP_POST_VARS['avatargallery']) && 
 	$new_password = '';
 	$password_confirm = '';
 
-	$msn = $userdata['user_msnm'];
 
 	$website = $userdata['user_website'];
 	$location = $userdata['user_from'];
@@ -1169,7 +1165,7 @@ if ( isset($HTTP_POST_VARS['avatargallery']) && !$error )
 
 	$userdata_session_id = $userdata['session_id'];
 
-	display_avatar_gallery($mode, $avatar_category, $user_id, $email, $current_email, $coppa, $username, $email, $new_password, $cur_password, $password_confirm, $msn, $website, $location, $optional_fields, $optional_values, $occupation, $interests, $gender, $allowpm, $user_ip_login_check, $b_day, $b_md, $b_year, $signature, $user_sig_image, $viewemail, $notifypm, $popuppm, $notifyreply, $attachsig, $allowhtml, $allowbbcode, $allowsmilies, $allowviewonline, $user_style, $user_lang, $user_timezone, $custom_color, $custom_rank, $userdata_session_id, $verify_user);
+	display_avatar_gallery($mode, $avatar_category, $user_id, $email, $current_email, $coppa, $username, $email, $new_password, $cur_password, $password_confirm, $website, $location, $optional_fields, $optional_values, $occupation, $interests, $gender, $allowpm, $user_ip_login_check, $b_day, $b_md, $b_year, $signature, $user_sig_image, $viewemail, $notifypm, $popuppm, $notifyreply, $attachsig, $allowhtml, $allowbbcode, $allowsmilies, $allowviewonline, $user_style, $user_lang, $user_timezone, $custom_color, $custom_rank, $userdata_session_id, $verify_user);
 }
 else
 {
@@ -1351,7 +1347,6 @@ else
 		'NEW_PASSWORD' => $new_password,
 		'PASSWORD_CONFIRM' => $password_confirm,
 		'EMAIL' => $email,
-		'MSN' => $msn,
 		'OCCUPATION' => $occupation,
 		'INTERESTS' => $interests,
 		'LOCK_GENDER' =>($mode!='register') ? 'DISABLED':'', 
@@ -1415,7 +1410,6 @@ else
 		'L_PASSWORD_CONFIRM_IF_CHANGED' => ($mode == 'editprofile') ? $lang['password_confirm_if_changed'] : '',
 		'L_SUBMIT' => $lang['Submit'],
 		'L_RESET' => $lang['Reset'],
-		'L_MESSENGER' => $lang['MSNM'],
 		'L_WEBSITE' => ($board_config['require_website'])  ? $lang['Website'] . ' <span style="color: #FF0000"><b>*</b></span>' : $lang['Website'],
 		'L_LOCATION' => ($board_config['require_location']) ? $lang['Location'] . ' <span style="color: #FF0000"><b>*</b></span>' : $lang['Location'],
 		'L_OCCUPATION' => $lang['Occupation'],
@@ -1496,10 +1490,6 @@ else
 	);
 
 
-	if ( $board_config['cmsn'] )
-	{
-		$template->assign_block_vars('msn', array());
-	}
 	if ( $board_config['cjob'] )
 	{
 		$template->assign_block_vars('job', array());

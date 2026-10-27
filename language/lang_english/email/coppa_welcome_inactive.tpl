@@ -18,7 +18,6 @@ Permission to Participate at {SITENAME}
 Username: {USERNAME}
 Email: {EMAIL_ADDRESS}
 
-MSN Messenger: {MSN}
 Web Site: {WEB_SITE}
 From: {FROM}
 Occupation: {OCC}

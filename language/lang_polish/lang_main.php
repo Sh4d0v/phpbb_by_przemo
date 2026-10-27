@@ -94,7 +94,6 @@ $lang['Select_forum'] = 'Wybierz forum';
 $lang['View_newest_post'] = 'Zobacz najnowszy post';
 $lang['Page_of'] = 'Strona <b>%d</b> z <b>%d</b>';
 
-$lang['MSNM'] = 'MSN Messenger';
 
 $lang['Forum_Index'] = '%s Strona G³ówna';
 

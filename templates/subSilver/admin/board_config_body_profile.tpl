@@ -65,10 +65,6 @@
 					<td class="row2" width="50%"><input type="radio" name="clevelp" value="1" {CLEVELP_YES}> {L_YES} <input type="radio" name="clevelp" value="0" {CLEVELP_NO}>{L_NO}</td>
 				</tr>
 				<tr>
-					<td class="row1">{L_CMSN}<br><span class="gensmall">{L_LMSN}</span></td>
-					<td class="row2" width="50%"><input type="radio" name="cmsn" value="1" {CMSN_YES}> {L_YES} <input type="radio" name="cmsn" value="0" {CMSN_NO}>{L_NO}</td>
-				</tr>
-				<tr>
 					<td class="row1">{L_CJOB}<br><span class="gensmall">{L_LJOB}</span></td>
 					<td class="row2" width="50%"><input type="radio" name="cjob" value="1" {CJOB_YES}> {L_YES} <input type="radio" name="cjob" value="0" {CJOB_NO}>{L_NO}</td>
 				</tr>

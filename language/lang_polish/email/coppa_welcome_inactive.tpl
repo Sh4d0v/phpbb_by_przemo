@@ -19,7 +19,6 @@ U¿ytkownik: {USERNAME}
 Has³o: Podane przy rejestracji
 Email: {EMAIL_ADDRESS}
 
-MSN Messenger: {MSN}
 Strona WWW: {WEB_SITE}
 Sk±d: {FROM}
 Zawód: {OCC}

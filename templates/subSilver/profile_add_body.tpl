@@ -111,12 +111,6 @@
 	<td class="row2"><input type="text" class="post" onFocus="Active(this)" onBlur="NotActive(this)" style="width: 200px" name="custom_rank" size="35" maxlength="50" value="{custom_rank.CUSTOM_RANK}"></td>
     </tr>
 	<!-- END custom_rank -->
-	<!-- BEGIN msn -->
-	<tr>
-	  <td class="row1"><span class="gen">{L_MESSENGER}:</span></td>
-	  <td class="row2"><input type="text" class="post" onFocus="Active(this)" onBlur="NotActive(this)" style="width: 200px" name="msn" size="20" maxlength="255" value="{MSN}"></td>
-	</tr>
-	<!-- END msn -->
 	<tr>
 	  <td class="row1"><span class="gen">{L_WEBSITE}:</span></td>
 	  <td class="row2"><input type="text" class="post" onFocus="Active(this)" onBlur="NotActive(this)" style="width: 200px" name="website" size="25" maxlength="255" value="{WEBSITE}"></td>

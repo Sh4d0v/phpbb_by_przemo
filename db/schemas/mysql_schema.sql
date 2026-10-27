@@ -816,7 +816,6 @@ CREATE TABLE phpbb_users (
   user_sig text,
   user_sig_bbcode_uid char(10) default '',
   user_sig_image varchar(100) NOT NULL DEFAULT '',
-  user_msnm varchar(255) default '',
   user_occ varchar(100) default '',
   user_interests varchar(255) default '',
   user_actkey varchar(32) default '',

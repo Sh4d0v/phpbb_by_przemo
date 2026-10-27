@@ -268,7 +268,7 @@ else if ( $mode == 'read' )
 	}
 
 	// Major query obtains the message ...
-	$sql = "SELECT u.username AS username_1, u.user_id AS user_id_1, u2.username AS username_2, u2.user_id AS user_id_2, u.user_level AS user_level1, u.user_jr AS user_jr1, u2.user_level AS user_level2, u2.user_jr AS user_jr2, u.user_sig_bbcode_uid, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_sig_image, u.user_allowsig, u.user_avatar, pm.*, pmt.privmsgs_bbcode_uid, pmt.privmsgs_text
+	$sql = "SELECT u.username AS username_1, u.user_id AS user_id_1, u2.username AS username_2, u2.user_id AS user_id_2, u.user_level AS user_level1, u.user_jr AS user_jr1, u2.user_level AS user_level2, u2.user_jr AS user_jr2, u.user_sig_bbcode_uid, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_regdate, u.user_viewemail, u.user_rank, u.user_sig, u.user_sig_image, u.user_allowsig, u.user_avatar, pm.*, pmt.privmsgs_bbcode_uid, pmt.privmsgs_text
 		FROM (" . PRIVMSGS_TABLE . " pm, " . PRIVMSGS_TEXT_TABLE . " pmt, " . USERS_TABLE . " u, " . USERS_TABLE . " u2)
 		WHERE pm.privmsgs_id = $privmsgs_id
 			AND pmt.privmsgs_text_id = pm.privmsgs_id 
@@ -584,8 +584,6 @@ else if ( $mode == 'read' )
 
 
 	$temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id_from");
-	$msn_img = ($privmsg['user_msnm'] && !$service) ? '<a href="' . $temp_url . '"><img src="' . $images['icon_msnm'] . '" alt="' . $lang['MSNM'] . '" title="' . $lang['MSNM'] . '" border="0" /></a>' : '';
-	$msn = ($privmsg['user_msnm'] && !$service) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
 
 
 	$temp_url = append_sid("search.$phpEx?search_author=" . urlencode($username_from) . "&amp;showresults=posts");
@@ -695,8 +693,6 @@ else if ( $mode == 'read' )
 		'EMAIL' => $email,
 		'WWW_IMG' => $www_img,
 		'WWW' => $www,
-		'MSN_IMG' => $msn_img,
-		'MSN' => $msn,
 	);
 
 	$template->pparse('body');

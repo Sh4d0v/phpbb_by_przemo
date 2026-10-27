@@ -81,7 +81,6 @@ $config_tables = array(
 	'csearch' => array(1, 0, 1),
 	'cllogin' => array(1, 0, 1),
 	'clevelp' => array(0, 0, 1),
-	'cmsn' => array(0, 0, 1),
 	'cjob' => array(0, 0, 1),
 	'cinter' => array(1, 0, 1),
 	'cemail' => array(1, 0, 1),
