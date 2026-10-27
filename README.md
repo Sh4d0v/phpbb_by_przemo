@@ -26,6 +26,10 @@ Widok strony głównej demo Plague Studio z forum phpBB by Przemo w wersji 1.13.
 
 ![Strona główna demo phpBB by Przemo 1.13.0](docs/images/forum-demo.png)
 
+Kontrola Systemu na demo Plague Studio: PHP 8.5.12, MySQL 8.4.11-11, wersja bazy 1.13.0 i poprawny wynik kontroli wszystkich 224 plików.
+
+![Kontrola Systemu phpBB by Przemo 1.13.0 na PHP 8.5.12 i MySQL 8.4.11-11 — wszystkie 224 pliki poprawne](docs/images/checkfiles-demo-php85.png)
+
 ## Instalacja
 
 1. Przygotuj serwer WWW z PHP 8.5.x i rozszerzeniem `mysqli`, a także dostępną bazą MySQL lub kompatybilną MariaDB.
