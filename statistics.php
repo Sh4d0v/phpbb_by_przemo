@@ -83,9 +83,7 @@ $stat_module_rows = get_module_list_from_db();
 $stat_module_data = get_module_data_from_db();
 $return_limit = $stats_config['return_limit'];
 
-@reset($stat_module_rows);
-
-while (list($module_id, $module_name) = each($stat_module_rows))
+foreach ($stat_module_rows as $module_id => $module_name)
 {
 	$module_name = trim($module_name);
 

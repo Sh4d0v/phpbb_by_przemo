@@ -55,7 +55,7 @@ function generate_module_info($module_data)
 		$condition = '';
 		$data_file = @file($phpbb_root_path . trim($stats_config['modules_dir']) . '/' . $module_dir . '/info.txt');
 		
-		while (list($key, $data) = @each($data_file))
+		foreach ((array) $data_file as $key => $data)
 		{
 			if ((!$extra_info_mode) && (!$condition_mode))
 			{
