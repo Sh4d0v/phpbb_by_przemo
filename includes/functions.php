@@ -181,7 +181,7 @@ function build_tree(&$cats, &$forums, &$new_topic_data, &$tracking_topics, &$tra
 	global $db, $phpEx, $lang, $phpbb_root_path, $userdata, $user_ip;
 	global $tree, $board_config, $readhist_buffer;
 
-	$tree_level = array();
+	$tree_level = array('type' => array(), 'id' => array(), 'sort' => array(), 'data' => array());
 
 	// get the forums of the level
 	$forum_children = (isset($parents[POST_FORUM_URL][$main]) && is_array($parents[POST_FORUM_URL][$main])) ? $parents[POST_FORUM_URL][$main] : array();
@@ -494,12 +494,12 @@ function get_auth_keys($cur = 'Root', $all = false, $level = -1, $max = -1, $aut
 	global $board_config;
 	global $tree, $userdata;
 
-	$keys = array();
+	$keys = array('keys' => array(), 'id' => array(), 'real_level' => array(), 'level' => array(), 'idx' => array());
 	$last_i = -1;
 
 	// add the level
 
-	if ( ($cur == 'Root') || $tree['auth'][$cur][$auth_key] || $all )
+	if ( ($cur == 'Root') || (isset($tree['auth'][$cur][$auth_key]) && $tree['auth'][$cur][$auth_key]) || $all )
 	{
 		// push the level
 		if ( ($max < 0) || ($level < $max) || (($level == $max) && ((substr($tree['main'][$tree['keys'][$cur]], 0, 1) == POST_CAT_URL) || ($tree['main'][$tree['keys'][$cur]] == 'Root') )) )
