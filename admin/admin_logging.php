@@ -200,7 +200,7 @@ $order_by = $sort_column . ' ' . $sort_order . ' LIMIT ' . $start . ', ' . $per_
 			}
 			while ( $row = $db->sql_fetchrow($result) )
 			{
-				$colored_username = color_username($row['user_level'], $row['user_jr'], $row['user_id'], htmlspecialchars($row['username'], ENT_QUOTES, 'ISO-8859-2'));
+				$colored_username = color_username($row['user_level'], $row['user_jr'], $row['user_id'], htmlspecialchars($row['username'], ENT_QUOTES, 'ISO-8859-1'));
 				$c_name[$row['user_id']]['username'] = $colored_username[0];
 				$c_name[$row['user_id']]['style'] = $colored_username[1];
 			}
@@ -213,7 +213,7 @@ $order_by = $sort_column . ' ' . $sort_order . ' LIMIT ' . $start . ', ' . $per_
 			$action = ucfirst($rows[$i]['mode']);
 			$topic = intval($rows[$i]['topic_id']);
 			$user_id = intval($rows[$i]['user_id']);
-			$username = ( !empty($c_name[$user_id]['username']) ) ? $c_name[$user_id]['username'] : htmlspecialchars($rows[$i]['username'], ENT_QUOTES, 'ISO-8859-2');
+			$username = ( !empty($c_name[$user_id]['username']) ) ? $c_name[$user_id]['username'] : htmlspecialchars($rows[$i]['username'], ENT_QUOTES, 'ISO-8859-1');
 			$style    = ( !empty($c_name[$user_id]['style']) )    ? $c_name[$user_id]['style']    : '';
 			$user_ip = decode_ip($rows[$i]['user_ip']);
 			$date = $rows[$i]['time'];
@@ -238,7 +238,7 @@ $order_by = $sort_column . ' ' . $sort_order . ' LIMIT ' . $start . ', ' . $per_
 
 			$template->assign_block_vars('record_row', array(
 			'ID_LOG' => $id_log,
-			'ACTION' => ( isset($lang[$action]) ) ? $lang[$action] : htmlspecialchars($action, ENT_QUOTES, 'ISO-8859-2'),
+			'ACTION' => ( isset($lang[$action]) ) ? $lang[$action] : htmlspecialchars($action, ENT_QUOTES, 'ISO-8859-1'),
 			'TOPIC' => ($action != 'Admin' && $action != 'Delete_all') ? $topic : '',
 			'TOPIC_IMG' => ($action != 'Admin' && $action != 'Delete_all') ? '<a href="' . $log_url . '" target="_blank"><img src = "' .$phpbb_root_path . $images['icon_latest_reply']. '" alt="" border="0"></a>' : '',
 			'USER_ID' => $user_id,
@@ -288,9 +288,56 @@ if ( $log_list_sql != '' )
 	$total = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
 	$total_records = ( $total ) ? intval($total['total']) : 0;
-	$pagination = generate_pagination("admin_logging.$phpEx?mode=$sort_mode&amp;order=$sort_order", $total_records, $per_page, $start) . '&nbsp;';
+	$total_pages = ( $total_records > 0 ) ? intval(ceil($total_records / $per_page)) : 0;
+	$current_page = ( $total_pages > 0 ) ? min(intval(floor($start / $per_page)) + 1, $total_pages) : 0;
+	$page_number = ( $total_pages > 1 ) ? sprintf($lang['Page_of'], $current_page, $total_pages) : '';
+	$pagination = '';
+	if ( $total_pages > 1 )
+	{
+		$pagination_url = "admin_logging.$phpEx?mode=$sort_mode&amp;order=$sort_order&amp;start=";
+		if ( $current_page > 1 )
+		{
+			$pagination .= '<a href="' . append_sid($pagination_url . (($current_page - 2) * $per_page)) . '" title="' . $lang['Previous'] . '">&laquo;</a>&nbsp;';
+		}
+
+		$page_numbers = array();
+		if ( $total_pages <= 10 )
+		{
+			$page_numbers = range(1, $total_pages);
+		}
+		else
+		{
+			$page_numbers = array_merge(range(1, 3), range(max(4, $current_page - 2), min($total_pages - 3, $current_page + 2)), range($total_pages - 2, $total_pages));
+			$page_numbers = array_values(array_unique($page_numbers));
+			sort($page_numbers, SORT_NUMERIC);
+		}
+
+		$previous_page = 0;
+		foreach ( $page_numbers as $page )
+		{
+			if ( $previous_page && $page > $previous_page + 1 )
+			{
+				$pagination .= ' ... ';
+			}
+			if ( $page == $current_page )
+			{
+				$pagination .= '<b>' . $page . '</b>';
+			}
+			else
+			{
+				$pagination .= '<a href="' . append_sid($pagination_url . (($page - 1) * $per_page)) . '">' . $page . '</a>';
+			}
+			$pagination .= '&nbsp;';
+			$previous_page = $page;
+		}
+
+		if ( $current_page < $total_pages )
+		{
+			$pagination .= '<a href="' . append_sid($pagination_url . ($current_page * $per_page)) . '" title="' . $lang['Next'] . '">&raquo;</a>';
+		}
+	}
 	$template->assign_vars(array(
-		'PAGE_NUMBER' => ( $total_records > 0 ) ? sprintf($lang['Page_of'], floor($start / $per_page) + 1, ceil($total_records / $per_page)) : '',
+		'PAGE_NUMBER' => $page_number,
 		'PAGINATION' => $pagination)
 	);
 
