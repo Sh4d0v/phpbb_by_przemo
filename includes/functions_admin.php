@@ -509,15 +509,15 @@ function db_backup($do_now = false)
 
 			if($x == 'PRIMARY')
 			{
-				$schema_create .= ' PRIMARY KEY (' . implode($columns, ', ') . ')';
+				$schema_create .= ' PRIMARY KEY (' . implode(', ', $columns) . ')';
 			}
 			elseif (substr($x,0,6) == 'UNIQUE')
 			{
-				$schema_create .= ' UNIQUE ' . substr($x,7) . ' (' . implode($columns, ', ') . ')';
+				$schema_create .= ' UNIQUE ' . substr($x,7) . ' (' . implode(', ', $columns) . ')';
 			}
 			else
 			{
-				$schema_create .= " KEY $x (" . implode($columns, ', ') . ')';
+				$schema_create .= " KEY $x (" . implode(', ', $columns) . ')';
 			}
 		}
 

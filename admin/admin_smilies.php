@@ -273,10 +273,12 @@ if( isset($HTTP_GET_VARS['mass_pre_add']) || isset($HTTP_POST_VARS['mass_pre_add
 else if( isset($HTTP_GET_VARS['mass_add']) || isset($HTTP_POST_VARS['mass_add']) )
 {
 	$y = 0;
-	for($i = 0; $i < count($HTTP_POST_VARS['smile_code']); $i++)
+	$smile_codes = (isset($HTTP_POST_VARS['smile_code']) && is_array($HTTP_POST_VARS['smile_code'])) ? $HTTP_POST_VARS['smile_code'] : array();
+	$smile_urls = (isset($HTTP_POST_VARS['smile_url']) && is_array($HTTP_POST_VARS['smile_url'])) ? $HTTP_POST_VARS['smile_url'] : array();
+	for($i = 0; $i < min(count($smile_codes), count($smile_urls)); $i++)
 	{
-		$smile_code = trim(str_replace(array('<', '>'), array('&lt;', '&gt;'), $HTTP_POST_VARS['smile_code'][$i]));
-		$smile_url = trim(phpbb_ltrim(basename($HTTP_POST_VARS['smile_url'][$i]), "'"));
+		$smile_code = trim(str_replace(array('<', '>'), array('&lt;', '&gt;'), $smile_codes[$i]));
+		$smile_url = trim(phpbb_ltrim(basename($smile_urls[$i]), "'"));
 
 		if(!empty($smile_code) && !empty($smile_url))
 		{

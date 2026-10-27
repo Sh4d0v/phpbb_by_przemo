@@ -223,12 +223,13 @@ if( isset($HTTP_GET_VARS['perform']) || isset($HTTP_POST_VARS['perform']) )
 				$sql = "OPTIMIZE TABLE ";
 
 				// make query optimize
-				if ($_POST["selected_tbl"] != ""){
+				$selected_tables = (isset($_POST["selected_tbl"]) && is_array($_POST["selected_tbl"])) ? $_POST["selected_tbl"] : array();
+				if ($selected_tables){
 
 				$i=1;
-				foreach ($_POST["selected_tbl"] as $var => $value)
+				foreach ($selected_tables as $var => $value)
 				{
-					if($i<count($_POST["selected_tbl"]))
+					if($i<count($selected_tables))
 					{
 						$sql .= "`$value`, ";
 					}

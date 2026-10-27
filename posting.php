@@ -775,7 +775,8 @@ else if ( $mode == 'vote' )
 	//
 	if ( !empty($HTTP_POST_VARS['vote_id']) )
 	{
-		$vote_option_id = intval($HTTP_POST_VARS['vote_id']);
+		$vote_ids = is_array($HTTP_POST_VARS['vote_id']) ? $HTTP_POST_VARS['vote_id'] : array($HTTP_POST_VARS['vote_id']);
+		$vote_option_id = intval(reset($vote_ids));
 
 		$sql = "SELECT vd.vote_id, vd.vote_max
 			FROM (" . VOTE_DESC_TABLE . " vd, " . VOTE_RESULTS_TABLE . " vr)
@@ -793,7 +794,7 @@ else if ( $mode == 'vote' )
 			$max_vote = $vote_info['vote_max'];
 		}
 
-		$max_voting = count($HTTP_POST_VARS['vote_id']);
+		$max_voting = count($vote_ids);
 
 		if ( $max_voting > $max_vote )
 		{
@@ -803,7 +804,7 @@ else if ( $mode == 'vote' )
 
 		for($i = 0; $i < $max_voting; $i++)
 		{
-			$vbn[$i] = $HTTP_POST_VARS['vote_id'][$i];
+			$vbn[$i] = $vote_ids[$i];
 		}
 
 		$sql = "SELECT vd.vote_id
