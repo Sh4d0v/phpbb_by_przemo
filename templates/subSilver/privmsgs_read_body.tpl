@@ -56,18 +56,8 @@
          <table cellspacing="0" cellpadding="0" border="0" height="18">
             <tr> 
                <td valign="middle" nowrap="nowrap">
-                  {PROFILE_IMG} {PM_IMG} {EMAIL_IMG} {WWW_IMG}{YIM_IMG} {MSN_IMG}
-               </td>
-               <td valign="middle" width=177>
-                  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber1" height="19">
-                     <tr>
-{CICQ_OFF1}
-                        <td>&nbsp;</td><td width="59" height="19"><div style="position:relative">{ICQ_IMG}<div style="position:absolute;left:3px;top:-1px">{ICQ_STATUS_IMG}</div></div></td>
-                        {CICQ_OFF2}
-                     </tr>
-                  </table>
-               </td>
-               <td colspan="3" height="28" align="right">
+                  {PROFILE_IMG} {PM_IMG} {EMAIL_IMG} {WWW_IMG} {MSN_IMG}
+               </td>               <td colspan="3" height="28" align="right">
                   {S_HIDDEN_FIELDS}
                   <input type="submit" name="save" value="{L_SAVE_MSG}" class="liteoption">&nbsp; 
                   <input type="submit" name="delete" value="{L_DELETE_MSG}" class="liteoption">

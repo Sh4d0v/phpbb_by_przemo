@@ -57,20 +57,12 @@
 					<br>&nbsp;<input type="radio" name="require_gender" value="1" {REQUIRE_GENDER_YES}> {L_YES} <input type="radio" name="require_gender" value="0" {REQUIRE_GENDER_NO}>{L_NO}&nbsp;&nbsp;{L_REQUIRE_GENDER}</td>
 				</tr>
 				<tr>
-					<td class="row1">{L_CICQ}<br><span class="gensmall">{L_LICQ}</span></td>
-					<td class="row2" width="50%"><input type="radio" name="cicq" value="1" {CICQ_YES}> {L_YES} <input type="radio" name="cicq" value="0" {CICQ_NO}>{L_NO}</td>
-				</tr>
-				<tr>
 					<td class="row1">{L_CLLOGIN}<br><span class="gensmall">{L_LLLOGIN}</span></td>
 					<td class="row2" width="50%"><input type="radio" name="cllogin" value="1" {CLLOGIN_YES}> {L_YES} <input type="radio" name="cllogin" value="0" {CLLOGIN_NO}>{L_NO}</td>
 				</tr>
 				<tr>
 					<td class="row1">{L_CLEVELP}<br><span class="gensmall">{L_LLEVELP}</span></td>
 					<td class="row2" width="50%"><input type="radio" name="clevelp" value="1" {CLEVELP_YES}> {L_YES} <input type="radio" name="clevelp" value="0" {CLEVELP_NO}>{L_NO}</td>
-				</tr>
-				<tr>
-					<td class="row1">{L_CYAHOO}<br><span class="gensmall">{L_LYAHOO}</span></td>
-					<td class="row2" width="50%"><input type="radio" name="cyahoo" value="1" {CYAHOO_YES}> {L_YES} <input type="radio" name="cyahoo" value="0" {CYAHOO_NO}>{L_NO}</td>
 				</tr>
 				<tr>
 					<td class="row1">{L_CMSN}<br><span class="gensmall">{L_LMSN}</span></td>

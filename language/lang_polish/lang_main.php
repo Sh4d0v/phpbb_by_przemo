@@ -94,9 +94,7 @@ $lang['Select_forum'] = 'Wybierz forum';
 $lang['View_newest_post'] = 'Zobacz najnowszy post';
 $lang['Page_of'] = 'Strona <b>%d</b> z <b>%d</b>';
 
-$lang['ICQ'] = 'Numer ICQ';
 $lang['MSNM'] = 'MSN Messenger';
-$lang['YIM'] = 'Yahoo Messenger';
 
 $lang['Forum_Index'] = '%s Strona G³ówna';
 
@@ -820,7 +818,6 @@ $lang['Ignore_user_warn'] = 'Nie mo¿esz siê samemu ignorowaæ!';
 $lang['Post_user_ignored'] = 'U¿ytkownik zosta³ dodany do twojej listy <b>ignorowanych</b>.';
 $lang['Click_view_ignore'] = 'Kliknij %sTutaj%s ¿eby zobaczyæ jego post.<br />';
 $lang['Search_for'] = 'Szukaj w tym dziale';
-$lang['cicq'] = 'ICQ';
 
 $lang['Print_View'] = 'Wersja do druku';
 $lang['Wrong_reg_key'] = 'Nieprawid³owy kod!';

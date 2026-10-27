@@ -170,9 +170,9 @@ function validate_email($email)
 // Does supplementary validation of optional profile fields. This expects common stuff like trim() and strip_tags()
 // to have already been run. Params are passed by-ref, so we can set them to the empty string if they fail.
 //
-function validate_optional_fields(&$icq, &$msnm, &$yim, &$website, &$location, &$occupation, &$interests, &$custom_color, &$sig)
+function validate_optional_fields(&$msnm, &$website, &$location, &$occupation, &$interests, &$custom_color, &$sig)
 {
-	$check_var_length = array('msnm', 'yim', 'location', 'occupation', 'interests', 'sig');
+	$check_var_length = array('msnm', 'location', 'occupation', 'interests', 'sig');
 
 	for($i = 0; $i < count($check_var_length); $i++)
 	{
@@ -182,11 +182,6 @@ function validate_optional_fields(&$icq, &$msnm, &$yim, &$website, &$location, &
 		}
 	}
 
-	// ICQ number has to be only numbers.
-	if (!preg_match('/^[0-9]+$/', $icq))
-	{
-		$icq = '';
-	}
 	
 	// website has to start with http://, followed by something with length at least 3 that
 	// contains at least one dot.

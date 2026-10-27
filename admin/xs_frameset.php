@@ -75,7 +75,6 @@ $content_url = array(
 	'edittpl'		=> append_sid('xs_edit.'.$get_data),
 	'editdb'		=> append_sid('xs_edit_data.'.$get_data),
 	'exportdb'		=> append_sid('xs_export_data.'.$get_data),
-	'updates'		=> append_sid('xs_update.'.$get_data),
 	'style_config'	=> append_sid('xs_style_config.'.$get_data),
 	);
 

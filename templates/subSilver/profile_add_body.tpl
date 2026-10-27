@@ -111,24 +111,12 @@
 	<td class="row2"><input type="text" class="post" onFocus="Active(this)" onBlur="NotActive(this)" style="width: 200px" name="custom_rank" size="35" maxlength="50" value="{custom_rank.CUSTOM_RANK}"></td>
     </tr>
 	<!-- END custom_rank -->
-	<!-- BEGIN icq -->
-	<tr>
-	  <td class="row1"><span class="gen">{L_ICQ_NUMBER}:</span></td>
-	  <td class="row2"><input type="text" name="icq" class="post" onFocus="Active(this)" onBlur="NotActive(this)" style="width: 200px"  size="10" maxlength="15" value="{ICQ}"></td>
-	</tr>
-	<!-- END icq -->
 	<!-- BEGIN msn -->
 	<tr>
 	  <td class="row1"><span class="gen">{L_MESSENGER}:</span></td>
 	  <td class="row2"><input type="text" class="post" onFocus="Active(this)" onBlur="NotActive(this)" style="width: 200px" name="msn" size="20" maxlength="255" value="{MSN}"></td>
 	</tr>
 	<!-- END msn -->
-	<!-- BEGIN yahoo -->
-	<tr>
-	  <td class="row1"><span class="gen">{L_YAHOO}:</span></td>
-	  <td class="row2"><input type="text" class="post" onFocus="Active(this)" onBlur="NotActive(this)" style="width: 200px" name="yim" size="20" maxlength="255" value="{YIM}"></td>
-	</tr>
-	<!-- END yahoo -->
 	<tr>
 	  <td class="row1"><span class="gen">{L_WEBSITE}:</span></td>
 	  <td class="row2"><input type="text" class="post" onFocus="Active(this)" onBlur="NotActive(this)" style="width: 200px" name="website" size="25" maxlength="255" value="{WEBSITE}"></td>

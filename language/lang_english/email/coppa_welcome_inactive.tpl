@@ -18,9 +18,7 @@ Permission to Participate at {SITENAME}
 Username: {USERNAME}
 Email: {EMAIL_ADDRESS}
 
-ICQ Number: {ICQ}
 MSN Messenger: {MSN}
-Yahoo Messenger: {YIM}
 Web Site: {WEB_SITE}
 From: {FROM}
 Occupation: {OCC}

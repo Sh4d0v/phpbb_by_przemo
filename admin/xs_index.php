@@ -57,7 +57,6 @@ $template->assign_vars(array(
 	'U_EDIT_STYLES'			=> append_sid('xs_edit.'.$phpEx),
 	'U_EDIT_STYLES_DATA'	=> append_sid('xs_edit_data.'.$phpEx),
 	'U_EXPORT_DATA'			=> append_sid('xs_export_data.'.$phpEx),
-	'U_UPDATES'				=> append_sid('xs_update.'.$phpEx),
 	));
 
 $template->set_filenames(array('body' => XS_TPL_PATH . 'index.tpl'));

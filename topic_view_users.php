@@ -114,9 +114,7 @@ $template->assign_vars(array(
 	'L_FROM' => $lang['Topic_count'],
 	'L_SORT' => $lang['Sort'],
 	'L_SUBMIT' => $lang['Sort'],
-	'L_YIM' => $lang['YIM'],
 	'L_MSNM' => $lang['MSNM'],
-	'L_ICQ' => $lang['ICQ'],
 	'L_LOGON' => $lang['Last_logon'], 
 	'L_JOINED' => $lang['Joined'], 
 	'L_POSTS' => $lang['Topic_time'], 
@@ -163,7 +161,7 @@ else
 }
 
 $db->sql_freeresult($result);
-$sql = "SELECT u.username, u.user_id, u.user_level, u.user_jr, u.user_viewemail, u.user_posts, u.user_regdate, u.user_allow_viewonline, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_yim, u.user_msnm, u.user_avatar, u.user_avatar_type, u.user_allowavatar ,tv.view_time, tv.view_count
+$sql = "SELECT u.username, u.user_id, u.user_level, u.user_jr, u.user_viewemail, u.user_posts, u.user_regdate, u.user_allow_viewonline, u.user_from, u.user_website, u.user_email, u.user_msnm, u.user_avatar, u.user_avatar_type, u.user_allowavatar ,tv.view_time, tv.view_count
 	FROM (" . USERS_TABLE . " u, " . TOPIC_VIEW_TABLE . " tv)
 	WHERE u.user_id = tv.user_id AND tv.topic_id = $topic_id
 	ORDER BY $order_by";
@@ -228,24 +226,11 @@ if ( $row = $db->sql_fetchrow($result) )
 		$www_img = ( $row['user_website'] ) ? '<a href="' . $row['user_website'] . '" target="_userwww" rel="nofollow"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" border="0" /></a>' : '';
 		$www = ( $row['user_website'] ) ? '<a href="' . $row['user_website'] . '" target="_userwww" rel="nofollow">' . $lang['Visit_website'] . '</a>' : '';
 
-		if ( !empty($row['user_icq']) )
-		{
-			$icq_status_img = '<a href="http://wwp.icq.com/' . $row['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $row['user_icq'] . '&amp;img=5" width="18" height="18" border="0" /></a>';
-			$icq_img = '<a href="http://wwp.icq.com/scripts/search.dll?to=' . $row['user_icq'] . '"><img src="' . $images['icon_icq'] . '" alt="' . $lang['ICQ'] . '" title="' . $lang['ICQ'] . '" border="0" /></a>';
-			$icq = '<a href="http://wwp.icq.com/scripts/search.dll?to=' . $row['user_icq'] . '">' . $lang['ICQ'] . '</a>';
-		}
-		else
-		{
-			$icq_status_img = '';
-			$icq_img = '';
-			$icq = '';
-		}
+
 		$temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id");
 		$msn_img = ($row['user_msnm']) ? '<a href="' . $temp_url . '"><img src="' . $images['icon_msnm'] . '" alt="' . $lang['MSNM'] . '" title="' . $lang['MSNM'] . '" border="0" /></a>' : '';
 		$msn = ($row['user_msnm']) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
 
-		$yim_img = ($row['user_yim']) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $row['user_yim'] . '&amp;.src=pg"><img src="' . $images['icon_yim'] . '" alt="' . $lang['YIM'] . '" title="' . $lang['YIM'] . '" border="0" /></a>' : '';
-		$yim = ($row['user_yim']) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $row['user_yim'] . '&amp;.src=pg">' . $lang['YIM'] . '</a>' : '';
 
 		$temp_url = append_sid("search.$phpEx?search_author=" . urlencode($username) . "&amp;showresults=posts");
 		$search_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_search'] . '" alt="' . sprintf($lang['Search_user_posts'], $username) . '" title="' . sprintf($lang['Search_user_posts'], $username) . '" border="0" /></a>';
@@ -271,13 +256,8 @@ if ( $row = $db->sql_fetchrow($result) )
 			'EMAIL' => $email,
 			'WWW_IMG' => $www_img,
 			'WWW' => $www,
-			'ICQ_STATUS_IMG' => $icq_status_img,
-			'ICQ_IMG' => $icq_img, 
-			'ICQ' => $icq, 
 			'MSN_IMG' => $msn_img,
 			'MSN' => $msn,
-			'YIM_IMG' => $yim_img,
-			'YIM' => $yim,
 			'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id"))
 		);
 

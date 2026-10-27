@@ -174,8 +174,6 @@ while($staff = $db->sql_fetchrow($results))
 		$pm = '<a href="' . $pmto . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" border="0" /></a>';
 
 		$msn = ($staff['user_msnm']) ? '<a href="mailto: '.$staff['user_msnm'].'"><img src="' . $images['icon_msnm'] . '" alt="' . $lang['MSNM'] . '" title="' . $lang['MSNM'] . '" border="0" /></a>' : '';
-		$yim = ($staff['user_yim']) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $staff['user_yim'] . '&amp;.src=pg"><img src="' . $images['icon_yim'] . '" alt="' . $lang['YIM'] . '" title="' . $lang['YIM'] . '" border="0" /></a>' : '';
-		$icq = ($staff['user_icq']) ? '<a href="http://wwp.icq.com/scripts/contact.dll?msgto=' . $staff['user_icq'] . '"><img src="' . $images['icon_icq'] . '" alt="' . $lang['ICQ'] . '" title="' . $lang['ICQ'] . '" border="0" /></a>' : '';
 		$www = ($staff['user_website']) ? '<a href="' . $staff['user_website'] . '" target="_userwww" rel="nofollow"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" border="0" /></a>' : '';
 
 		$rank_image = '';
@@ -229,8 +227,6 @@ while($staff = $db->sql_fetchrow($results))
 			'MAIL' => $mail,
 			'PM' => $pm,
 			'MSN' => $msn,
-			'YIM' => $yim,
-			'ICQ' => $icq,
 			'WWW' => $www)
 		);
 

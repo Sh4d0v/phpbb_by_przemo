@@ -64,8 +64,7 @@ define('XS_SHOWNAV_DOWNLOAD', 8);
 define('XS_SHOWNAV_EDITTPL', 9);
 define('XS_SHOWNAV_EDITDB', 10);
 define('XS_SHOWNAV_EXPORTDB', 11);
-define('XS_SHOWNAV_UPDATES', 12);
-define('XS_SHOWNAV_MAX', 13);
+define('XS_SHOWNAV_MAX', 12);
 
 global $xs_shownav_action;
 $xs_shownav_action = array(
@@ -81,7 +80,6 @@ $xs_shownav_action = array(
 	'edittpl',
 	'editdb',
 	'exportdb',
-	'updates',
 	);
 
 
@@ -154,9 +152,6 @@ define('TAR_HEADER_UNPACK', 'a100filename/a8mode/a8uid/a8gid/a12size/a12mtime/a8
 define('XS_MAX_ITEMS_PER_STYLE', 32);
 define('XS_TEMP_DIR', '../cache/');
 define('XS_FTP_LOCAL', 'no_ftp');
-define('XS_UPDATE_STYLE', 1);
-define('XS_UPDATE_MOD', 2);
-define('XS_UPDATE_PHPBB', 3);
 define('XS_TPL_PATH', '../../xs_mod/tpl/');
 define('XS_BACKUP_PREFIX', 'backup.');
 define('XS_BACKUP_EXT', '.backup');

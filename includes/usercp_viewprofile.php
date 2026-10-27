@@ -225,23 +225,10 @@ else
 $www_img = ( $profiledata['user_website'] ) ? '<a href="' . $profiledata['user_website'] . '" target="_userwww" rel="nofollow"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" border="0" /></a>' : '&nbsp;';
 $www = ( $profiledata['user_website'] ) ? '<a href="' . $profiledata['user_website'] . '" target="_userwww" rel="nofollow">' . $profiledata['user_website'] . '</a>' : '&nbsp;';
 
-if ( !empty($profiledata['user_icq']) )
-{
-	$icq_status_img = '<a href="http://wwp.icq.com/' . $profiledata['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $profiledata['user_icq'] . '&amp;img=5" alt="" width="18" height="18" border="0" /></a>';
-	$icq_img = '<a href="http://wwp.icq.com/scripts/search.dll?to=' . $profiledata['user_icq'] . '"><img src="' . $images['icon_icq'] . '" alt="' . $lang['ICQ'] . '" title="' . $lang['ICQ'] . '" border="0" /></a>';
-	$icq =	'<a href="http://wwp.icq.com/scripts/search.dll?to=' . $profiledata['user_icq'] . '">' . $lang['ICQ'] . '</a>';
-}
-else
-{
-	$icq_status_img = '&nbsp;';
-	$icq_img = '&nbsp;';
-	$icq = '&nbsp;';
-}
+
 $msn_img = ( $profiledata['user_msnm'] ) ? $profiledata['user_msnm'] : '&nbsp;';
 $msn = $msn_img;
 
-$yim_img = ( $profiledata['user_yim'] ) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $profiledata['user_yim'] . '&amp;.src=pg"><img src="' . $images['icon_yim'] . '" alt="' . $lang['YIM'] . '" title="' . $lang['YIM'] . '" alt="" border="0" /></a>' : '';
-$yim = ( $profiledata['user_yim'] ) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $profiledata['user_yim'] . '&amp;.src=pg">' . $lang['YIM'] . '</a>' : '';
 
 $temp_url = append_sid("search.$phpEx?search_author=" . urlencode($username) . "&amp;showresults=posts");
 $search_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_search'] . '" alt="' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '" title="' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '" border="0" /></a>';
@@ -670,13 +657,8 @@ $template->assign_vars(array(
 	'EMAIL' => $email,
 	'WWW_IMG' => $www_img,
 	'WWW' => $www,
-	'ICQ_STATUS_IMG' => ($board_config['cicq']) ? $icq_status_img : '',
-	'ICQ_IMG' => ($board_config['cicq']) ? $icq_img : '',
-	'ICQ' => ($board_config['cicq']) ? $icq : '',
 	'MSN_IMG' => $msn_img,
 	'MSN' => ($board_config['cmsn']) ? $msn : '',
-	'YIM_IMG' => ($board_config['cyahoo']) ? $yim_img : '',
-	'YIM' => $yim,
 	'U_ADMIN_EDIT' => append_sid("admin/admin_users.$phpEx?mode=edit&amp;u=$user_id&amp;sid=" . $userdata['session_id']),
 	'U_ADMIN_PERMISSION' => append_sid("admin/admin_ug_auth.$phpEx?mode=user&amp;u=$user_id&amp;sid=" . $userdata['session_id']),
 	'U_ADD_WARNING' => append_sid("warnings.$phpEx?mode=add&amp;userid=$user_id"),
@@ -716,8 +698,6 @@ $template->assign_vars(array(
 	'L_EMAIL_ADDRESS' => $lang['Email_address'],
 	'L_EMAIL' => $lang['Email'],
 	'L_PM' => $lang['Private_Message'],
-	'L_ICQ_NUMBER' => $lang['ICQ'],
-	'L_YAHOO' => $lang['YIM'],
 	'L_MESSENGER' => $lang['MSNM'],
 	'L_WEBSITE' => $lang['Website'],
 	'L_LOCATION' => $lang['Location'],
@@ -766,14 +746,8 @@ if ( $board_config['cmsn'] && $profiledata['user_msnm'] )
 {
 	$template->assign_block_vars('msn', array());
 }
-if ( $board_config['cyahoo'] && $profiledata['user_yim'] )
-{
-	$template->assign_block_vars('yahoo', array());
-}
-if ( $board_config['cicq'] && $profiledata['user_icq'] )
-{
-	$template->assign_block_vars('icq', array());
-}
+
+
 if ( $board_config['clevelp'] )
 {
 	$template->assign_block_vars('level', array());

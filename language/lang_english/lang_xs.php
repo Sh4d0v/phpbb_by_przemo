@@ -59,7 +59,6 @@ $lang['xs_config_shownav'] = array(
 	'Edit Templates',
 	'Edit Styles',
 	'Export Database',
-	'Check Updates',
 	);
 
 /*
@@ -109,8 +108,6 @@ $lang['xs_edit_styles_data'] = 'Edit Styles Data';
 $lang['xs_edit_styles_data_explain'] = 'This feature allows you to edit style variables. It is used by some styles, but most styles don\'t use it and use a css file instead.';
 $lang['xs_export_styles_data'] = 'Export Styles Data';
 $lang['xs_export_styles_data_explain'] = 'This feature allows you to save style variables to theme_info.cfg.';
-$lang['xs_check_for_updates'] = 'Check for Updates';
-$lang['xs_check_for_updates_explain'] = 'This feature allows you to check for updated versions of styles and mods installed on your forum.';
 
 $lang['xs_set_configuration_lc'] = 'set configuration';
 $lang['xs_set_default_style_lc'] = 'set default style';
@@ -122,7 +119,6 @@ $lang['xs_uninstall_styles_lc'] = 'uninstall styles';
 $lang['xs_edit_templates_lc'] = 'edit templates';
 $lang['xs_edit_styles_data_lc'] = 'edit styles data';
 $lang['xs_export_styles_data_lc'] = 'export styles data';
-$lang['xs_check_for_updates_lc'] = 'check for updates';
 
 /*
 * ftp.tpl, ftp functions
@@ -568,45 +564,6 @@ $lang['xs_editdata_explain'] = 'This feature allows you to edit database data fo
 $lang['xs_editdata_var'] = 'Variable';
 $lang['xs_editdata_value'] = 'Value';
 $lang['xs_editdata_comment'] = 'Comment';
-
-/*
-* updates
-*/
-
-$lang['xs_updates'] = 'Updates';
-$lang['xs_updates_comment'] = 'This feature checks for updates of some styles and mods. It works only with items that have relevant update information.';
-$lang['xs_updates_comment2'] = 'This is result of version check.';
-$lang['xs_update_total1'] = 'Total: {NUM} items';
-$lang['xs_update_info1'] = 'This administrator feature will check for available updates of phpBB, certain mods, and some styles installed on your forum. When it finds available updates it shows you the link where you can download the updated file.<br /><br />This function requires sockets to be enabled. Most free web hosts do not have this feature so if this forum is on free host (like lycos) then you cannot use update feature, but if this forum is on normal server then everything should be okay.<br /><br />When you click "continue", the script will check all software installed on forum. If your website is slow it might take some time. Be patient and don\'t click "stop" in your browser if process is delayed. If this server is slow or update website is slow then script might timeout - if this happens you should increase timeout value.';
-$lang['xs_update_name'] = 'Name';
-$lang['xs_update_type'] = 'Type';
-$lang['xs_update_current_version'] = 'Your version';
-$lang['xs_update_latest_version'] = 'Latest version';
-$lang['xs_update_downloadinfo'] = 'Download URL';
-$lang['xs_update_timeout'] = 'Update script timeout (seconds):';
-$lang['xs_update_continue'] = 'Continue';
-
-
-$lang['xs_update_total2'] = 'Errors: {NUM}';
-$lang['xs_update_total3'] = 'Updates available: {NUM} items';
-$lang['xs_update_select1'] = 'Select items to update';
-$lang['xs_update_types'] = array(
-		0 => 'Unknown',
-		1 => 'Style',
-		2 => 'Mod',
-		3 => 'phpBB'
-		);
-$lang['xs_update_fileinfo'] = 'More info';
-$lang['xs_update_nothing'] = 'There is nothing to update.';
-$lang['xs_update_noupdate'] = 'You are using the latest version.';
-
-$lang['xs_update_error_url'] = 'Error: cannot retrieve url %s';
-$lang['xs_update_error_noitem'] = 'Error: No update information available';
-$lang['xs_update_error_noconnect'] = 'Error: Cannot connect to update server';
-
-$lang['xs_update_download'] = 'download';
-$lang['xs_update_downloadinfo2'] = 'download/info';
-$lang['xs_update_info'] = 'website';
 
 $lang['xs_permission_denied'] = 'Permission Denied';
 

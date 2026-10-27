@@ -19,9 +19,7 @@ U¿ytkownik: {USERNAME}
 Has³o: Podane przy rejestracji
 Email: {EMAIL_ADDRESS}
 
-Numer ICQ: {ICQ}
 MSN Messenger: {MSN}
-Yahoo Messenger: {YIM}
 Strona WWW: {WEB_SITE}
 Sk±d: {FROM}
 Zawód: {OCC}

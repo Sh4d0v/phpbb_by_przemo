@@ -93,9 +93,7 @@ $lang['Select_forum'] = 'Select a forum';
 $lang['View_newest_post'] = 'View newest post';
 $lang['Page_of'] = 'Page <b>%d</b> of <b>%d</b>'; // Replaces with: Page 1 of 2 for example
 
-$lang['ICQ'] = 'ICQ Number';
 $lang['MSNM'] = 'MSN Messenger';
-$lang['YIM'] = 'Yahoo Messenger';
 
 $lang['Forum_Index'] = '%s Forum Index'; // eg. sitename Forum Index, %s can be removed if you prefer
 
@@ -818,7 +816,6 @@ $lang['Ignore_user_warn'] = 'You cannot Ignore Yourself!!!';
 $lang['Post_user_ignored'] = 'You have added this person to your <b>Ignore List</b>.';
 $lang['Click_view_ignore'] = 'Click %sHERE%s to view this post.<br />';
 $lang['Search_for'] = 'Search for';
-$lang['cicq'] = 'ICQ';
 
 $lang['Print_View'] = 'Printable version';
 $lang['Wrong_reg_key'] = 'Wrong Validation';

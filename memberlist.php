@@ -160,9 +160,7 @@ $template->assign_vars(array(
 	'L_FROM' => $l_from,
 	'L_SORT' => $lang['Sort'],
 	'L_SUBMIT' => $lang['Sort'],
-	'L_YIM' => $lang['YIM'],
 	'L_MSNM' => $lang['MSNM'],
-	'L_ICQ' => $lang['ICQ'], 
 	'L_JOINED' => $lang['Joined'], 
 	'L_LAST_VISIT' => $lang['Last_visit'],
 	'L_POSTS' => $lang['Posts'], 
@@ -265,7 +263,7 @@ else
 
 $order_by = (isset($HTTP_GET_VARS['letter']) && !isset($HTTP_GET_VARS['mode']) && !isset($HTTP_POST_VARS['mode']) ) ? "u.username $sort_order LIMIT $start, " . $user_topics_per_page : $order_by;
 
-$sql = "SELECT u.username, u.user_id, u.user_level, u.user_allow_viewonline, u.user_jr, u.user_viewemail, u.user_posts, u.user_lastvisit, u.user_session_time, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_yim, u.user_msnm, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_gender, u.user_custom_color, u.can_custom_color, u.special_rank, u.user_visit, u.user_spend_time $sql_cf
+$sql = "SELECT u.username, u.user_id, u.user_level, u.user_allow_viewonline, u.user_jr, u.user_viewemail, u.user_posts, u.user_lastvisit, u.user_session_time, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_msnm, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_gender, u.user_custom_color, u.can_custom_color, u.special_rank, u.user_visit, u.user_spend_time $sql_cf
 	 FROM " . USERS_TABLE . " u
 	WHERE u.user_id <> " . ANONYMOUS . "$hide_user $letter_sql
 	GROUP BY u.user_id
@@ -363,24 +361,11 @@ if ( $row = $db->sql_fetchrow($result) )
 		$www_img = ( $row['user_website'] ) ? '<a href="' . $row['user_website'] . '" target="_userwww" rel="nofollow"><img src="' . $images['icon_www'] . '" alt="" border="0" /></a>' : '';
 		$www = ( $row['user_website'] ) ? '<a href="' . $row['user_website'] . '" target="_userwww" rel="nofollow">' . $lang['Visit_website'] . '</a>' : '';
 
-		if ( !empty($row['user_icq']) )
-		{
-			$icq_status_img = '<a href="http://wwp.icq.com/' . $row['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $row['user_icq'] . '&img=5" alt="" width="18" height="18" border="0" /></a>';
-			$icq_img = '<a href="http://wwp.icq.com/scripts/search.dll?to=' . $row['user_icq'] . '"><img src="' . $images['icon_icq'] . '" alt="" border="0" /></a>';
-			$icq = '<a href="http://wwp.icq.com/scripts/search.dll?to=' . $row['user_icq'] . '">' . $lang['ICQ'] . '</a>';
-		}
-		else
-		{
-			$icq_status_img = '';
-			$icq_img = '';
-			$icq = '';
-		}
+
 		$temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id");
 		$msn_img = ( $row['user_msnm'] ) ? '<a href="' . $temp_url . '"><img src="' . $images['icon_msnm'] . '" alt="" border="0" /></a>' : '';
 		$msn = ( $row['user_msnm'] ) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
 
-		$yim_img = ( $row['user_yim'] ) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $row['user_yim'] . '&amp;.src=pg"><img src="' . $images['icon_yim'] . '" alt="" border="0" /></a>' : '';
-		$yim = ( $row['user_yim'] ) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $row['user_yim'] . '&amp;.src=pg">' . $lang['YIM'] . '</a>' : '';
 
 		$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
@@ -458,13 +443,8 @@ if ( $row = $db->sql_fetchrow($result) )
 			'EMAIL' => $email,
 			'WWW_IMG' => $www_img,
 			'WWW' => $www,
-			'ICQ_STATUS_IMG' => $icq_status_img,
-			'ICQ_IMG' => $icq_img,
-			'ICQ' => $icq,
 			'MSN_IMG' => $msn_img,
 			'MSN' => $msn,
-			'YIM_IMG' => $yim_img,
-			'YIM' => $yim,
 			'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id"))
 		);
 

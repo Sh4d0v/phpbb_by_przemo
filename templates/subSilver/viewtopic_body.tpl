@@ -188,16 +188,10 @@ var img_addr = '{IMG_ADDR}';
 		<td class="{postrow.ROW_CLASS}" width="100%" valign="top" nowrap="nowrap">
 			<table cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
-					<td valign="top" nowrap="nowrap">{postrow.HELPED_ME}{postrow.PROFILE_IMG} {postrow.PM_IMG} {postrow.EMAIL_IMG} {postrow.WWW_IMG} {postrow.YIM_IMG}{postrow.MSN_IMG}</td>
+					<td valign="top" nowrap="nowrap">{postrow.HELPED_ME}{postrow.PROFILE_IMG} {postrow.PM_IMG} {postrow.EMAIL_IMG} {postrow.WWW_IMG} {postrow.MSN_IMG}</td>
 					<td valign="top" align="left" width="177">
 						<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse">
-							<tr>
-								<!-- BEGIN icq -->
-								<td>&nbsp;</td><td width="59" height="19" valign="top">
-									<div style="position:relative">{postrow.ICQ_IMG}<div style="position:absolute;left:3px;top:-1px">{postrow.ICQ_STATUS_IMG}</div></div>
-								</td>
-								<!-- END icq -->
-								<td>&nbsp;</td>
+							<tr>								<td>&nbsp;</td>
 								<td nowrap="nowrap">
 									<!-- BEGIN custom_fields_upost -->
 									{postrow.custom_fields_upost.DESC}{postrow.custom_fields_upost.FIELD}

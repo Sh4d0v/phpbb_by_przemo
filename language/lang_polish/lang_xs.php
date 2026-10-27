@@ -62,7 +62,6 @@ $lang['xs_config_shownav'] = array(
 	'Edytuj Schemat',
 	'Edytuj Styl',
 	'Eksportuj Dane',
-	'Sprawd¼ Uaktualnienia',
 	);
 
 /*
@@ -112,8 +111,6 @@ $lang['xs_edit_styles_data'] = 'Edycja Danych Stylów';
 $lang['xs_edit_styles_data_explain'] = 'W tym miejscu mo¿esz edytowaæ kolory stylów';
 $lang['xs_export_styles_data'] = 'Eksport Danych Stylu';
 $lang['xs_export_styles_data_explain'] = 'W tym miejscu mo¿esz zapisaæ ustawienia danych stylu, znajduj±cych siê w pliku theme_info.cfg.';
-$lang['xs_check_for_updates'] = 'Sprawd¼ Altualizacje';
-$lang['xs_check_for_updates_explain'] = 'W tym miejscu mo¿esz sprawdziæ, czy jest dostêpna nowa wersja modu³u';
 
 $lang['xs_set_configuration_lc'] = 'konfiguracja';
 $lang['xs_set_default_style_lc'] = 'domy¶lny styl';
@@ -125,7 +122,6 @@ $lang['xs_uninstall_styles_lc'] = 'odinstaluj style';
 $lang['xs_edit_templates_lc'] = 'edytuj styl';
 $lang['xs_edit_styles_data_lc'] = 'edytuj dane stylu';
 $lang['xs_export_styles_data_lc'] = 'eksportuj dane stylu';
-$lang['xs_check_for_updates_lc'] = 'sprawd¼ aktualizacje';
 
 /*
 * ftp.tpl, ftp functions
@@ -571,45 +567,6 @@ $lang['xs_editdata_explain'] = 'W tym miejscu mo¿esz edytowaæ dane zainstalowany
 $lang['xs_editdata_var'] = 'Parametr';
 $lang['xs_editdata_value'] = 'Warto¶æ';
 $lang['xs_editdata_comment'] = 'Komentarz';
-
-/*
-* updates
-*/
-
-$lang['xs_updates'] = 'Aktualizacje';
-$lang['xs_updates_comment'] = 'W tym miejscu mo¿esz sprawdziæ aktualizacje dla niektórych modów i stylów';
-$lang['xs_updates_comment2'] = 'Rezultat sprawdzania wersji.';
-$lang['xs_update_total1'] = 'Wszystkich pozycji: {NUM}';
-$lang['xs_update_info1'] = 'Ta funkcja sprawdza dostêpno¶æ aktualizacji do phpBB2, kilku modów i stylów na twoim forum. Je¿eli odnajdzie dostêpne aktualizacje, zostanie wy¶wietlony link, który pozwoli je ¶ci±gn±æ. Funkcja ta wymaga mo¿liwo¶ci wykonywania zdalnych po³±czeñ przez PHP. Wiele darmowych serwerów ma zablokowan± tak± mo¿liwo¶æ<br /><br />Po klikniêciu "Kontynuuj", skrypt sprawdzi zainstalowan± zawarto¶æ forum. Je¿eli twój serwer jest powolny, mo¿e to zaj±æ sporo czasu. B±d¼ cierpliwy i nie zatrzymuj procesu. W przypadku niepowodzenia mo¿esz zwiêkszyæ czas bezczynno¶ci.';
-$lang['xs_update_name'] = 'Nazwa';
-$lang['xs_update_type'] = 'Rodzaj';
-$lang['xs_update_current_version'] = 'Twoja wersja';
-$lang['xs_update_latest_version'] = 'Ostatnia wersja';
-$lang['xs_update_downloadinfo'] = 'Adres pobierania';
-$lang['xs_update_timeout'] = 'Czas bezczynno¶ci skryptu (sekundy):';
-$lang['xs_update_continue'] = 'Kontynuuj';
-
-
-$lang['xs_update_total2'] = 'B³êdów: {NUM}';
-$lang['xs_update_total3'] = 'Dostêpnych aktualizacji: {NUM}';
-$lang['xs_update_select1'] = 'Wybierz pozycje do aktualizacji';
-$lang['xs_update_types'] = array(
-		0 => 'Nieznane',
-		1 => 'Styl',
-		2 => 'Mod',
-		3 => 'phpBB'
-		);
-$lang['xs_update_fileinfo'] = 'Wiêcej informacji';
-$lang['xs_update_nothing'] = 'Nie ma nic do zaktualizowania.';
-$lang['xs_update_noupdate'] = 'U¿ywasz ostatniej dostêpnej wersji.';
-
-$lang['xs_update_error_url'] = 'B³±d: nie mo¿na odczytaæ adresu url %s';
-$lang['xs_update_error_noitem'] = 'B³±d: Nie ma dostêpnej informacji o aktualizacji';
-$lang['xs_update_error_noconnect'] = 'B³±d: Nie mo¿na po³±czyæ do serwera aktualizacji';
-
-$lang['xs_update_download'] = 'pobierz';
-$lang['xs_update_downloadinfo2'] = 'pobierz/informacje';
-$lang['xs_update_info'] = 'strona';
 
 $lang['xs_permission_denied'] = 'Dostêp zabroniony';
 

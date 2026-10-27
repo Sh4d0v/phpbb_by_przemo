@@ -58,9 +58,7 @@ $lookfor_vars = array(
 	'title' => array(	'lang' =>	$lang['Custom_Rank'],	'field' =>	'u.user_custom_rank'),
 	'www' => array(		'lang' =>	$lang['Website'],		'field' =>	'u.user_website'),
 	'interests' => array('lang' =>	$lang['Interests'],		'field' =>	'u.user_interests'),
-	'icq' => array(		'lang' =>	$lang['ICQ'],			'field' =>	'u.user_icq'),
 	'msnm' => array(	'lang' =>	$lang['MSNM'],			'field' =>	'u.user_msnm'),
-	'yim' => array(		'lang' =>	$lang['YIM'],			'field' =>	'u.user_yim')
 );
 
 if ( $board_config['helped'] )

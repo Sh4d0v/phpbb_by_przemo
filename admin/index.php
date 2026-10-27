@@ -226,7 +226,7 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 		"L_DETAILS_TITLE" => (isset($HTTP_GET_VARS['sql_details'])) ? $lang['Database_size'] : $lang['Avatar_dir_size'],
 		"L_COUNT" => (isset($HTTP_GET_VARS['sql_details'])) ? $lang['Rows_count'] : $lang['Files_count'],
 		"L_SIZE" => $lang['Optimize_Size'],
-		"L_NAME" => $lang['xs_update_name'])
+		"L_NAME" => $lang['Name'])
 	);
 
 	function get_folder_size($target)

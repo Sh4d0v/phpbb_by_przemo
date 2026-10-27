@@ -79,25 +79,15 @@
                 <input type="text" class="post" name="custom_rank" size="20" maxlength="50" value="{CUSTOM_RANK}"> 
         </td> 
         </tr>
-	<tr> 
-	  <td class="row1"><span class="gen">{L_ICQ_NUMBER}</span></td>
-	  <td class="row2"> 
-		<input type="text" class="post" name="icq" size="20" maxlength="15" value="{ICQ}">
-	  </td>
-	</tr>
-	<tr> 
+<tr>
+
 	  <td class="row1"><span class="gen">{L_MESSENGER}</span></td>
 	  <td class="row2"> 
 		<input type="text" class="post" name="msn" size="20" maxlength="255" value="{MSN}">
 	  </td>
 	</tr>
-	<tr> 
-	  <td class="row1"><span class="gen">{L_YAHOO}</span></td>
-	  <td class="row2"> 
-		<input type="text" class="post" name="yim" size="20" maxlength="255" value="{YIM}">
-	  </td>
-	</tr>
-	<tr> 
+<tr>
+
 	  <td class="row1"><span class="gen">{L_WEBSITE}</span></td>
 	  <td class="row2"> 
 		<input type="text" class="post" name="website" size="35" maxlength="255" value="{WEBSITE}">

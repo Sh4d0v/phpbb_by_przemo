@@ -779,9 +779,7 @@ $sgv .= ($board_config['allow_sig_image']) ? ', u.user_sig_image' : '';
 $sgv .= ($board_config['cfrom']) ? ', u.user_from' : '';
 $sgv .= ($board_config['clevell'] || $board_config['cleveld'] || $board_config['cjoin']) ? ', u.user_regdate' : '';
 $sgv .= ($board_config['gender']) ? ', u.user_gender' : '';
-$sgv .= ($board_config['cicq']) ? ', u.user_icq' : '';
 $sgv .= ($board_config['cmsn']) ? ', u.user_msnm' : '';
-$sgv .= ($board_config['cyahoo']) ? ', u.user_yim' : '';
 $sgv .= (!$forum_topic_data['forum_no_helped'] && $board_config['helped']) ? ', u.special_rank, u.user_allow_helped' : '';
 
 $sgv .= ($board_config['custom_color_use'] || $board_config['custom_color_mod'] || $board_config['custom_color_view']) ? ', u.can_custom_color, u.user_custom_color' : '';
@@ -1733,9 +1731,6 @@ for($i = 0; $i < $total_posts; $i++)
 		$email_img = '';
 		$email = '';
 		$gender_image = '';
-		$icq_status_img = '';
-		$icq_img = '';
-		$icq = '';
 		$icon = '';
 		$ignore = '';
 		$l_edited_by = '';
@@ -1784,8 +1779,6 @@ for($i = 0; $i < $total_posts; $i++)
 		$warn_percent = '';
 		$www_img = '';
 		$www = '';
-		$yim_img = '';
-		$yim = '';
 		$mini_post_img = $images['spacer'];
 		
         if ( !empty($userdata['unread_data'][$forum_id][$topic_id]) && in_array($postrow_post_id, $userdata['unread_data'][$forum_id][$topic_id]) )
@@ -1997,24 +1990,10 @@ for($i = 0; $i < $total_posts; $i++)
 					}
 					$www_img = ($postrow[$i]['user_website']) ? '<a href="' . $postrow[$i]['user_website'] . '" target="_userwww" rel="nofollow"><img src="' . $images['icon_www'] . '" alt="" title="' . $lang['Visit_website'] . '" border="0" /></a>' : '';
 					$www = ($postrow[$i]['user_website']) ? '<a href="' . $postrow[$i]['user_website'] . '" target="_userwww" rel="nofollow">' . $lang['Visit_website'] . '</a>' : '';
-					if ( $board_config['cicq'] && !empty($postrow[$i]['user_icq']) )
-					{
-						$icq_status_img = '<a href="http://wwp.icq.com/' . $postrow[$i]['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $postrow[$i]['user_icq'] . '&img=5" width="18" height="18" border="0" alt="" /></a>';
-						$icq_img = '<a href="http://wwp.icq.com/scripts/search.dll?to=' . $postrow[$i]['user_icq'] . '"><img src="' . $images['icon_icq'] . '" alt="" title="' . $lang['ICQ'] . '" border="0" /></a>';
-						$icq = '<a href="http://wwp.icq.com/scripts/search.dll?to=' . $postrow[$i]['user_icq'] . '">' . $lang['ICQ'] . '</a>';
-					}
-			
-					else
-					{
-						$icq_status_img = '';
-						$icq_img = '';
-						$icq = '';
-					}
+
 					$temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$poster_id");
 					$msn_img = (!empty($postrow[$i]['user_msnm']) && $board_config['cmsn']) ? '<a href="' . $temp_url . '"><img src="' . $images['icon_msnm'] . '" alt="" title="' . $lang['MSNM'] . '" border="0" /></a> ' : '';
 					$msn = (!empty($postrow[$i]['user_msnm'])) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
-					$yim_img = ( !empty($postrow[$i]['user_yim']) && $board_config['cyahoo']) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $postrow[$i]['user_yim'] . '&amp;.src=pg"><img src="' . $images['icon_yim'] . '" alt="" title="' . $lang['YIM'] . '" border="0" /></a> ' : '';
-					$yim = (!empty($postrow[$i]['user_yim'])) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $postrow[$i]['user_yim'] . '&amp;.src=pg">' . $lang['YIM'] . '</a>' : '';
 				}
 				else
 				{
@@ -2038,22 +2017,10 @@ for($i = 0; $i < $total_posts; $i++)
 					$www_img = ($postrow[$i]['user_website']) ? '<a href="' . $postrow[$i]['user_website'] . '" target="_userwww" rel="nofollow" class="gen" title="' . $lang['Visit_website'] . '">[<b>WWW</b>]</a>' : '';
 					$www = ($postrow[$i]['user_website']) ? '<a href="' . $postrow[$i]['user_website'] . '" target="_userwww" rel="nofollow">' . $lang['Visit_website'] . '</a>' : '';
 
-					if ( $board_config['cicq'] && !empty($postrow[$i]['user_icq']) )
-					{
-						$icq_img = '<a href="http://wwp.icq.com/scripts/search.dll?to=' . $postrow[$i]['user_icq'] . '" class="gen" title="' . $lang['ICQ'] . '">[<b>' . $lang['cicq'] . '</b>]</a>';
-						$icq ='<a href="http://wwp.icq.com/scripts/search.dll?to=' . $postrow[$i]['user_icq'] . '" class="gen" title="' . $lang['ICQ'] . '">[<b>' . $lang['cicq'] . '</b>]</a>';
-					}
-					else
-					{
-						$icq_status_img = '';
-						$icq_img = '';
-						$icq = '';
-					}
+
 					$temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$poster_id");
 					$msn_img = (!empty($postrow[$i]['user_msnm']) && $board_config['cmsn']) ? '<a href="' . $temp_url . '" class="gen" " title="' . $lang['MSNM'] . '">[<b>MSNM</b>]</a> ' : '';
 					$msn = (!empty($postrow[$i]['user_msnm'])) ? '<a href="' . $temp_url . '">' . $lang['MSNM'] . '</a>' : '';
-					$yim_img = (!empty($postrow[$i]['user_yim']) && $board_config['cyahoo']) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $postrow[$i]['user_yim'] . '&amp;.src=pg" class="gen" title="' . $lang['YIM'] . '>[<b>YIM</a></b>] ' : '';
-					$yim = (!empty($postrow[$i]['user_yim']) ) ? '<a href="http://edit.yahoo.com/config/send_webmesg?.target=' . $postrow[$i]['user_yim'] . '&amp;.src=pg">' . $lang['YIM'] . '</a>' : '';
 				}
 			}
 			else
@@ -2066,13 +2033,8 @@ for($i = 0; $i < $total_posts; $i++)
 				$email = '';
 				$www_img = '';
 				$www = '';
-				$icq_status_img = '';
-				$icq_img = '';
-				$icq = '';
 				$msn_img = '';
 				$msn = '';
-				$yim_img = '';
-				$yim = '';
 			}
 
 			$colored_username = color_username($postrow[$i]['user_level'], $postrow[$i]['user_jr'], $postrow[$i]['user_id'], $postrow[$i]['username'], false, 'font-size: 12');
@@ -2114,13 +2076,8 @@ for($i = 0; $i < $total_posts; $i++)
 			$email = '';
 			$www_img = '';
 			$www = '';
-			$icq_status_img = '';
-			$icq_img = '';
-			$icq = '';
 			$msn_img = '';
 			$msn = '';
-			$yim_img = '';
-			$yim = '';
 			$gender_image = '';
 		}
 
@@ -2518,13 +2475,8 @@ for($i = 0; $i < $total_posts; $i++)
 		'EMAIL' => $email,
 		'WWW_IMG' => $www_img,
 		'WWW' => $www,
-		'ICQ_STATUS_IMG' => ($board_config['cicq']) ? $icq_status_img : '',
-		'ICQ_IMG' => ($board_config['cicq']) ? $icq_img : '',
-		'ICQ' => ($board_config['cicq']) ? $icq : '',
 		'MSN_IMG' => $msn_img,
 		'MSN' => $msn,
-		'YIM_IMG' => $yim_img,
-		'YIM' => $yim,
 		'EDIT_IMG' => $edit_img,
 		'EDIT' => $edit,
 		'QUOTE_IMG' => $quote_img,
@@ -2856,10 +2808,7 @@ for($i = 0; $i < $total_posts; $i++)
 	}
 	// End Level Mod
 
-	if ( !empty($postrow[$i]['user_icq']) && $board_config['cicq'] && $poster_id != ANONYMOUS && $board_config['cicq'] && $show_post  )
-	{
-		$template->assign_block_vars('postrow.icq', array());
-	}
+
 }
 
 if ( $is_auth['auth_delete'] )
