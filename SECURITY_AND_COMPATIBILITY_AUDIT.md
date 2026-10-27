@@ -64,11 +64,11 @@ Zgodność składniowa z nowszym PHP nie oznacza bezpiecznej aplikacji. W katalo
 - Po najnowszym zestawie poprawek wszystkie 289 śledzonych plików PHP przeszły `php -l` na dostępnej lokalnej wersji PHP 8.2.28.
 - Zweryfikowano 450 wpisów sum kontrolnych i rozmiarów w `check_data.php`; nie stwierdzono rozbieżności. `git diff --check` nie wykazał błędów formatowania.
 - Wykonano statyczne wyszukiwanie ryzykownych konstrukcji w repozytorium. Pozostałe `eval()` należą do historycznego kompilatora szablonów/BBCode i warunków modułów statystyk; ich wejścia są lokalnym kodem/konfiguracją, ale instalowanie niezaufanych stylów lub modułów pozostaje ryzykowne.
-- Nie podłączono bazy danych i nie uruchomiono instalacji, aktualizacji, logowania, uploadów ani pełnego forum w przeglądarce. Nie wykonano testów integracyjnych, penetracyjnych ani testu PHP 8.4/8.5 lub współczesnego MySQL.
+- W ramach tego lokalnego audytu nie podłączono bazy ani nie wykonywano testów integracyjnych lub penetracyjnych. Właściciel projektu potwierdza, że demo na hostingu z PHP 8.5 działa bez błędów. Lokalny lint wykonano na PHP 8.2.28; wersji MySQL używanej przez demo nie podano.
 
 ## Zalecana kolejność dalszych prac
 
 1. Sprawdzić migrację 1.12.9 → 1.13.0 na kopii bazy, w tym odtworzenie z backupu i logowanie istniejącymi hasłami.
-2. Utworzyć testowe środowisko PHP 8.5 + MySQL 8.4 LTS i przejść instalację, aktualizację, logowanie, rejestrację, publikowanie, załączniki i panel administracyjny.
+2. Na kopii danych sprawdzić instalację i migrację z wersją MySQL faktycznie używaną w docelowym środowisku; demo projektu jest już uruchomione na PHP 8.5.
 3. Naprawić i przetestować przepływy SQL oraz XSS od wejścia do widoku; następnie przejrzeć pozostałe wyjścia sieciowe i uploady, sesje, cookies oraz globalne CSRF.
 4. Dopiero po audycie zależności i konfiguracji serwera rozważyć migrację na produkcję. Nie wdrażać archiwalnego forum bez aktualnej kopii danych oraz planu wycofania.

@@ -4,7 +4,7 @@ Polska modyfikacja forum **phpBB 2**, znana jako *phpBB by Przemo*. Projekt rozs
 
 Projekt 1.13.0 wspiera **Plague Studio** ([plagues.pl](https://plagues.pl)).
 
-> **Uwaga:** to archiwalne oprogramowanie. Oryginalne wymagania (PHP 4+ i MySQL 3.2+) są wyłącznie historyczne. Wydanie 1.13.0 otrzymało poprawki zgodności i bezpieczeństwa; składnię 289 plików PHP sprawdzono lokalnie na PHP 8.2.28. Nie oznacza to potwierdzonego działania na PHP 8.4/8.5 ani na współczesnym MySQL — nie wykonano pełnych testów funkcjonalnych z bazą. Przed wdrożeniem przeczytaj [audyt bezpieczeństwa i zgodności](SECURITY_AND_COMPATIBILITY_AUDIT.md). Nie wystawiaj publicznie niezabezpieczonej instalacji.
+> **Uwaga:** to archiwalne oprogramowanie. Oryginalne wymagania (PHP 4+ i MySQL 3.2+) są wyłącznie historyczne. Demo projektu działa na hostingu z PHP 8.5 i — według właściciela projektu — wszystkie funkcje działają bez błędów. Lokalnie składnię 289 plików PHP sprawdzono na PHP 8.2.28. Zgodność z innymi konfiguracjami i wersjami MySQL należy oceniać osobno. Przed wdrożeniem przeczytaj [audyt bezpieczeństwa i zgodności](SECURITY_AND_COMPATIBILITY_AUDIT.md); projekt pozostaje archiwalnym oprogramowaniem z ryzykami opisanymi w audycie.
 
 ## Co zawiera
 
