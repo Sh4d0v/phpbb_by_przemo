@@ -143,47 +143,55 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 
 	$sql = "SELECT text
 		FROM " . NOTES_TABLE;
+	$result = $db->sql_query($sql);
+	$notes_table_exists = ($result !== false);
+	$row = ($notes_table_exists) ? $db->sql_fetchrow($result) : false;
 
-	if ( isset($HTTP_POST_VARS['save'] ) )
+	if ( isset($HTTP_POST_VARS['save']) )
 	{
-		$text = trim($HTTP_POST_VARS['admin_notes']);
+		$text = (isset($HTTP_POST_VARS['admin_notes'])) ? trim($HTTP_POST_VARS['admin_notes']) : '';
 
-		if ( !($result = $db->sql_query($sql)) )
+		if ( !$notes_table_exists && $text != '' )
 		{
 			$sql_create = "CREATE TABLE " . NOTES_TABLE . " (text text) DEFAULT CHARSET latin2 COLLATE latin2_general_ci";
 
-			if ( !($result_create = $db->sql_query($sql_create)) )
+			if ( !$db->sql_query($sql_create) )
 			{
 				message_die(GENERAL_ERROR, 'Failed to create admin notes table', '', __LINE__, __FILE__, $sql_create);
 			}
 		}
 
-		if ($row = $db->sql_fetchrow($result) && $text != '')
+		if ( $text != '' )
 		{
-			$sql_notes = "UPDATE " . NOTES_TABLE . "
-				SET text = '" . str_replace("\'", "''", $text) . "'";
+			$escaped_text = $db->sql_escape($text);
+			if ( $row )
+			{
+				$sql_notes = "UPDATE " . NOTES_TABLE . " SET text = '" . $escaped_text . "'";
+			}
+			else
+			{
+				$sql_notes = "INSERT INTO " . NOTES_TABLE . " (text) VALUES ('" . $escaped_text . "')";
+			}
+
+			if ( !$db->sql_query($sql_notes) )
+			{
+				message_die(GENERAL_ERROR, 'Failed to update admin notes table', '', __LINE__, __FILE__, $sql_notes);
+			}
 		}
-		else if ($text != '')
+		else if ( $row )
 		{
-			$sql_notes = "INSERT INTO " . NOTES_TABLE . "
-				(text) VALUES ('" . str_replace("\'", "''", $text) . "')";
-		}
-		else
-		{
-			$sql_notes = "DROP TABLE " . NOTES_TABLE;
+			$sql_notes = "DELETE FROM " . NOTES_TABLE;
+			if ( !$db->sql_query($sql_notes) )
+			{
+				message_die(GENERAL_ERROR, 'Failed to clear admin notes', '', __LINE__, __FILE__, $sql_notes);
+			}
 		}
 
-		if( !$db->sql_query($sql_notes) )
-		{
-			message_die(GENERAL_ERROR, 'Failed to update admin notes table', '', __LINE__, __FILE__, $sql);
-		}
 		$admin_notes = stripslashes($text);
 	}
 	else
 	{
-		$result = $db->sql_query($sql);
-		$row = $db->sql_fetchrow($result);
-		$admin_notes = $row['text'];
+		$admin_notes = ($row && isset($row['text'])) ? $row['text'] : '';
 	}
 
 	$template->assign_vars(array(
