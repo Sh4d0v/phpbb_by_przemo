@@ -20,6 +20,12 @@ Projekt 1.13.0 wspiera **Plague Studio** ([plagues.pl](https://plagues.pl)).
 - **Serwer MySQL lub kompatybilny MariaDB** dostępny przez MySQLi. Zalecana jest aktualnie wspierana linia LTS; obecnie jest to MySQL 9.7 LTS ([oficjalne wydania](https://dev.mysql.com/doc/relnotes/mysql/9.7/en/)). Dokładne minimum serwera bazy nie jest egzekwowane przez instalator, a wersja bazy używana przez demo nie jest tu deklarowana.
 - Aktualne wydanie PHP 8.5 to **8.5.12** ([oficjalne wydania PHP](https://www.php.net/downloads.php), stan na 27 października 2026).
 
+## Zrzut z demo
+
+Kontrola Systemu na demo Plague Studio: PHP 8.5.12, MySQL 8.4.11-11 oraz wersja bazy 1.13.0.
+
+![Kontrola Systemu phpBB by Przemo 1.13.0 na PHP 8.5.12 i MySQL 8.4.11-11](docs/images/checkfiles-demo-php85.png)
+
 ## Instalacja
 
 1. Przygotuj serwer WWW z PHP 8.5.x i rozszerzeniem `mysqli`, a także dostępną bazą MySQL lub kompatybilną MariaDB.
