@@ -1834,7 +1834,7 @@ for($i = 0; $i < $total_posts; $i++)
 		// Define the little post icon
 		if ( $session_logged_in )
 		{
-			if ( count($userdata['unread_data'][$forum_id][$topic_id]) && in_array($postrow_post_id, $userdata['unread_data'][$forum_id][$topic_id]) )
+			if ( !empty($userdata['unread_data'][$forum_id][$topic_id]) && in_array($postrow_post_id, $userdata['unread_data'][$forum_id][$topic_id]) )
 			{
 				$mini_post_img = $images['icon_minipost_new'];
 				$new_post = 1;

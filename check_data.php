@@ -225,7 +225,7 @@ $md5_sum['topic_view_users.'.$phpEx] = '8ca3548b290e9c9920d14cdb5bdad4bd';
 $md5_sum['uacp.'.$phpEx] = '69f74d05fb15f7ec7fc4824c7806b974';
 $md5_sum['viewforum.'.$phpEx] = '2048d332e99f07e7f77eeea42deb6f14';
 $md5_sum['viewonline.'.$phpEx] = '09746962de72c1ccdf0b5f575cb75725';
-$md5_sum['viewtopic.'.$phpEx] = '7a67dfa22d55bb0783bdb0bcc24bb781';
+$md5_sum['viewtopic.'.$phpEx] = 'eb6620e6df66e6f1e8e0d92b60bb6424';
 $md5_sum['warnings.'.$phpEx] = '9665235e23d61e5c1b32302d216fcb53';
 
 $file_list = array_keys($md5_sum);
@@ -452,7 +452,7 @@ $sizes['topic_view_users.'.$phpEx] = '11991';
 $sizes['uacp.'.$phpEx] = '12383';
 $sizes['viewforum.'.$phpEx] = '38355';
 $sizes['viewonline.'.$phpEx] = '7435';
-$sizes['viewtopic.'.$phpEx] = '94581';
+$sizes['viewtopic.'.$phpEx] = '94582';
 $sizes['warnings.'.$phpEx] = '23486';
 
 $tables_structure = array(
