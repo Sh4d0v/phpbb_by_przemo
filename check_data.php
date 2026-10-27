@@ -200,7 +200,6 @@ $md5_sum['groupcp_mail.'.$phpEx] = '5d0ad1b214882aeac369a262968126be';
 $md5_sum['ignore.'.$phpEx] = '3cf4d595f42af80a9b0a69aea1ab3a64';
 $md5_sum['ignore_topics.'.$phpEx] = '37b60286d8046ec0af9f823aebcd7678';
 $md5_sum['index.'.$phpEx] = '26cb6932170656bfc031cd5472d9de58';
-$md5_sum['install.'.$phpEx] = '9f30433bce005f932d858d00c3c66f86';
 $md5_sum['login.'.$phpEx] = 'b55aa5d92fb1f88ca04caab719db96be';
 $md5_sum['memberlist.'.$phpEx] = 'abd9bc47370335f44f2053f0c108a434';
 $md5_sum['modcp.'.$phpEx] = '86c9b2c59b5e250c0d034def45a30d9c';
@@ -228,6 +227,7 @@ $md5_sum['viewonline.'.$phpEx] = '09746962de72c1ccdf0b5f575cb75725';
 $md5_sum['viewtopic.'.$phpEx] = 'd9d47d9580f7506f03154fec5622c218';
 $md5_sum['warnings.'.$phpEx] = '9665235e23d61e5c1b32302d216fcb53';
 
+// install.php is intentionally excluded because it should be removed after installation.
 $file_list = array_keys($md5_sum);
 $sizes['admin/admin_account.'.$phpEx] = '6416';
 $sizes['admin/admin_advert.'.$phpEx] = '11099';
@@ -427,7 +427,6 @@ $sizes['groupcp_mail.'.$phpEx] = '10637';
 $sizes['ignore.'.$phpEx] = '7890';
 $sizes['ignore_topics.'.$phpEx] = '8338';
 $sizes['index.'.$phpEx] = '21081';
-$sizes['install.'.$phpEx] = '32090';
 $sizes['login.'.$phpEx] = '16090';
 $sizes['memberlist.'.$phpEx] = '16023';
 $sizes['modcp.'.$phpEx] = '68515';
