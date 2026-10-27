@@ -4,7 +4,7 @@ Polska modyfikacja forum **phpBB 2**, znana jako *phpBB by Przemo*. Projekt rozs
 
 Projekt 1.13.0 wspiera **Plague Studio** ([plagues.pl](https://plagues.pl)).
 
-> **Uwaga:** to archiwalne oprogramowanie. Oryginalne wymagania (PHP 4+ i MySQL 3.2+) są wyłącznie historyczne. Demo projektu działa na hostingu z PHP 8.5 i — według właściciela projektu — wszystkie funkcje działają bez błędów. Lokalnie składnię 289 plików PHP sprawdzono na PHP 8.2.28. Zgodność z innymi konfiguracjami i wersjami MySQL należy oceniać osobno. Przed wdrożeniem przeczytaj [audyt bezpieczeństwa i zgodności](SECURITY_AND_COMPATIBILITY_AUDIT.md); projekt pozostaje archiwalnym oprogramowaniem z ryzykami opisanymi w audycie.
+> Demo projektu działa na PHP 8.5; właściciel potwierdza, że wszystkie funkcje działają bez błędów. Przed wdrożeniem przeczytaj [audyt bezpieczeństwa](SECURITY_AND_COMPATIBILITY_AUDIT.md) i sprawdź zgodność konkretnej konfiguracji bazy danych.
 
 ## Co zawiera
 
@@ -12,18 +12,24 @@ Projekt 1.13.0 wspiera **Plague Studio** ([plagues.pl](https://plagues.pl)).
 - rozbudowany Panel Administracyjny i funkcje, które można konfigurować;
 - instalator w `install.php`;
 - narzędzia aktualizacji bazy w `scripts/`;
-- dokumentację historyczną w [`docs/`](docs/), w tym oryginalne informacje o instalacji, konfiguracji, aktualizacji i deinstalacji.
+- dodatkową dokumentację i materiały projektu w [`docs/`](docs/).
+
+## Wymagania 1.13.0
+
+- **PHP 8.5.x** oraz włączone rozszerzenie **`mysqli`** — instalator 1.13.0 sprawdza i używa MySQLi.
+- **Serwer MySQL lub kompatybilny MariaDB** dostępny przez MySQLi. Zalecana jest aktualnie wspierana linia LTS; obecnie jest to MySQL 9.7 LTS ([oficjalne wydania](https://dev.mysql.com/doc/relnotes/mysql/9.7/en/)). Dokładne minimum serwera bazy nie jest egzekwowane przez instalator, a wersja bazy używana przez demo nie jest tu deklarowana.
+- Aktualne wydanie PHP 8.5 to **8.5.12** ([oficjalne wydania PHP](https://www.php.net/downloads.php), stan na 27 października 2026).
 
 ## Instalacja
 
-1. Przygotuj serwer WWW obsługujący wersję PHP i bazę danych zgodne z tym archiwalnym kodem. Oryginalny `docs/readme.html` wymienia PHP 4.0+ i MySQL 3.2+; są to wyłącznie historyczne informacje.
+1. Przygotuj serwer WWW z PHP 8.5.x i rozszerzeniem `mysqli`, a także dostępną bazą MySQL lub kompatybilną MariaDB.
 2. Utwórz bazę danych i konto z uprawnieniami do tworzenia oraz modyfikowania tabel.
 3. Wgraj pliki forum do katalogu docelowego.
 4. Otwórz `https://twoja-domena.example/forum/install.php` (dostosuj adres i ścieżkę) i wypełnij formularz. Podaj host, nazwę bazy, użytkownika, hasło, prefiks tabel oraz dane administratora.
 5. Jeśli instalator nie może zapisać `config.php`, pobierz wygenerowany plik i umieść go ręcznie w katalogu głównym forum.
 6. Po zakończeniu instalacji usuń lub zablokuj dostęp do instalatora i sprawdź uprawnienia plików oraz katalogów.
 
-Szczegóły i zastrzeżenia znajdują się w [Wiki: Instalacja](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Instalacja) oraz w oryginalnym [archiwum instrukcji instalacji](https://web.archive.org/web/20260408150902/http://www.przemo.org/phpBB2/index.php?page=install).
+Szczegółową procedurę opisuje [Wiki: Instalacja](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Instalacja).
 
 ## Najnowsze poprawki 1.13.0
 
@@ -31,16 +37,14 @@ Najnowszy zestaw poprawek jest opublikowany w commicie [`db0c28a`](https://githu
 
 ## Aktualizacja i migracja
 
-Przed każdą operacją wykonaj kopię plików i bazy danych. Archiwalne instrukcje opisują użycie `scripts/update.php` do aktualizacji bazy, a następnie wgranie plików odpowiedniej wersji z zachowaniem istniejącego `config.php`. Szczegóły zależą od wersji źródłowej — przeczytaj [Wiki: Aktualizacja i migracja](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Aktualizacja-i-migracja) przed rozpoczęciem.
+Przed każdą operacją wykonaj kopię plików i bazy danych. Aktualizator `scripts/update.php` przygotowuje bazę Przema 1.12.9 do wydania 1.13.0; następnie wgraj pliki 1.13.0 i zachowaj istniejący `config.php`. Szczegóły oraz ważne uwagi o zachowaniu danych są w [Wiki: Aktualizacja i migracja](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Aktualizacja-i-migracja).
 
 ## Dokumentacja
 
 - [Wiki projektu](https://github.com/Sh4d0v/phpbb_by_przemo/wiki)
-- [Informacje dołączone do pakietu](docs/readme.html)
 - [Audyt bezpieczeństwa i zgodności](SECURITY_AND_COMPATIBILITY_AUDIT.md)
 - [Autorzy](docs/AUTHORS)
 - [Licencja GNU GPL v2](docs/COPYING)
-- [Instalacja w Wayback Machine](https://web.archive.org/web/20260408150902/http://www.przemo.org/phpBB2/index.php?page=install)
 
 ## Licencja i autorstwo
 
