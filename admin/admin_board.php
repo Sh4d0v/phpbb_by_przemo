@@ -80,20 +80,24 @@ foreach($board_config as $config_name => $config_value)
             message_die(GENERAL_MESSAGE, sprintf($lang['wrong_config_parametr'],$par[0]));
         }
 
-        if ( $config_name == 'disable_type' )
+        if ( $config_name == 'disable_type' && isset($HTTP_POST_VARS['board_disable']) )
         {
-            if ( count($new[$config_name]) > 1 )
+            $disable_type_values = (isset($HTTP_POST_VARS['disable_type']) && is_array($HTTP_POST_VARS['disable_type']))
+                ? array_map('intval', $HTTP_POST_VARS['disable_type'])
+                : array();
+
+            if ( count($disable_type_values) > 1 )
             {
-                if ( $new[$config_name][0] == 2 && $new[$config_name][1] == 3 ){
+                if ( $disable_type_values[0] == 2 && $disable_type_values[1] == 3 ){
                     $new[$config_name] = 4;
                 }
-                if ( $new[$config_name][0] == 1 ){
+                if ( $disable_type_values[0] == 1 ){
                     $new[$config_name] = 1;
                 }
             }
-            else if ( isset($HTTP_POST_VARS['board_disable']) )
+            else
             {
-                $new[$config_name] = (isset($HTTP_POST_VARS['disable_type'])) ? $new[$config_name][0] : '';
+                $new[$config_name] = isset($disable_type_values[0]) ? $disable_type_values[0] : '';
             }
         }
 
