@@ -92,7 +92,7 @@ if ( $board_config['ccount'] )
 {
 	$visit_counter = $board_config['visitors'];
 
-	if ( !$HTTP_COOKIE_VARS[$unique_cookie_name . '_counter'] )
+	if ( empty($HTTP_COOKIE_VARS[$unique_cookie_name . '_counter']) )
 	{
 		@setcookie($unique_cookie_name . '_counter', '1', (CR_TIME + 3600), $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
 
@@ -100,7 +100,7 @@ if ( $board_config['ccount'] )
 	}
 }
 
-if ( isset($HTTP_GET_VARS['ap']) && !$userdata['session_logged_in'] && !$HTTP_COOKIE_VARS[$unique_cookie_name . '_adp_lock'] )
+if ( isset($HTTP_GET_VARS['ap']) && !$userdata['session_logged_in'] && empty($HTTP_COOKIE_VARS[$unique_cookie_name . '_adp_lock']) )
 {
 	@setcookie($unique_cookie_name . '_adp', intval($HTTP_GET_VARS['ap']), (CR_TIME + 31536000), $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
 }
@@ -408,9 +408,9 @@ if ( $shoutbox_config['shoutbox_on'] && $userdata['shoutbox'] )
 	if ( strstr($shoutbox_config['banned_user_id_view'], ',') )
 	{
 		$fids = explode(',', $shoutbox_config['banned_user_id_view']);
-		while( list($foo, $id) = each($fids) )
+		foreach ($fids as $id)
 		{
-			$fid[] = intval( trim($id) );
+			$fid[] = intval(trim($id));
 		}
 	}
 	else

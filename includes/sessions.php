@@ -99,7 +99,7 @@ function check_access($userdata)
 		}
 	}
 
-	if ( $is_banned || $HTTP_COOKIE_VARS[$unique_cookie_name . '_bb'] > (CR_TIME - (3600 * 24)) )
+	if ( $is_banned || (isset($HTTP_COOKIE_VARS[$unique_cookie_name . '_bb']) && $HTTP_COOKIE_VARS[$unique_cookie_name . '_bb'] > (CR_TIME - (3600 * 24))) )
 	{
 		if ( !file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $userdata['user_lang'] . '/lang_main.'.$phpEx)) )
 		{
@@ -125,9 +125,10 @@ function check_access($userdata)
 		message_die(CRITICAL_MESSAGE, $reason);
 	}
 
-	if ( $board_config['warnings_enable'] && ($userdata['user_id'] != ANONYMOUS || $HTTP_COOKIE_VARS[$unique_cookie_name . '_b']) )
+	$warning_cookie_value = isset($HTTP_COOKIE_VARS[$unique_cookie_name . '_b']) ? $HTTP_COOKIE_VARS[$unique_cookie_name . '_b'] : 0;
+	if ( $board_config['warnings_enable'] && ($userdata['user_id'] != ANONYMOUS || $warning_cookie_value) )
 	{
-		$warning_cookie_banned = ((!$board_config['expire_warnings'] && $HTTP_COOKIE_VARS[$unique_cookie_name . '_b']) || $HTTP_COOKIE_VARS[$unique_cookie_name . '_b'] > (CR_TIME - (3600 * 72))) ? true : false;
+		$warning_cookie_banned = ((!$board_config['expire_warnings'] && $warning_cookie_value) || $warning_cookie_value > (CR_TIME - (3600 * 72))) ? true : false;
 		if ( $board_config['expire_warnings'] )
 		{
 			$time_to_prune = CR_TIME - ($board_config['expire_warnings'] * 86400);
@@ -622,6 +623,8 @@ function session_pagestart($user_ip, $thispage_id)
 	$cookiesecure = $board_config['cookie_secure'];
 
 	$current_time = CR_TIME;
+	$warning_cookie_value = isset($HTTP_COOKIE_VARS[$unique_cookie_name . '_b']) ? $HTTP_COOKIE_VARS[$unique_cookie_name . '_b'] : 0;
+	$ban_cookie_value = isset($HTTP_COOKIE_VARS[$unique_cookie_name . '_bb']) ? $HTTP_COOKIE_VARS[$unique_cookie_name . '_bb'] : 0;
 	if ( isset($userdata) ) unset($userdata);
 
 	if ( isset($HTTP_COOKIE_VARS[$cookiename . '_sid']) || isset($HTTP_COOKIE_VARS[$cookiename . '_data']) )
@@ -670,7 +673,7 @@ function session_pagestart($user_ip, $thispage_id)
 		//
 		if ( isset($userdata['user_id']) )
 		{
-			if ( ((!$board_config['expire_warnings'] && $HTTP_COOKIE_VARS[$unique_cookie_name . '_b']) || $HTTP_COOKIE_VARS[$unique_cookie_name . '_b'] > (CR_TIME - (3600 * 72)) || $HTTP_COOKIE_VARS[$unique_cookie_name . '_bb'] > (CR_TIME - (3600 * 24)) && $userdata['user_id'] == ANONYMOUS ) )
+			if ( ((!$board_config['expire_warnings'] && $warning_cookie_value) || $warning_cookie_value > (CR_TIME - (3600 * 72)) || $ban_cookie_value > (CR_TIME - (3600 * 24)) && $userdata['user_id'] == ANONYMOUS ) )
 			{
 				message_die(CRITICAL_MESSAGE, 'You_been_banned');
 			}
@@ -744,7 +747,7 @@ function session_pagestart($user_ip, $thispage_id)
 	//
 	$user_id = ( isset($sessiondata['userid']) ) ? intval($sessiondata['userid']) : ANONYMOUS;
 
-	if ( ((!$board_config['expire_warnings'] && $HTTP_COOKIE_VARS[$unique_cookie_name . '_b']) || $HTTP_COOKIE_VARS[$unique_cookie_name . '_b'] > (CR_TIME - (3600 * 72)) || $HTTP_COOKIE_VARS[$unique_cookie_name . '_bb'] > (CR_TIME - (3600 * 24)) && $user_id == ANONYMOUS ) )
+	if ( ((!$board_config['expire_warnings'] && $warning_cookie_value) || $warning_cookie_value > (CR_TIME - (3600 * 72)) || $ban_cookie_value > (CR_TIME - (3600 * 24)) && $user_id == ANONYMOUS ) )
 	{
 		message_die(CRITICAL_MESSAGE, 'You_been_banned');
 	}
@@ -843,7 +846,7 @@ function session_end($session_id, $user_id)
 function append_sid($url, $non_html_amp = false, $subdir_off = false)
 {
 	global $SID, $subdirectory, $userdata;
-	if($userdata['session_logged_in'])
+	if (!empty($userdata['session_logged_in']))
 	{
 		if ( !empty($SID) && !preg_match('#sid=#', $url) )
 		{

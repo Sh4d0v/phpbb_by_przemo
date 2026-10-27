@@ -168,19 +168,19 @@ $subdirectory = '';
 // Defined here and not in page_header.php so they can be redefined in the code
 $nav_links['top'] = array ( 
 	'url' => append_sid($phpbb_root_path."index.".$phpEx),
-	'title' => sprintf($lang['Forum_Index'], $board_config['sitename'])
+	'title' => (isset($lang['Forum_Index']) && isset($board_config['sitename'])) ? sprintf($lang['Forum_Index'], $board_config['sitename']) : ''
 );
 $nav_links['search'] = array ( 
 	'url' => append_sid($phpbb_root_path."search.".$phpEx),
-	'title' => $lang['Search']
+	'title' => isset($lang['Search']) ? $lang['Search'] : ''
 );
 $nav_links['help'] = array ( 
 	'url' => append_sid($phpbb_root_path."faq.".$phpEx),
-	'title' => $lang['FAQ']
+	'title' => isset($lang['FAQ']) ? $lang['FAQ'] : ''
 );
 $nav_links['author'] = array ( 
 	'url' => append_sid($phpbb_root_path."memberlist.".$phpEx),
-	'title' => $lang['Memberlist']
+	'title' => isset($lang['Memberlist']) ? $lang['Memberlist'] : ''
 );
 
 //
@@ -341,7 +341,7 @@ if ( isset($board_config['db_backup_enable']) && $board_config['db_backup_enable
 	db_backup();
 }
 
-if ( $HTTP_COOKIE_VARS[$unique_cookie_name . '_b'] == "1" )
+if ( isset($HTTP_COOKIE_VARS[$unique_cookie_name . '_b']) && $HTTP_COOKIE_VARS[$unique_cookie_name . '_b'] == "1" )
 {
 	message_die(GENERAL_MESSAGE, 'You_been_banned');
 }

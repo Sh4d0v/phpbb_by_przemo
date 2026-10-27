@@ -362,7 +362,11 @@ function set_tree_user_auth()
 		// grant the main level
 		if ( $main != 'Root' )
 		{
-			$tree['auth'][$main]['tree.auth_view'] = ($tree['auth'][$main]['tree.auth_view'] || $tree['auth'][$cur]['tree.auth_view']);
+			if (!isset($tree['auth'][$main]) || !is_array($tree['auth'][$main]))
+			{
+				$tree['auth'][$main] = array();
+			}
+			$tree['auth'][$main]['tree.auth_view'] = (!empty($tree['auth'][$main]['tree.auth_view']) || !empty($tree['auth'][$cur]['tree.auth_view']));
 		}
 
 		$auth_read = false;
@@ -397,8 +401,14 @@ function set_tree_user_auth()
 		}
 		if ( $auth_view )
 		{
-			$tree['data'][$i]['tree.forum_posts'] += $tree['data'][$i]['forum_posts'];
-			$tree['data'][$i]['tree.forum_topics'] += $tree['data'][$i]['forum_topics'];
+			if (isset($tree['data'][$i]['forum_posts']))
+			{
+				$tree['data'][$i]['tree.forum_posts'] += $tree['data'][$i]['forum_posts'];
+			}
+			if (isset($tree['data'][$i]['forum_topics']))
+			{
+				$tree['data'][$i]['tree.forum_topics'] += $tree['data'][$i]['forum_topics'];
+			}
 		}
 
 		if ( $main != 'Root' )
@@ -476,8 +486,7 @@ function get_user_tree(&$userdata)
 		$wauth = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
 		if ( !empty($wauth) )
 		{
-			reset($wauth);
-			while (list($key, $data) = each($wauth))
+			foreach ($wauth as $key => $data)
 			{
 				$tree['auth'][POST_FORUM_URL . $key] = $data;
 			}
@@ -1121,7 +1130,7 @@ function setup_style($style)
 
 		$img_lang = ( file_exists(@phpbb_realpath($phpbb_root_path . $current_template_path . '/images/lang_' . $board_config['default_lang'])) ) ? $board_config['default_lang'] : 'english';
 
-		while( list($key, $value) = @each($images) )
+		foreach ($images as $key => $value)
 		{
 			if ( !is_array($value) )
 			{
