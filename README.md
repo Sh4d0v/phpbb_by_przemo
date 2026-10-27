@@ -22,11 +22,9 @@ Projekt 1.13.0 wspiera **Plague Studio** ([plagues.pl](https://plagues.pl)).
 
 ## Zrzut z demo
 
-Kontrola Systemu na demo Plague Studio: PHP 8.5.12, MySQL 8.4.11-11 oraz wersja bazy 1.13.0.
+Kontrola Systemu na demo Plague Studio: PHP 8.5.12, MySQL 8.4.11-11, wersja bazy 1.13.0 i poprawny wynik kontroli wszystkich 224 plików.
 
-![Kontrola Systemu phpBB by Przemo 1.13.0 na PHP 8.5.12 i MySQL 8.4.11-11](docs/images/checkfiles-demo-php85.png)
-
-Na zrzucie widoczny jest brak `install.php`; pochodzi on sprzed poprawki CheckFiles, która wyklucza instalator z kontroli, ponieważ należy usunąć go po instalacji.
+![Kontrola Systemu phpBB by Przemo 1.13.0 na PHP 8.5.12 i MySQL 8.4.11-11 — wszystkie 224 pliki poprawne](docs/images/checkfiles-demo-php85.png)
 
 ## Instalacja
 
