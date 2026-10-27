@@ -1529,6 +1529,9 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 {
 	global $db, $template, $board_config, $theme, $lang, $phpEx, $phpbb_root_path, $nav_links, $gen_simple_header, $images, $statistics_module;
 	global $userdata, $user_ip, $session_length, $starttime, $page_title, $tree;
+	global $unique_cookie_name, $nav_separator;
+	$sql_error = array('code' => 0, 'message' => '');
+	$debug_text = '';
 	if ( !$board_config['report_disable'] )
 	{
 		global $rp;

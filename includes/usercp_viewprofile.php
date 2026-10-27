@@ -70,6 +70,11 @@ $regdate = $profiledata['user_regdate'];
 $memberdays = max(1, round( ( CR_TIME - $regdate ) / 86400 ));
 $posts_per_day = $user_posts / $memberdays;
 
+$level_hp = $level_mp = $level_exp = '0 / 0';
+$level_hp_percent = $level_mp_percent = 0;
+$level_exp_percent = 100;
+$level_level = 0;
+
 if ( $user_posts != 0 )
 {
 	$total_posts = get_db_stat('postcount');

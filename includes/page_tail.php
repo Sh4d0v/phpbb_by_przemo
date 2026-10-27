@@ -27,7 +27,7 @@ if ( !defined('IN_PHPBB') )
 	die('Hacking attempt');
 }
 
-global $do_gzip_compress;
+global $do_gzip_compress, $show_queries, $queries;
 
 //
 // Show the overall footer.
@@ -73,7 +73,7 @@ $template->assign_vars(array(
 );
 
 $template->pparse('overall_footer');
-if ( $show_queries )
+if ( !empty($show_queries) && isset($queries) )
 {
 	echo '<font size="1">' . $queries . '</font>';
 }

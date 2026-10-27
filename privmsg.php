@@ -1437,6 +1437,8 @@ else if ( $submit || $refresh || $mode != '' )
 
 		if ( $mode != 'edit' )
 		{
+			$gg_send = false;
+
 			// Add to the users new pm counter
 			$sql = "UPDATE " . USERS_TABLE . "
 				SET user_new_privmsg = user_new_privmsg + 1, user_last_privmsg = " . CR_TIME . "

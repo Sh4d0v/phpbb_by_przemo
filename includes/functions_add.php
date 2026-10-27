@@ -785,8 +785,10 @@ function prepare_overlib_text($first_text, $last_text)
 	}
 	$overlib_post_text = str_replace(array("\r", "'"), array(" ", '&#039;'), $overlib_post_text);
 	$overlib_post_text_ary = explode('splited_posts_text', $overlib_post_text);
-	$overlib_post_text = str_replace("\n", "<br />", xhtmlspecialchars(substr($overlib_post_text_ary[0], 0, 260) . (((strlen($overlib_post_text_ary[0]) > 260) ? ' [...]' : ''))));
-	$overlib_last_post_text = str_replace("\n", "<br />", xhtmlspecialchars(substr($overlib_post_text_ary[1], 0, 260) . (((strlen($overlib_post_text_ary[1]) > 260) ? ' [...]' : ''))));
+	$first_post_text = isset($overlib_post_text_ary[0]) ? $overlib_post_text_ary[0] : '';
+	$last_post_text = isset($overlib_post_text_ary[1]) ? $overlib_post_text_ary[1] : '';
+	$overlib_post_text = str_replace("\n", "<br />", xhtmlspecialchars(substr($first_post_text, 0, 260) . (((strlen($first_post_text) > 260) ? ' [...]' : ''))));
+	$overlib_last_post_text = str_replace("\n", "<br />", xhtmlspecialchars(substr($last_post_text, 0, 260) . (((strlen($last_post_text) > 260) ? ' [...]' : ''))));
 
 	return array($overlib_post_text, $overlib_last_post_text);
 }

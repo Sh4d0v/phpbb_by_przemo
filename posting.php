@@ -1272,7 +1272,8 @@ else if ( $submit || $confirm )
 
 		if ( $error_msg == '' )
 		{
-			$topic_type = ( $topic_type != $post_data['topic_type'] && !$is_auth['auth_sticky'] && !$is_auth['auth_announce'] && !$is_auth['auth_globalannounce'] ) ? $post_data['topic_type'] : $topic_type;
+			$post_data_topic_type = isset($post_data['topic_type']) ? $post_data['topic_type'] : POST_NORMAL;
+			$topic_type = ( $topic_type != $post_data_topic_type && !$is_auth['auth_sticky'] && !$is_auth['auth_announce'] && !$is_auth['auth_globalannounce'] ) ? $post_data_topic_type : $topic_type;
 
 			if ( !$userdata['session_logged_in'] && $board_config['not_anonymous_posting'] && empty($HTTP_POST_VARS['username']) )
 			{

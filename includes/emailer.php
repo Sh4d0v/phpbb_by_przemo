@@ -203,10 +203,12 @@ class emailer
 			$this->msg = trim(preg_replace('#' . $drop_header . '#s', '', $this->msg));
 		}
 
-		$to = $this->addresses['to'];
+		$to = isset($this->addresses['to']) ? $this->addresses['to'] : '';
+		$cc_addresses = (isset($this->addresses['cc']) && is_array($this->addresses['cc'])) ? $this->addresses['cc'] : array();
+		$bcc_addresses = (isset($this->addresses['bcc']) && is_array($this->addresses['bcc'])) ? $this->addresses['bcc'] : array();
 
-		$cc = (count($this->addresses['cc'])) ? implode(', ', $this->addresses['cc']) : '';
-		$bcc = (count($this->addresses['bcc'])) ? implode(', ', $this->addresses['bcc']) : '';
+		$cc = (!empty($cc_addresses)) ? implode(', ', $cc_addresses) : '';
+		$bcc = (!empty($bcc_addresses)) ? implode(', ', $bcc_addresses) : '';
 
 		// Build header
 		$admin_email = trim($board_config['board_email']);
