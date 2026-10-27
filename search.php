@@ -58,6 +58,8 @@ $mode = get_vars('mode', '', 'POST,GET');
 $per_page = $from_sql = $where_sql = '';
 $search_keywords = get_vars('search_keywords', '', 'POST,GET');
 $search_author   = get_vars('search_author',   '', 'POST,GET');
+$split_search = array();
+$synonym_array = array();
 
 if(!empty($search_author))
 {
@@ -298,6 +300,8 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 			}
 			$stopword_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt');
 			$synonym_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_synonyms.txt');
+			$stopword_array = is_array($stopword_array) ? $stopword_array : array();
+			$synonym_array = is_array($synonym_array) ? $synonym_array : array();
 
 			$split_search = array();
 			$stripped_keywords = stripslashes($search_keywords);
@@ -836,6 +840,8 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 		}
 
 		$searchset = array();
+		$topic_urls = array();
+		$server_name = '';
 		while( $row = $db->sql_fetchrow($result) )
 		{
             if($row['post_start_time']>0) $row['post_time'] = $row['post_start_time'];
@@ -952,26 +958,16 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 			$topic_title = $searchset[$i]['topic_title'];
 			$topic_title_e = $searchset[$i]['topic_title_e'];
 
-			$forum_moderate = ($searchset[$i]['forum_moderate']) ? true : false;
-			$forum_view_moderate = ($forum_moderate && !$is_auth['auth_mod']) ? true : false;
-
-			if ( $forum_moderate )
-			{
-				$is_auth = array();
-				$is_auth = $tree['auth'][POST_FORUM_URL . $forum_id];
-			}
+			$forum_moderate = !empty($searchset[$i]['forum_moderate']);
+			$forum_auth_key = POST_FORUM_URL . $forum_id;
+			$is_auth = (isset($tree['auth'][$forum_auth_key]) && is_array($tree['auth'][$forum_auth_key])) ? $tree['auth'][$forum_auth_key] : array();
+			$forum_view_moderate = ($forum_moderate && empty($is_auth['auth_mod']));
 
 			if ( $show_results == 'posts' )
 			{
 				if ( isset($return_chars) )
 				{
 					$bbcode_uid = $searchset[$i]['bbcode_uid'];
-
-					if ( !$forum_moderate )
-					{
-						$is_auth = array();
-						$is_auth = $tree['auth'][POST_FORUM_URL . $forum_id];
-					}
 
 					$show_post_html = ($board_config['allow_html'] && $searchset[$i]['user_allowhtml']) ? true : false;
 					if ( (($searchset[$i]['user_level'] == MOD && $board_config['mod_html']) || ($board_config['admin_html'] && $searchset[$i]['user_level'] == ADMIN) || ($board_config['jr_admin_html'] && $searchset[$i]['user_jr'])) && $searchset[$i]['user_allowhtml'] )
@@ -1388,7 +1384,8 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 							$overlib_title = $lang['not_poster_post'];
 						}
 
-						$count_unread_posts = count($userdata['unread_data'][$searchset[$i]['forum_id']][$topic_id]);
+						$unread_topic_posts = (isset($userdata['unread_data'][$forum_id][$topic_id]) && is_array($userdata['unread_data'][$forum_id][$topic_id])) ? $userdata['unread_data'][$forum_id][$topic_id] : array();
+						$count_unread_posts = count($unread_topic_posts);
 						$overlib_unread_posts = (($count_unread_posts) ? '&raquo; ' . $lang['unread_posts'] . ': <b>' . $count_unread_posts . '</b><br />' : '');
 
 						$topic_title = $topic_add_title . $topic_title;
