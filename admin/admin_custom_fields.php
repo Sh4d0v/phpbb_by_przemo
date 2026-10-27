@@ -37,26 +37,31 @@ $template->set_filenames(array(
 	'body' => 'admin/custom_fields.tpl')
 );
 
-$mode = $HTTP_GET_VARS['mode'];
-$jumpbox = trim($HTTP_POST_VARS['jumpbox']);
-$id_form = intval($HTTP_GET_VARS['id_form']);
-$desc_short = trim($HTTP_POST_VARS['desc_short']);
-$desc_long = trim($HTTP_POST_VARS['desc_long']);
-$makelinks = intval($HTTP_POST_VARS['makelinks']);
-$max_value = intval($HTTP_POST_VARS['max_value']);
-$min_value = intval($HTTP_POST_VARS['min_value']);
-$numerics = intval($HTTP_POST_VARS['numerics']);
-$requires = intval($HTTP_POST_VARS['requires']);
-$view_post = intval($HTTP_POST_VARS['view_post']);
-$view_profile = intval($HTTP_POST_VARS['view_profile']);
-$set_form = intval($HTTP_POST_VARS['set_form']);
-$editable = intval($HTTP_POST_VARS['editable']);
-$view_by = intval($HTTP_POST_VARS['view_by']);
-$no_forum = ( !empty($HTTP_POST_VARS['no_forum']) ) ? $HTTP_POST_VARS['no_forum'] : '';
-$prefix = trim($HTTP_POST_VARS['prefix']);
-$suffix = trim($HTTP_POST_VARS['suffix']);
+$mode = get_vars('mode', '', 'GET');
+$jumpbox = trim(get_vars('jumpbox', '', 'POST'));
+$id_form = get_vars('id_form', 0, 'GET', true);
+$desc_short = trim(get_vars('desc_short', '', 'POST'));
+$desc_long = trim(get_vars('desc_long', '', 'POST'));
+$makelinks = get_vars('makelinks', 0, 'POST', true);
+$max_value = get_vars('max_value', 45, 'POST', true);
+$min_value = get_vars('min_value', 1, 'POST', true);
+$numerics = get_vars('numerics', 0, 'POST', true);
+$requires = get_vars('requires', 0, 'POST', true);
+$view_post = get_vars('view_post', 2, 'POST', true);
+$view_profile = get_vars('view_profile', 1, 'POST', true);
+$set_form = get_vars('set_form', 0, 'POST', true);
+$editable = get_vars('editable', 1, 'POST', true);
+$view_by = get_vars('view_by', 0, 'POST', true);
+$no_forum = get_vars('no_forum', array(), 'POST', false, 1);
+$prefix = trim(get_vars('prefix', '', 'POST'));
+$suffix = trim(get_vars('suffix', '', 'POST'));
 $no_table = false;
 $no_fields = true;
+$title = '';
+$cf_description = '';
+$jumpbox_text = '';
+$jumpbox_edit = '';
+$s_action = '';
 
 $no_forum_sql = '';
 if ( is_array($no_forum) )
@@ -77,7 +82,7 @@ if ( !($result = $db->sql_query($sql)) )
 {
 	$no_table = true;
 }
-if ($row = $db->sql_fetchrow($result))
+else if ($row = $db->sql_fetchrow($result))
 {
 	$no_fields = false;
 }
@@ -171,7 +176,7 @@ if ( ($no_table || $no_fields || $mode == 'add' || $mode == 'edit') && $mode != 
 	}
 }
 
-if ( !$no_fields && !isset($mode) )
+if ( !$no_fields && ($mode === '' || $mode === null) )
 {
 	$i = 0;
 	$title = $lang['CF_title'];

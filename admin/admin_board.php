@@ -810,7 +810,7 @@ else if ( $mode == 'profile' )
 	);
 
 	$template->assign_vars(array(
-		'L_VALIDATION' => $lang[Validation],
+		'L_VALIDATION' => (isset($lang['Validation'])) ? $lang['Validation'] : 'Weryfikacja',
 		'L_CVALIDATEE' => $lang['cvalidatee'],
 		'L_REQUIRE_AIM' => $lang['l_require_aim'],
 		'L_REQUIRE_AIM_E' => $lang['l_require_aim_e'],

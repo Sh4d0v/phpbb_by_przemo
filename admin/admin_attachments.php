@@ -208,7 +208,8 @@ foreach( $attach_config as $config_name => $config_value )
 		}
 	}
 }
-$db->sql_freeresult($result);
+// Do not free $result here: this module has not run a query into it yet.
+// The variable may still contain a result already released by common.php.
 
 if ( $clear_cache )
 {

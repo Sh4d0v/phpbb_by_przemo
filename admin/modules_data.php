@@ -17,7 +17,6 @@ $modules_data = array(
 		'Config_setup' => array("admin_board_setup.$phpEx", 1),
 		'Warnings' => array("admin_board.$phpEx?mode=warnings", 3),
 		'ShoutBox' => array("admin_shoutbox.$phpEx", 4),
-		'Updates' => array("admin_update.$phpEx", 5),
 		'Styles' => array("xs_frameset.$phpEx?action=menu", 6),
 		'Mass_Email' => array("admin_mass_email.$phpEx", 7),
 		'Smilies' => array("admin_smilies.$phpEx", 9),
