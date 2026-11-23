@@ -693,7 +693,7 @@ else if ( $mode == 'read' )
 		'EMAIL' => $email,
 		'WWW_IMG' => $www_img,
 		'WWW' => $www,
-	);
+	));
 
 	$template->pparse('body');
 
