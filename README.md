@@ -1,8 +1,8 @@
 # phpBB modified by Przemo
 
-Polska modyfikacja forum **phpBB 2**, znana jako *phpBB by Przemo*. Projekt rozszerzał phpBB 2 o rozbudowany zestaw funkcji administracyjnych i użytkowych. Ta kopia repozytorium zawiera wersję **1.13.0**.
+Polska modyfikacja forum **phpBB 2**, znana jako *phpBB by Przemo*. Projekt rozszerzał phpBB 2 o rozbudowany zestaw funkcji administracyjnych i użytkowych. Ta kopia repozytorium zawiera wersję **1.13.1**.
 
-Projekt 1.13.0 wspiera **Plague Studio** ([plagues.pl](https://plagues.pl)).
+Projekt 1.13.1 wspiera **Plague Studio** ([plagues.pl](https://plagues.pl)).
 
 > Demo projektu działa na PHP 8.5; właściciel potwierdza, że wszystkie funkcje działają bez błędów. Przed wdrożeniem przeczytaj [audyt bezpieczeństwa](SECURITY_AND_COMPATIBILITY_AUDIT.md) i sprawdź zgodność konkretnej konfiguracji bazy danych.
 
@@ -14,21 +14,25 @@ Projekt 1.13.0 wspiera **Plague Studio** ([plagues.pl](https://plagues.pl)).
 - narzędzia aktualizacji bazy w `scripts/`;
 - dodatkową dokumentację i materiały projektu w [`docs/`](docs/).
 
-## Wymagania 1.13.0
+## Wymagania 1.13.1
 
-- **PHP 8.5.x** oraz włączone rozszerzenie **`mysqli`** — instalator 1.13.0 sprawdza i używa MySQLi.
+- **PHP 8.5.x** oraz włączone rozszerzenie **`mysqli`** — instalator 1.13.1 sprawdza i używa MySQLi.
 - **Serwer MySQL lub kompatybilny MariaDB** dostępny przez MySQLi. Zalecana jest aktualnie wspierana linia LTS; obecnie jest to MySQL 9.7 LTS ([oficjalne wydania](https://dev.mysql.com/doc/relnotes/mysql/9.7/en/)). Dokładne minimum serwera bazy nie jest egzekwowane przez instalator, a wersja bazy używana przez demo nie jest tu deklarowana.
 - Aktualne wydanie PHP 8.5 to **8.5.12** ([oficjalne wydania PHP](https://www.php.net/downloads.php), stan na 27 października 2026).
 
 ## Demo
 
-Widok strony głównej demo Plague Studio z forum phpBB by Przemo w wersji 1.13.0.
+Panel administracyjny forum w ciemnym motywie, z widoczną wersją 1.13.1.
 
-![Strona główna demo phpBB by Przemo 1.13.0](docs/images/forum-demo.png)
+![Panel administracyjny phpBB by Przemo w ciemnym motywie](docs/images/admin-demo-dark.png)
 
-Kontrola Systemu na demo Plague Studio: PHP 8.5.12, MySQL 8.4.11-11, wersja bazy 1.13.0 i poprawny wynik kontroli wszystkich 224 plików.
+Widok strony głównej forum w jasnym motywie.
 
-![Kontrola Systemu phpBB by Przemo 1.13.0 na PHP 8.5.12 i MySQL 8.4.11-11 — wszystkie 224 pliki poprawne](docs/images/checkfiles-demo-php85.png)
+![Strona główna phpBB by Przemo w jasnym motywie](docs/images/forum-demo-light.png)
+
+Widok strony głównej forum w ciemnym motywie.
+
+![Strona główna phpBB by Przemo w ciemnym motywie](docs/images/forum-demo-dark.png)
 
 ## Instalacja
 
@@ -41,13 +45,13 @@ Kontrola Systemu na demo Plague Studio: PHP 8.5.12, MySQL 8.4.11-11, wersja bazy
 
 Szczegółową procedurę opisuje [Wiki: Instalacja](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Instalacja).
 
-## Najnowsze poprawki 1.13.0
+## Najnowsze poprawki 1.13.1
 
-W wydaniu 1.13.0 wprowadzono wiele poprawek i naprawiono wiele błędów, m.in. w Panelu Administracyjnym, instalatorze, obsłudze PHP 8.5, imporcie stylów, ochronie formularzy i aktualizacji bazy. Pełna [historia wszystkich commitów](https://github.com/Sh4d0v/phpbb_by_przemo/commits/main/) zawiera szczegółową listę zmian. Zobacz także [Patch 1.13.0 w Wiki](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Patch-1.13.0) oraz [raport audytu](SECURITY_AND_COMPATIBILITY_AUDIT.md), który opisuje również pozostałe ryzyka.
+W wydaniu 1.13.1 wprowadzono wiele poprawek i naprawiono wiele błędów, m.in. w Panelu Administracyjnym, instalatorze, obsłudze PHP 8.5, imporcie stylów, ochronie formularzy i aktualizacji bazy. Pełna [historia wszystkich commitów](https://github.com/Sh4d0v/phpbb_by_przemo/commits/main/) zawiera szczegółową listę zmian. Zobacz także [Patch 1.13.0 w Wiki](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Patch-1.13.0) oraz [raport audytu](SECURITY_AND_COMPATIBILITY_AUDIT.md), który opisuje również pozostałe ryzyka.
 
 ## Aktualizacja i migracja
 
-Przed każdą operacją wykonaj kopię plików i bazy danych. Aktualizator `scripts/update.php` przygotowuje bazę Przema 1.12.9 do wydania 1.13.0; następnie wgraj pliki 1.13.0 i zachowaj istniejący `config.php`. Szczegóły oraz ważne uwagi o zachowaniu danych są w [Wiki: Aktualizacja i migracja](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Aktualizacja-i-migracja).
+Przed każdą operacją wykonaj kopię plików i bazy danych. Aktualizator `scripts/update.php` przygotowuje bazę Przema 1.12.9 do wydania 1.13.1; następnie wgraj pliki 1.13.1 i zachowaj istniejący `config.php`. Szczegóły oraz ważne uwagi o zachowaniu danych są w [Wiki: Aktualizacja i migracja](https://github.com/Sh4d0v/phpbb_by_przemo/wiki/Aktualizacja-i-migracja).
 
 ## Dokumentacja
 
