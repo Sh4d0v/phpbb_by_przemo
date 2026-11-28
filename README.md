@@ -22,10 +22,6 @@ Projekt 1.13.1 wspiera **Plague Studio** ([plagues.pl](https://plagues.pl)).
 
 ## Demo
 
-Panel administracyjny forum w ciemnym motywie, z widoczną wersją 1.13.1.
-
-![Panel administracyjny phpBB by Przemo w ciemnym motywie](docs/images/admin-demo-dark.png)
-
 Widok strony głównej forum w jasnym motywie.
 
 ![Strona główna phpBB by Przemo w jasnym motywie](docs/images/forum-demo-light.png)
@@ -33,6 +29,14 @@ Widok strony głównej forum w jasnym motywie.
 Widok strony głównej forum w ciemnym motywie.
 
 ![Strona główna phpBB by Przemo w ciemnym motywie](docs/images/forum-demo-dark.png)
+
+Kontrola Systemu dla wersji 1.13.1: PHP 8.5.13, MySQL 8.4.11-11, baza SQL 1.13.1 oraz 252 poprawne pliki.
+
+![CheckFiles phpBB by Przemo 1.13.1 — wszystkie 252 pliki poprawne](docs/images/checkfiles-demo-php85.png)
+
+Ustawienia SSL w Panelu Administracyjnym w ciemnym motywie.
+
+![Ustawienia SSL w Panelu Administracyjnym phpBB by Przemo](docs/images/admin-demo-dark.png)
 
 ## Instalacja
 
